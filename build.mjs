@@ -114,6 +114,8 @@ mkdirSync(r('dist'), { recursive: true });
 writeFileSync(r('dist/index.html'), html);
 writeFileSync(r('dist/styles.css'), minify('styles.css', 'css'));
 writeFileSync(r('dist/app.js'), minify('app.js', 'js'));
+cpSync(r('src/404.html'), r('dist/404.html'));
+cpSync(r('src/site.webmanifest'), r('dist/site.webmanifest'));
 if (existsSync(r('assets'))) cpSync(r('assets'), r('dist/assets'), { recursive: true });
 
 console.log(`✓ Built dist/  —  ${shows.length} shows · ${songs.length} songs · ${(site.gallery || []).length} photos`);
