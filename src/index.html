@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hospital Radio. — Manchester midwest emo</title>
+<meta name="description" content="Hospital Radio. — a midwest emo transmission from Manchester. Shows, releases, merch.">
+<meta name="theme-color" content="#F5E9D7">
+<meta name="color-scheme" content="light">
+<!-- Social share preview. Set og:url to your real domain, and og:image to a 1200×630 promo shot for the best-looking preview. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Hospital Radio.">
+<meta property="og:title" content="Hospital Radio. — Manchester midwest emo">
+<meta property="og:description" content="A four-piece from Manchester. Shows, releases & merch. ‘L.A.’ and ‘Dreaming’ out now.">
+<meta property="og:url" content="https://hospitalradio.band/">
+<meta property="og:image" content="https://assets.bigcartel.com/account_images/7799499/IMG_6779.JPG?auto=format&fit=max&h=1200&w=1200">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Hospital Radio. — Manchester midwest emo">
+<meta name="twitter:description" content="A four-piece from Manchester. Shows, releases & merch.">
+<meta name="twitter:image" content="https://assets.bigcartel.com/account_images/7799499/IMG_6779.JPG?auto=format&fit=max&h=1200&w=1200">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F5E9D7'/%3E%3Ccircle cx='16' cy='20' r='6' fill='%23DF8090'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..700&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div id="intro" aria-hidden="true">
+  <div class="static"></div>
+  <div class="isweep"></div>
+  <div class="ibox">
+    <div class="iread" id="introRead">○&nbsp;&nbsp;scanning the dial…</div>
+    <div class="ifreq" id="introFreq">87.7 FM</div>
+    <div class="iword">hospital radio<span class="dot">.</span></div>
+  </div>
+  <div class="ihint">tap to tune in</div>
+</div>
+<div class="fx grain"></div>
+<div class="fx grain fine"></div>
+<div class="fx scan"></div>
+<div class="fx vignette"></div>
+<div class="leaks"></div>
+
+<header>
+  <div class="bar">
+    <a class="brand" href="#/" aria-label="Hospital Radio. home">
+      <span class="word">hospital radio<span class="dot">.</span></span>
+    </a>
+    <span class="onair"><span class="lamp"></span> On Air</span>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false"><span></span></button>
+    <nav id="nav">
+      <a href="#/" data-route="/">Index</a>
+      <a href="#/shows" data-route="/shows">Shows</a>
+      <a href="#/archive" data-route="/archive">Archive</a>
+      <a href="#/listen" data-route="/listen">Listen</a>
+      <a href="#/lyrics" data-route="/lyrics">Lyrics</a>
+      <a href="#/photos" data-route="/photos">Photos</a>
+      <a href="#/booking" data-route="/booking">Booking</a>
+      <a class="ext" id="merchNav" href="#" target="_blank" rel="noopener">Merch</a>
+    </nav>
+  </div>
+</header>
+
+<main id="view"></main>
+
+<footer>
+  <div class="wrap foot-grid">
+    <div>
+      <div class="foot-word">hospital radio<span class="dot">.</span></div>
+      <div class="foot-cred" id="footCred"></div>
+      <div class="foot-meta" id="footMeta"></div>
+    </div>
+    <div class="socials" id="footSocials"></div>
+  </div>
+  <nav class="foot-nav wrap" aria-label="Footer">
+    <a href="#/">Index</a><a href="#/shows">Shows</a><a href="#/archive">Archive</a><a href="#/listen">Listen</a><a href="#/lyrics">Lyrics</a><a href="#/photos">Photos</a><a href="#/booking">For promoters</a>
+  </nav>
+</footer>
+
+<!-- hidden sink so the subscribe form posts without navigating away -->
+<iframe name="tuneSink" title="subscribe" style="display:none" aria-hidden="true"></iframe>
+
+<!-- persistent "tune in" radio player -->
+<button class="radio-launch" id="radioLaunch" aria-label="Tune in to Hospital Radio">
+  <span class="ring"></span> Tune In · <span id="radioFreq">87.7</span>
+</button>
+<aside class="radio-panel" id="radioPanel" aria-label="Hospital Radio player" aria-hidden="true">
+  <div class="radio-head">
+    <span class="freqdot"></span>
+    <span class="label">Hospital Radio · <b id="radioFreq2">87.7</b> FM · on air</span>
+    <button class="radio-close" id="radioClose" aria-label="Close player">✕</button>
+  </div>
+  <div class="radio-dial"><span class="ticks">88 · 92 · 96 · 100 · 104</span></div>
+  <div class="radio-body"><iframe id="radioFrame" title="Hospital Radio — now playing" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+  <div class="radio-foot">▸ now broadcasting</div>
+</aside>
+
+<!-- gallery lightbox -->
+<div id="lightbox" class="lightbox" aria-hidden="true" role="dialog" aria-label="Photo viewer">
+  <button class="lb-close" id="lbClose" aria-label="Close">✕</button>
+  <button class="lb-nav lb-prev" id="lbPrev" aria-label="Previous photo">‹</button>
+  <img class="lb-img" id="lbImg" alt="">
+  <button class="lb-nav lb-next" id="lbNext" aria-label="Next photo">›</button>
+  <div class="lb-cap" id="lbCap"></div>
+</div>
+
+<!-- build:site-data -->
+<script src="./app.js"></script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+# ════════════════════════════════════════════════════════════════════
+#  TOUR DATES  ·  this is the file you'll edit most
+#
+#  To add a show:  copy one block below (from the "-" to its last line),
+#  paste it, and change the details.
+#
+#    • date must be in quotes, like "2026-08-22"  (YYYY-MM-DD).
+#    • The site sorts everything for you by today's date:
+#        – today or later  →  the SHOWS page (soonest first)
+#        – in the past      →  the ARCHIVE page (most recent first)
+#      You never sort by hand.
+#    • Optional lines you can add or delete on any show:
+#        with:    "who you're playing with / support"
+#        tickets: "https://..."        (adds a Tickets button)
+#        soldOut: true                 (shows SOLD OUT instead)
+#        note:    "a handwritten note on the row"
+#    • Keep the "-" and the indentation lined up with the examples.
+#
+#  ⚠  Delete the two shows marked  example: true  once you've added
+#     your real dates — they're only here so the page isn't empty.
+# ════════════════════════════════════════════════════════════════════
+
+# —— real shows ——
+- date:    "2026-06-07"
+  venue:   "The Deaf Institute (The Lodge)"
+  city:    "Manchester"
+  with:    "supporting Safeguard · w/ The Losing Score"
+  tickets: "https://slamdunkmusic.seetickets.com/event/safeguard/the-deaf-institute-the-lodge/3595866"
+
+- date:  "2026-05-21"
+  venue: "The Peer Hat"
+  city:  "Manchester"
+  with:  "Tru Alt Night"
+
+# —— EXAMPLE shows — replace with your real dates, then delete these two ——
+- date:    "2026-08-22"
+  venue:   "Example Venue"
+  city:    "Leeds"
+  with:    "+ support TBA"
+  note:    "this one's made up — swap it out"
+  example: true
+
+- date:    "2026-09-13"
+  venue:   "Example Venue"
+  city:    "Sheffield"
+  with:    "headline show"
+  soldOut: true
+  example: true
