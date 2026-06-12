@@ -158,7 +158,7 @@ function viewHome(){
   return `
   <section class="wrap hero">
     <div class="freq" data-reveal>
-      <span><span class="wordmark">hospital radio<span class="dot">.</span></span> <b>87.7</b> FM</span>
+      <span><b>87.7</b> FM</span>
       <span>EST. MANCHESTER · ${esc(CONFIG.band.foundedRoman)}</span>
       <span>NOW BROADCASTING</span>
     </div>
