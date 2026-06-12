@@ -5,6 +5,8 @@ A grain-soaked broadcast: shows, releases, an in-page radio player, lyrics,
 photos, a mailing list and a press kit — all driven from a few plain-text
 content files so anyone can update it.
 
+**Live site: https://kylelookingaround.github.io/hospital-radio/**
+
 It's a **static site**. A small build step turns the content files into a
 finished site in `dist/`, and GitHub Pages serves it. There's no database and
 nothing to run in the background.
@@ -79,9 +81,10 @@ hospital-radio/
 │   ├── index.html            ← page structure
 │   ├── styles.css            ← all styling
 │   └── app.js                ← behaviour (routing, players, gallery, intro…)
+├── assets/                   ← icons & images copied into the site as-is
 ├── build.mjs                 ← merges content/ → dist/
 ├── package.json
-├── .github/workflows/deploy.yml
+├── .github/workflows/        ← deploy.yml (publish on main) · ci.yml (PR build check)
 ├── dist/                     ← the built site (generated; not committed)
 └── reference/
     └── original-single-file.html   ← the pre-split version, for reference
@@ -101,9 +104,9 @@ never tangled together.
   (cream `#F5E9D7`, navy `#2D458F`, pink `#DF8090`), defined once as design
   tokens at the top of `src/styles.css` (`:root`). Change them there and the
   entire site re-themes.
-- **Logo** — the hero pulls the band's "Shade" logo from Big Cartel. To use a
-  different one, change `band.logoImage` in `site.yml` (or set it to `""` to use
-  the typed wordmark, which always looks right).
+- **Logo** — the hero shows the typed wordmark (same as the header). To use a
+  graphic instead, set `band.logoImage` in `site.yml` to an image URL — the
+  band's "Shade" logo URL is kept in a comment there.
 - **Share image** — for the best-looking link previews (WhatsApp, Discord, etc.)
   add a 1200×630 promo image and point the `og:image`/`twitter:image` tags in
   `src/index.html` at it. It currently uses a photo from the store.

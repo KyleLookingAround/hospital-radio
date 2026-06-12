@@ -90,6 +90,10 @@ header{
   line-height:1; text-transform:lowercase;
 }
 .brand .dot{ color:var(--rose); text-shadow:0 0 14px rgba(223,128,144,.65); }
+/* the typed wordmark, reusable anywhere the band name appears in text */
+.wordmark{ font-family:var(--serif); font-weight:600; text-transform:lowercase; letter-spacing:-.03em; }
+.wordmark .dot{ color:var(--rose); }
+.label .wordmark,.foot-meta .wordmark,.freq .wordmark{ font-size:1.15em; }
 .onair{
   display:inline-flex; align-items:center; gap:7px; font-family:var(--mono);
   font-size:10px; letter-spacing:.26em; color:var(--rose);

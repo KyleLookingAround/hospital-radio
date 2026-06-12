@@ -158,7 +158,7 @@ function viewHome(){
   return `
   <section class="wrap hero">
     <div class="freq" data-reveal>
-      <span>HOSPITAL RADIO <b>87.7</b> FM</span>
+      <span><span class="wordmark">hospital radio<span class="dot">.</span></span> <b>87.7</b> FM</span>
       <span>EST. MANCHESTER · ${esc(CONFIG.band.foundedRoman)}</span>
       <span>NOW BROADCASTING</span>
     </div>
@@ -346,7 +346,7 @@ function viewPromoters(){
   return `
   <section class="wrap section">
     <div class="kicker" data-reveal>Press kit · for promoters</div>
-    <div class="sec-head" data-reveal style="margin-top:14px"><h2>${esc(band.name||"Hospital Radio.").replace(/\.$/,'<span class="dot">.</span>')}</h2></div>
+    <div class="sec-head" data-reveal style="margin-top:14px"><h2 class="wordmark">${esc(band.name||"Hospital Radio.").replace(/\.$/,'<span class="dot">.</span>')}</h2></div>
     <p class="promo-sub" data-reveal>${esc(band.tagline||"midwest emo")} · est. ${esc(band.foundedRoman||"")}</p>
     <div class="bio" data-reveal style="margin:18px 0 30px"><p style="font-size:20px;line-height:1.65;color:var(--muted)">${esc(b.pitch||CONFIG.bio||"")}</p></div>
 
@@ -445,7 +445,7 @@ function boot(){
   const memStr = mem.length>1 ? mem.slice(0,-1).join(", ")+" & "+mem.slice(-1) : (mem[0]||"");
   $("#footCred").textContent = memStr ? "an emo transmission from "+memStr : "an emo transmission";
   $("#footMeta").innerHTML =
-    `broadcasting from manchester<br>${esc(CONFIG.band.tagline)}<br>© ${new Date().getFullYear()} hospital radio.`;
+    `broadcasting from manchester<br>${esc(CONFIG.band.tagline)}<br>© ${new Date().getFullYear()} <span class="wordmark">hospital radio<span class="dot">.</span></span>`;
   $("#footSocials").innerHTML = socialList()
     .map(([n,u])=>`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(n)}</a>`).join("");
 
