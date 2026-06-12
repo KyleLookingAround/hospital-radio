@@ -14,10 +14,10 @@ band:
   scrawl: "dead air never sounded so good"          # handwritten line under the logo
   foundedRoman: "MMXXV"
   spotifyListeners: "157"                            # shown on the press page — update now and then
-  # Hero logo. "" shows the typed wordmark (same as the header). To use a
-  # graphic instead, put its URL here — the band's "Shade" logo is:
-  #   https://assets.bigcartel.com/theme_images/147797334/Shade+Backgroundless.png
-  logoImage: ""
+  # Hero logo image (the band's "Shade" graphic). Set to "" to show the
+  # typed wordmark instead (same as the header); if the image ever fails
+  # to load, the site falls back to the wordmark automatically.
+  logoImage: "https://assets.bigcartel.com/theme_images/147797334/Shade+Backgroundless.png"
   # Scrolling headlines on the home page — add or remove lines freely:
   ticker:
     - "welcome tom — we're a four-piece now"
