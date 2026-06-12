@@ -1,0 +1,15 @@
+{
+  "name": "hospital-radio",
+  "version": "1.0.0",
+  "description": "Hospital Radio. — band website. Static site built from YAML + Markdown content.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "serve": "node build.mjs && npx --yes serve dist -l 5173",
+    "dev": "npm run serve"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  }
+}
