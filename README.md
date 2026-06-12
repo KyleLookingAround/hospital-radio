@@ -5,6 +5,8 @@ A grain-soaked broadcast: shows, releases, an in-page radio player, lyrics,
 photos, a mailing list and a press kit — all driven from a few plain-text
 content files so anyone can update it.
 
+**Live site: https://kylelookingaround.github.io/hospital-radio/**
+
 It's a **static site**. A small build step turns the content files into a
 finished site in `dist/`, and GitHub Pages serves it. There's no database and
 nothing to run in the background.
