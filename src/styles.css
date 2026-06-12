@@ -147,7 +147,7 @@ main{ position:relative; z-index:5; min-height:60vh; }
 @media (prefers-reduced-motion:reduce){ .ekg .pulse{ animation:none; stroke-dashoffset:0; } }
 
 /* ============ HERO ============ */
-.hero{ padding:46px 0 30px; position:relative; }
+.hero{ padding:46px 0 30px; position:relative; overflow:hidden; }
 .hero .freq{
   font-family:var(--mono); font-size:11px; letter-spacing:.3em; text-transform:uppercase;
   color:var(--soft); display:flex; gap:18px; flex-wrap:wrap; margin-bottom:30px;
@@ -176,10 +176,10 @@ main{ position:relative; z-index:5; min-height:60vh; }
 }
 .hero-sub{ text-align:center; font-family:var(--scrawl); font-size:26px; color:var(--rose); transform:rotate(-1.4deg); margin-top:8px; opacity:.92; }
 
-/* marquee ticker */
+/* marquee ticker — full-bleed so it runs edge-to-edge against the viewport */
 .ticker{
-  margin-top:30px; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
-  overflow:hidden; white-space:nowrap; padding:11px 0; background:rgba(45,69,143,.05);
+  margin:30px -26px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  overflow:hidden; white-space:nowrap; padding:11px 26px; background:rgba(45,69,143,.05);
 }
 .ticker-row{ display:inline-block; white-space:nowrap; animation:marq 56s linear infinite; }
 .ticker:hover .ticker-row{ animation-play-state:paused; }
