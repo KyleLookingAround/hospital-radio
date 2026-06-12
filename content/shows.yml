@@ -15,12 +15,14 @@
 #        soldOut: true                 (shows SOLD OUT instead)
 #        note:    "a handwritten note on the row"
 #    • Keep the "-" and the indentation lined up with the examples.
-#
-#  ⚠  Delete the two shows marked  example: true  once you've added
-#     your real dates — they're only here so the page isn't empty.
 # ════════════════════════════════════════════════════════════════════
 
-# —— real shows ——
+- date:    "2026-07-13"
+  venue:   "The Deaf Institute"
+  city:    "Manchester"
+  with:    "supporting I Am The Avalanche · w/ Cold Years"
+  tickets: "https://slamdunkmusic.seetickets.com/event/i-am-the-avalanche/the-deaf-institute/3617901"
+
 - date:    "2026-06-07"
   venue:   "The Deaf Institute (The Lodge)"
   city:    "Manchester"
@@ -31,18 +33,3 @@
   venue: "The Peer Hat"
   city:  "Manchester"
   with:  "Tru Alt Night"
-
-# —— EXAMPLE shows — replace with your real dates, then delete these two ——
-- date:    "2026-08-22"
-  venue:   "Example Venue"
-  city:    "Leeds"
-  with:    "+ support TBA"
-  note:    "this one's made up — swap it out"
-  example: true
-
-- date:    "2026-09-13"
-  venue:   "Example Venue"
-  city:    "Sheffield"
-  with:    "headline show"
-  soldOut: true
-  example: true

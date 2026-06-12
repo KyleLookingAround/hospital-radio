@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hospital Radio. — retuning…</title>
+<meta name="robots" content="noindex">
+<style>
+  body{ margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+        background:#F5E9D7; color:#2D458F; font-family:"IBM Plex Mono",ui-monospace,monospace;
+        font-size:13px; letter-spacing:.2em; text-transform:uppercase; text-align:center; }
+  a{ color:#DF8090; }
+</style>
+</head>
+<body>
+<p>○ &nbsp;lost signal — retuning…<br><br><a href="./">back to the broadcast</a></p>
+<script>
+  // The site routes with hashes (/#/shows), so a direct hit on e.g. /shows
+  // lands here — bounce it to the matching hash route on the homepage.
+  var base = "/hospital-radio/"; // ← change to "/" if the site moves to a custom domain
+  if (location.pathname.indexOf(base) !== 0) base = "/";
+  var rest = location.pathname.slice(base.length).replace(/\/+$/, "");
+  location.replace(base + (rest ? "#/" + rest : ""));
+</script>
+</body>
+</html>

@@ -21,11 +21,11 @@ band:
   logoImage: "./assets/logo.png"
   # Scrolling headlines on the home page — add or remove lines freely:
   ticker:
+    - "13 · 07 — supporting i am the avalanche @ the deaf institute"
     - "welcome tom — we're a four-piece now"
     - "‘L.A.’ — out now on all platforms"
     - "‘Dreaming’ — out now"
     - "new merch in the store"
-    - "157 of you & counting on spotify"
     - "broadcasting from manchester since MMXXV"
 
 # Your links. Leave any value as "" to hide it everywhere.
