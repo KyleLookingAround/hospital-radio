@@ -81,9 +81,10 @@ hospital-radio/
 │   ├── index.html            ← page structure
 │   ├── styles.css            ← all styling
 │   └── app.js                ← behaviour (routing, players, gallery, intro…)
+├── assets/                   ← icons & images copied into the site as-is
 ├── build.mjs                 ← merges content/ → dist/
 ├── package.json
-├── .github/workflows/deploy.yml
+├── .github/workflows/        ← deploy.yml (publish on main) · ci.yml (PR build check)
 ├── dist/                     ← the built site (generated; not committed)
 └── reference/
     └── original-single-file.html   ← the pre-split version, for reference
