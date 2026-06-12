@@ -14,10 +14,11 @@ band:
   scrawl: "dead air never sounded so good"          # handwritten line under the logo
   foundedRoman: "MMXXV"
   spotifyListeners: "157"                            # shown on the press page — update now and then
-  # Hero logo image (the band's "Shade" graphic). Set to "" to show the
-  # typed wordmark instead (same as the header); if the image ever fails
-  # to load, the site falls back to the wordmark automatically.
-  logoImage: "https://assets.bigcartel.com/theme_images/147797334/Shade+Backgroundless.png"
+  # Hero logo image (the band's "Shade" graphic, hosted in this repo's
+  # assets/ folder). Set to "" to show the typed wordmark instead (same as
+  # the header); if the image ever fails to load, the site falls back to
+  # the wordmark automatically.
+  logoImage: "./assets/logo.png"
   # Scrolling headlines on the home page — add or remove lines freely:
   ticker:
     - "welcome tom — we're a four-piece now"
@@ -97,24 +98,26 @@ intro:
   enabled: true
 
 # Photo gallery ("transmissions").
-# Seeded with shots already on your Big Cartel — swap these for permanently
-# hosted images eventually (the store ones can vanish if you reskin it).
-# Add as many as you like. "credit" is optional.
+# Photos live in this repo's assets/ folder — to add one, drop the image
+# file into assets/ and add a block here pointing at it.
+# Add as many as you like. "caption" and "credit" are both optional.
 gallery:
-  - src: "https://assets.bigcartel.com/theme_images/149910567/_mikefordazeHRgrandcentral-23.jpg?auto=format&fit=max&w=1400"
+  - src: "./assets/gallery-grand-central.jpg"
     caption: "Grand Central"
     credit: "📷 mikefordaze"
-  - src: "https://assets.bigcartel.com/theme_images/149910363/_mikefordazeHRhuddersfield-2.jpg?auto=format&fit=max&w=1400"
+  - src: "./assets/gallery-huddersfield.jpg"
     caption: "Huddersfield"
     credit: "📷 mikefordaze"
-  - src: "https://assets.bigcartel.com/theme_images/147799347/IMG_6773.JPG?auto=format&fit=max&w=1400"
+  - src: "./assets/gallery-live.jpg"
     caption: "Live"
-  - src: "https://assets.bigcartel.com/theme_images/157882116/P1060527.jpg?auto=format&fit=max&w=1400"
+  - src: "./assets/gallery-on-stage.jpg"
     caption: "On stage"
-  - src: "https://assets.bigcartel.com/theme_images/147799344/IMG_6799.JPG?auto=format&fit=max&w=1400"
-    caption: "Live"
-  - src: "https://assets.bigcartel.com/theme_images/147799416/Photo+04-05-2025_+16+56+25.jpg?auto=format&fit=max&w=1400"
-    caption: "04 · 05 · 25"
+  - src: "./assets/promo-bridge.jpg"
+    caption: "Promo · MMXXV"
+  - src: "./assets/promo-bridge-2.jpg"
+    caption: "Promo · MMXXV"
+  - src: "./assets/promo-bridge-3.jpg"
+    caption: "Promo · MMXXV"
 
 # Press / booking kit ("for promoters").
 booking:
