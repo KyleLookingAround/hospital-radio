@@ -104,9 +104,9 @@ never tangled together.
   (cream `#F5E9D7`, navy `#2D458F`, pink `#DF8090`), defined once as design
   tokens at the top of `src/styles.css` (`:root`). Change them there and the
   entire site re-themes.
-- **Logo** — the hero pulls the band's "Shade" logo from Big Cartel. To use a
-  different one, change `band.logoImage` in `site.yml` (or set it to `""` to use
-  the typed wordmark, which always looks right).
+- **Logo** — the hero shows the typed wordmark (same as the header). To use a
+  graphic instead, set `band.logoImage` in `site.yml` to an image URL — the
+  band's "Shade" logo URL is kept in a comment there.
 - **Share image** — for the best-looking link previews (WhatsApp, Discord, etc.)
   add a 1200×630 promo image and point the `og:image`/`twitter:image` tags in
   `src/index.html` at it. It currently uses a photo from the store.
