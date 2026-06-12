@@ -1,0 +1,124 @@
+# ════════════════════════════════════════════════════════════════════
+#  HOSPITAL RADIO.  ·  site content
+#
+#  Edit the text inside the "quotes". Keep the labels (the word before
+#  each colon) and the indentation exactly as they are.
+#  • Tour dates  →  shows.yml
+#  • Lyrics      →  the lyrics/ folder (one file per song)
+# ════════════════════════════════════════════════════════════════════
+
+band:
+  name: "Hospital Radio."
+  tagline: "Manchester · midwest emo"
+  members: [Mike, Curtis, Russo, Tom]
+  scrawl: "dead air never sounded so good"          # handwritten line under the logo
+  foundedRoman: "MMXXV"
+  spotifyListeners: "157"                            # shown on the press page — update now and then
+  # Their real "Shade" logo. Swap for your own file/URL any time;
+  # if it ever fails to load, the site falls back to the wordmark automatically.
+  logoImage: "https://assets.bigcartel.com/theme_images/147797334/Shade+Backgroundless.png"
+  # Scrolling headlines on the home page — add or remove lines freely:
+  ticker:
+    - "welcome tom — we're a four-piece now"
+    - "‘L.A.’ — out now on all platforms"
+    - "‘Dreaming’ — out now"
+    - "new merch in the store"
+    - "157 of you & counting on spotify"
+    - "broadcasting from manchester since MMXXV"
+
+# Your links. Leave any value as "" to hide it everywhere.
+links:
+  spotify:    "https://open.spotify.com/artist/7MSnhcDh82G5xAI63J6QDr"
+  appleMusic: "https://music.apple.com/gb/artist/hospital-radio/1796700612"
+  youtube:    "https://www.youtube.com/@HospitalRadioFullStop"
+  tiktok:     "https://www.tiktok.com/@hospitalradiofullstop"
+  instagram:  "https://www.instagram.com/hospitalradiomusic"
+  facebook:   "https://www.facebook.com/hospitalradiofullstop"
+  soundcloud: ""                                     # add your SoundCloud URL to show it
+  merch:      "https://hospitalradiofullstop.bigcartel.com"
+
+# Music videos shown on the home + Listen pages (any YouTube link works).
+releases:
+  - title: "L.A."
+    type:  "Single"
+    year:  "2026"
+    url:   "https://youtu.be/OrpC1DCIOz0"
+    label: "Watch the video"
+  - title: "Dreaming"
+    type:  "Single"
+    year:  "2025"
+    url:   "https://youtu.be/FF8WYLawQEc"
+    label: "Watch the video"
+
+# Extra videos (interviews, sessions…) shown on the Listen page.
+videos:
+  - title: "Interview w/ Showing Up!"
+    url:   "https://youtu.be/StTJi448Njs"
+
+# Merch teaser — these links open your Big Cartel store.
+merchItems:
+  - name:  "Spaghetti Head Sergio Tee"
+    price: "£25.00"
+    url:   "https://hospitalradiofullstop.bigcartel.com/product/spaghetti-head-sergio-tee"
+  - name:  "Running Man T-Shirt"
+    price: "£25.00"
+    url:   "https://hospitalradiofullstop.bigcartel.com/product/running-man-t-shirt"
+  - name:  "Weird Items Tee"
+    price: "£25.00"
+    url:   "https://hospitalradiofullstop.bigcartel.com/product/stranger-things-tee"
+  - name:  "Radio Guy Sticker"
+    price: "£3.00"
+    url:   "https://hospitalradiofullstop.bigcartel.com/product/radio-guy-sticker"
+
+# Short blurb on the Listen page.
+bio: "Hospital Radio. are a four-piece from Manchester trading in the heart-on-sleeve end of midwest emo — Mike, Curtis, Russo and Tom. Singles ‘L.A.’ and ‘Dreaming’ are out now."
+
+# The persistent "Tune In" radio player (a Spotify embed).
+radio:
+  enabled: true
+  frequency: "87.7"
+  # Any Spotify embed works — artist, album, playlist or a single track.
+  # Get one from Spotify ▸ ⋯ ▸ Share ▸ Embed, or just swap the id below.
+  embedUrl: "https://open.spotify.com/embed/artist/7MSnhcDh82G5xAI63J6QDr?utm_source=generator"
+  height: 352          # 352 = full track list · 152 = compact single-track bar
+
+# Mailing list ("join the broadcast").
+# Paste your provider's form action URL to switch it on:
+#   • Buttondown / Formspree / ConvertKit → leave fieldName as "email"
+#   • Mailchimp embedded form → use its action URL and set fieldName: "EMAIL"
+# While action is "", the form shows a friendly "not connected yet" note.
+mailingList:
+  action: ""
+  fieldName: "email"
+
+# The CRT "signal locking in" intro on first visit. Set enabled to false to skip it.
+intro:
+  enabled: true
+
+# Photo gallery ("transmissions").
+# Seeded with shots already on your Big Cartel — swap these for permanently
+# hosted images eventually (the store ones can vanish if you reskin it).
+# Add as many as you like. "credit" is optional.
+gallery:
+  - src: "https://assets.bigcartel.com/theme_images/149910567/_mikefordazeHRgrandcentral-23.jpg?auto=format&fit=max&w=1400"
+    caption: "Grand Central"
+    credit: "📷 mikefordaze"
+  - src: "https://assets.bigcartel.com/theme_images/149910363/_mikefordazeHRhuddersfield-2.jpg?auto=format&fit=max&w=1400"
+    caption: "Huddersfield"
+    credit: "📷 mikefordaze"
+  - src: "https://assets.bigcartel.com/theme_images/147799347/IMG_6773.JPG?auto=format&fit=max&w=1400"
+    caption: "Live"
+  - src: "https://assets.bigcartel.com/theme_images/157882116/P1060527.jpg?auto=format&fit=max&w=1400"
+    caption: "On stage"
+  - src: "https://assets.bigcartel.com/theme_images/147799344/IMG_6799.JPG?auto=format&fit=max&w=1400"
+    caption: "Live"
+  - src: "https://assets.bigcartel.com/theme_images/147799416/Photo+04-05-2025_+16+56+25.jpg?auto=format&fit=max&w=1400"
+    caption: "04 · 05 · 25"
+
+# Press / booking kit ("for promoters").
+booking:
+  email: "hospitalradiomusic@gmail.com"             # shows a one-tap "Book us" button
+  contactUrl: "https://hospitalradiofullstop.bigcartel.com/contact"   # fallback if no email yet
+  pitch: "Hospital Radio. are a Manchester four-piece dealing in big-hearted midwest emo. Tight live, easy to work with, and building a loyal following across the North. Available for headline shows, supports and festivals."
+  forFansOf: ""                                     # e.g. "Band A · Band B · Band C" — leave "" to hide
+  stageNotes: ""                                    # e.g. set length / backline needs — leave "" to hide
