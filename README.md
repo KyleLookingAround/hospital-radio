@@ -104,15 +104,14 @@ never tangled together.
   (cream `#F5E9D7`, navy `#2D458F`, pink `#DF8090`), defined once as design
   tokens at the top of `src/styles.css` (`:root`). Change them there and the
   entire site re-themes.
-- **Logo** — the hero pulls the band's "Shade" logo from Big Cartel. To use a
-  different one, change `band.logoImage` in `site.yml` (or set it to `""` to use
-  the typed wordmark, which always looks right).
-- **Share image** — for the best-looking link previews (WhatsApp, Discord, etc.)
-  add a 1200×630 promo image and point the `og:image`/`twitter:image` tags in
-  `src/index.html` at it. It currently uses a photo from the store.
-- **Gallery photos** are pulled live from Big Cartel; they work now but can
-  disappear if the store theme changes — re-host them somewhere permanent when
-  convenient and update the URLs in `site.yml`.
+- **Images are self-hosted** — the logo, gallery photos and share image all
+  live in `assets/` and deploy with the site. To add a gallery photo, drop the
+  file in `assets/` and add a block in `site.yml` pointing at it.
+- **Logo** — set `band.logoImage` in `site.yml` to a different file/URL any
+  time (or `""` to use the typed wordmark, which always looks right).
+- **Share image** — link previews (WhatsApp, Discord, etc.) use
+  `assets/promo-bridge.jpg` via the `og:image`/`twitter:image` tags in
+  `src/index.html`.
 - **Lyrics** are placeholder lorem ipsum until the band drops their real words
   into the files in `content/lyrics/`.
 - **Custom domain** — add a `CNAME` file (or set it in Settings → Pages) when
