@@ -84,20 +84,24 @@
 <!-- hidden sink so the subscribe form posts without navigating away -->
 <iframe name="tuneSink" title="subscribe" style="display:none" aria-hidden="true"></iframe>
 
-<!-- persistent "tune in" radio player -->
-<button class="radio-launch" id="radioLaunch" aria-label="Tune in to Hospital Radio">
-  <span class="ring"></span> Tune In · <span id="radioFreq">87.7</span>
-</button>
-<aside class="radio-panel" id="radioPanel" aria-label="Hospital Radio player" aria-hidden="true">
-  <div class="radio-head">
-    <span class="freqdot"></span>
-    <span class="label"><span class="wordmark">hospital radio<span class="dot">.</span></span> · <b id="radioFreq2">87.7</b> FM · on air</span>
-    <button class="radio-close" id="radioClose" aria-label="Close player">✕</button>
+<!-- persistent broadcast dock (transport bar) -->
+<div class="dock" id="dock" aria-label="Hospital Radio player">
+  <div class="dock-embed">
+    <iframe id="radioFrame" title="Hospital Radio — now playing" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
   </div>
-  <div class="radio-dial"><span class="ticks">88 · 92 · 96 · 100 · 104</span></div>
-  <div class="radio-body"><iframe id="radioFrame" title="Hospital Radio — now playing" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
-  <div class="radio-foot">▸ now broadcasting</div>
-</aside>
+  <div class="dock-bar">
+    <div class="dock-id">
+      <span class="freqdot"></span>
+      <span class="dock-freq"><b id="radioFreq">87.7</b><span>FM</span></span>
+      <span class="wordmark dock-word">hospital radio<span class="dot">.</span></span>
+    </div>
+    <div class="dock-dial" aria-hidden="true"><span class="needle"></span></div>
+    <div class="dock-now"><span class="bars"><i></i><i></i><i></i><i></i></span> now broadcasting</div>
+    <button class="dock-toggle" id="radioLaunch" aria-expanded="false">
+      <span class="ring"></span> <span class="dock-toggle-t">Tune In</span>
+    </button>
+  </div>
+</div>
 
 <!-- gallery lightbox -->
 <div id="lightbox" class="lightbox" aria-hidden="true" role="dialog" aria-label="Photo viewer">

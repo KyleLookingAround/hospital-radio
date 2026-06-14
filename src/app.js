@@ -161,10 +161,11 @@ function viewHome(){
 
   return `
   <section class="wrap hero">
+    <div class="rec-tag" data-reveal><span class="rdot"></span> REC · ON AIR</div>
     <div class="freq" data-reveal>
       <span><b>87.7</b> FM</span>
       <span>EST. MANCHESTER · ${esc(CONFIG.band.foundedRoman)}</span>
-      <span>NOW BROADCASTING</span>
+      ${next?`<span class="up-next">▸ UP NEXT · ${String(next._d.getDate()).padStart(2,"0")} ${MON[next._d.getMonth()]} · ${esc(next.venue)}</span>`:`<span>NOW BROADCASTING</span>`}
     </div>
     <div class="logo-stage" id="logoStage" data-reveal>
       <img class="logo-img" id="logoImg" src="${esc(CONFIG.band.logoImage)}" alt="Hospital Radio.">
@@ -497,27 +498,23 @@ function boot(){
     frame.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${btn.dataset.yt}?autoplay=1&rel=0&modestbranding=1&color=white&playsinline=1" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
   });
 
-  // ── persistent "tune in" radio player ──
+  // ── persistent broadcast dock (transport bar) ──
   const radio = CONFIG.radio || {};
-  const launch = $("#radioLaunch"), panel = $("#radioPanel"), rframe = $("#radioFrame");
+  const dock = $("#dock"), launch = $("#radioLaunch"), rframe = $("#radioFrame");
   if (!radio.enabled || !radio.embedUrl){
-    if (launch) launch.style.display = "none";
+    if (dock) dock.style.display = "none";
+    document.body.classList.add("no-dock");
   } else {
-    const f = radio.frequency || "87.7";
-    $("#radioFreq").textContent = f; $("#radioFreq2").textContent = f;
+    $("#radioFreq").textContent = radio.frequency || "87.7";
     rframe.style.height = (radio.height || 352) + "px";
-    const open = ()=>{
-      if (!rframe.src) rframe.src = radio.embedUrl;     // load (and start) only on first open
-      panel.classList.add("open"); panel.setAttribute("aria-hidden","false");
-      launch.classList.add("hidden");
+    const setOpen = (open)=>{
+      if (open && !rframe.src) rframe.src = radio.embedUrl;   // load (and start) only on first open
+      dock.classList.toggle("open", open);
+      launch.setAttribute("aria-expanded", open ? "true" : "false");
+      launch.querySelector(".dock-toggle-t").textContent = open ? "Close" : "Tune In";
     };
-    const close = ()=>{                                  // minimise — keeps playing in the background
-      panel.classList.remove("open"); panel.setAttribute("aria-hidden","true");
-      launch.classList.remove("hidden");
-    };
-    launch.addEventListener("click", open);
-    $("#radioClose").addEventListener("click", close);
-    document.addEventListener("keydown", e=>{ if (e.key==="Escape" && panel.classList.contains("open")) close(); });
+    launch.addEventListener("click", ()=> setOpen(!dock.classList.contains("open")));
+    document.addEventListener("keydown", e=>{ if (e.key==="Escape" && dock.classList.contains("open")) setOpen(false); });
   }
 
   // ── mailing list submit (validate, confirm, post to hidden sink) ──
