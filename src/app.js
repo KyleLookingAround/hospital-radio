@@ -86,7 +86,7 @@ function showRow(s, archived){
       ${s.note?`<div class="note">${esc(s.note)}</div>`:""}
       ${archived && Array.isArray(s.setlist) && s.setlist.length ? `<details class="setlist">
         <summary>Setlist <span class="n">${s.setlist.length}</span></summary>
-        <ol>${s.setlist.map(song=>`<li>${esc(song)}</li>`).join("")}</ol>
+        <ol>${s.setlist.map(song=>`<li>${hasLyrics(song)?`<a href="#/lyrics/${slug(song)}">${esc(song)}</a>`:esc(song)}</li>`).join("")}</ol>
       </details>` : ""}
       ${s.example?`<span class="stamp eg">Example — delete me</span>`:""}
     </div>
@@ -281,6 +281,26 @@ function viewListen(){
 /* ───────────────────────── lyrics ───────────────────────── */
 const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 
+/* does a setlist/title have its own lyrics page? */
+const hasLyrics = title => (CONFIG.songs||[]).some(x => slug(x.title) === slug(title));
+
+/* render a lyric body into verse blocks — highlights the repeated
+   chorus and mutes parenthetical backing lines */
+function renderLyrics(text){
+  const stanzas = String(text||"").replace(/\r\n/g,"\n").trim().split(/\n[ \t]*\n/);
+  const norm = t => t.toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+  const counts = {};
+  stanzas.forEach(st => { const k = norm(st); if (k) counts[k] = (counts[k]||0) + 1; });
+  return stanzas.map(st => {
+    const lines = st.split("\n");
+    const chorus = lines.length > 1 && counts[norm(st)] > 1;
+    const body = lines.map(ln =>
+      /^\(.*\)$/.test(ln.trim()) ? `<span class="bk">${esc(ln)}</span>` : esc(ln)
+    ).join("\n");
+    return `<div class="verse${chorus ? " chorus" : ""}">${body}</div>`;
+  }).join("");
+}
+
 function viewLyrics(){
   const songs = CONFIG.songs || [];
   if (!songs.length){
@@ -303,16 +323,26 @@ function viewLyrics(){
 }
 
 function viewLyric(s){
-  const back = `<a class="lyric-back" href="#/lyrics">← all lyrics</a>`;
+  const songs = CONFIG.songs || [];
+  const i = songs.findIndex(x => slug(x.title) === slug(s.title));
+  const prev = i > 0 ? songs[i-1] : null;
+  const next = i >= 0 && i < songs.length-1 ? songs[i+1] : null;
+  const plays = (CONFIG.shows||[]).filter(sh =>
+    Array.isArray(sh.setlist) && sh.setlist.some(t => slug(t) === slug(s.title))).length;
+  const meta = [s.type||"Single", s.year].filter(Boolean).join(" · ");
+  const nav = (prev || next) ? `<nav class="lyric-nav" data-reveal>
+    ${prev?`<a class="ln-prev" href="#/lyrics/${slug(prev.title)}"><span class="d">← Previous</span><span class="t">${esc(prev.title)}</span></a>`:`<span></span>`}
+    ${next?`<a class="ln-next" href="#/lyrics/${slug(next.title)}"><span class="d">Next →</span><span class="t">${esc(next.title)}</span></a>`:`<span></span>`}
+  </nav>` : "";
   return `
   <section class="wrap section">
-    ${back}
+    <a class="lyric-back" href="#/lyrics">← all lyrics</a>
     <h1 class="lyric-title" data-reveal>${esc(s.title).replace(/\.$/,'<span class="dot">.</span>')}</h1>
-    <div class="lyric-meta" data-reveal>${esc([s.type||"Single", s.year].filter(Boolean).join(" · "))}</div>
+    <div class="lyric-meta" data-reveal>${esc(meta)}${plays?` <span class="plays">· played live ${plays}×</span>`:""}</div>
     ${ekg()}
-    <div class="lyrics-body" data-reveal>${esc(s.lyrics||"")}</div>
-    ${s.listen?`<a class="btn solid" data-reveal href="${esc(s.listen)}" target="_blank" rel="noopener">▶ Listen</a> `:""}
-    <a class="btn" data-reveal href="#/lyrics">← all lyrics</a>
+    ${s.listen?`<div class="lyric-player" data-reveal>${videoPlayer({url:s.listen,title:"Watch the video",type:"",year:""})}</div>`:""}
+    <div class="lyrics-body" data-reveal>${renderLyrics(s.lyrics)}</div>
+    ${nav}
   </section>`;
 }
 

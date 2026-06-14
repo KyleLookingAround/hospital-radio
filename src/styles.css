@@ -495,9 +495,23 @@ body.intro-on{ overflow:hidden; }
 .lyric-title{ font-size:clamp(44px,9vw,84px); font-weight:340; letter-spacing:-.04em; line-height:.92; margin:18px 0 6px; }
 .lyric-title .dot{ color:var(--rose); }
 .lyric-meta{ font-family:var(--mono); font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--rose); }
-.lyrics-body{ max-width:560px; margin:34px 0; font-family:var(--serif); font-size:clamp(19px,2.6vw,23px); line-height:1.95;
-  color:var(--muted); white-space:pre-line; }
-.lyrics-body::first-line{ color:var(--ink); }
+.lyric-meta .plays{ color:var(--soft); }
+.lyric-player{ max-width:640px; margin:28px 0 6px; }
+.lyrics-body{ max-width:560px; margin:30px 0; font-family:var(--serif); font-size:clamp(19px,2.6vw,23px); line-height:1.95;
+  color:var(--muted); }
+.lyrics-body .verse{ white-space:pre-line; margin:0 0 1.5em; }
+.lyrics-body .verse:last-child{ margin-bottom:0; }
+.lyrics-body .verse.chorus{ color:var(--ink); border-left:2px solid color-mix(in srgb,var(--rose) 50%,transparent); padding-left:20px; }
+.lyrics-body .bk{ color:var(--soft); font-size:.8em; font-style:italic; }
+.lyric-nav{ display:flex; justify-content:space-between; gap:18px; margin:46px 0 0; padding-top:22px; border-top:1px solid var(--line); }
+.lyric-nav a{ display:flex; flex-direction:column; gap:5px; max-width:47%; }
+.lyric-nav .ln-next{ text-align:right; margin-left:auto; }
+.lyric-nav .d{ font-family:var(--mono); font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:var(--soft); transition:.2s; }
+.lyric-nav .t{ font-family:var(--serif); font-size:clamp(18px,3vw,22px); color:var(--ink); transition:.2s; }
+.lyric-nav a:hover .t, .lyric-nav a:hover .d{ color:var(--rose); }
+/* lyrics linked from a setlist */
+.setlist a{ color:var(--ink); text-decoration:none; border-bottom:1px solid color-mix(in srgb,var(--rose) 40%,transparent); transition:color .2s; }
+.setlist a:hover{ color:var(--rose); border-color:var(--rose); }
 
 /* ---------- gallery + lightbox ---------- */
 .gallery{ column-count:3; column-gap:14px; }
