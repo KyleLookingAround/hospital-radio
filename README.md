@@ -1,9 +1,9 @@
 # Hospital Radio. — website
 
 The official site for Hospital Radio., a Manchester midwest-emo four-piece.
-A grain-soaked broadcast: shows, releases, an in-page radio player, lyrics,
-photos, a mailing list and a press kit — all driven from a few plain-text
-content files so anyone can update it.
+A grain-soaked broadcast: shows, releases, a docked radio player, lyrics,
+photos and a press kit — all driven from a few plain-text content files so
+anyone can update it.
 
 **Live site: https://kylelookingaround.github.io/hospital-radio/**
 
@@ -21,8 +21,8 @@ You only ever touch the **`content/`** folder. The three things you'll change:
 Open the file, copy one of the show blocks, paste it, and change the details.
 Dates go in quotes as `"YYYY-MM-DD"`. The site automatically files anything
 in the future under **Shows** and anything past under **Archive** — you never
-sort by hand. (Remember to delete the two `example:` shows once you've added
-real ones.)
+sort by hand. Past gigs can carry a `setlist:` list, which shows as an
+expandable setlist on the Archive.
 
 ### Add lyrics → `content/lyrics/`
 Each song is its own file. Copy `_TEMPLATE.md`, rename it (e.g.
@@ -110,9 +110,12 @@ never tangled together.
 - **Logo** — set `band.logoImage` in `site.yml` to a different file/URL any
   time (or `""` to use the typed wordmark, which always looks right).
 - **Share image** — link previews (WhatsApp, Discord, etc.) use
-  `assets/promo-bridge.jpg` via the `og:image`/`twitter:image` tags in
+  `assets/gallery-promo-1.jpg` via the `og:image`/`twitter:image` tags in
   `src/index.html`.
-- **Lyrics** are placeholder lorem ipsum until the band drops their real words
-  into the files in `content/lyrics/`.
+- **Lyrics** for the released singles (‘L.A.’ and ‘Dreaming’) are in
+  `content/lyrics/`; add a file per song as new ones come out.
+- **Mailing list** — the sign-up section is currently hidden on the home page.
+  Its config still lives in `site.yml` (`mailingList:`); re-enable it by adding
+  `mailingForm()` back to `viewHome` in `src/app.js`.
 - **Custom domain** — add a `CNAME` file (or set it in Settings → Pages) when
   you've got one.
