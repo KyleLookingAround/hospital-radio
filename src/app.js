@@ -201,9 +201,7 @@ function viewHome(){
       ${CONFIG.links.merch?`<a class="btn red" href="${esc(CONFIG.links.merch)}" target="_blank" rel="noopener">Full store ↗</a>`:""}
     </div>
     <div class="grid merch-grid">${merch}</div>
-  </section>
-
-  ${mailingForm()}`;
+  </section>`;
 }
 
 function viewShows(){
