@@ -337,6 +337,7 @@ function viewLyric(s){
   </nav>` : "";
   return `
   <section class="wrap section">
+    <div class="kicker" data-reveal>Words</div>
     <a class="lyric-back" href="#/lyrics">← all lyrics</a>
     <h1 class="lyric-title" data-reveal>${esc(s.title).replace(/\.$/,'<span class="dot">.</span>')}</h1>
     <div class="lyric-meta" data-reveal>${esc(meta)}${plays?` <span class="plays">· played live ${plays}×</span>`:""}</div>
