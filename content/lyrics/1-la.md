@@ -4,22 +4,39 @@ year: "2026"
 listen: "https://youtu.be/OrpC1DCIOz0"
 order: 1
 ---
-Lorem ipsum dolor sit amet,
-consectetur adipiscing elit,
-sed do eiusmod tempor incididunt
-ut labore et dolore magna.
+Lonely roads they keep me home
+Cartons of cigarettes, so I'm not alone
+Days don't seem to open up round here
 
-Ut enim ad minim veniam,
-quis nostrud exercitation,
-ullamco laboris nisi
-ut aliquip ex ea.
+I lost my teeth three times this week
+It seems to be the end of every dream
+Sunshine on those brightest days can be haunted by the rain beneath
 
-So hold me in the static,
-lorem ipsum, faded grey —
-duis aute irure dolor,
-nulla pariatur, far away.
+Cause I'd drive to L.A. in the dark
+I won't take no side roads cause I'll fall apart
+Take me across the ocean for a week
 
-Excepteur sint occaecat,
-cupidatat non proident,
-sunt in culpa qui officia,
-deserunt mollit anim.
+Take the next left through Beverly Hills
+I'm worried about paying this month's bills
+City of Angels, maybe next year
+Next year!
+
+I gave up on church a thousand years before it worked
+I lose a friend every single day
+
+I see my dad in every flower
+In a vase, out of hours
+But he's still pushing daisies down the way
+
+Cause I'd drive to L.A. in the dark
+I won't take no side roads cause I'll fall apart
+Take me across the ocean for a week
+
+Take the next left through Beverly Hills
+I'm worried about paying this month's bills
+City of Angels, maybe next year
+Next year!
+
+Cause I'd drive
+
+To L.A.
