@@ -761,6 +761,10 @@ body.no-dock{ padding-bottom:0; }
   .dock-word, .dock-now{ display:none; }
   .dock-bar{ gap:12px; padding:0 12px; }
 }
+/* "radio" in the hospital radio. wordmark takes the accent colour */
+.wm-2{ color:var(--rose); }
+.foot-word .wm-2, .logo-fallback .wm-2, .dock-word .wm-2, .iword .wm-2{ color:var(--pink); }
+
 @media print{
   .dock{ display:none !important; } body{ padding-bottom:0 !important; }
   /* drop the editorial rail + console framing so the press kit prints clean */

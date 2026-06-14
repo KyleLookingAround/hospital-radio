@@ -169,7 +169,7 @@ function viewHome(){
     </div>
     <div class="logo-stage" id="logoStage" data-reveal>
       <img class="logo-img" id="logoImg" src="${esc(CONFIG.band.logoImage)}" alt="Hospital Radio.">
-      <h1 class="logo-fallback glitch">hospital radio<span class="dot">.</span></h1>
+      <h1 class="logo-fallback glitch">hospital <span class="wm-2">radio</span><span class="dot">.</span></h1>
     </div>
     <div class="hero-tag" data-reveal>${esc(CONFIG.band.tagline)}</div>
     <div class="hero-sub" data-reveal>${esc(CONFIG.band.scrawl)}</div>
@@ -481,7 +481,7 @@ function boot(){
   const memStr = mem.length>1 ? mem.slice(0,-1).join(", ")+" & "+mem.slice(-1) : (mem[0]||"");
   $("#footCred").textContent = memStr ? "an emo transmission from "+memStr : "an emo transmission";
   $("#footMeta").innerHTML =
-    `broadcasting from manchester<br>${esc(CONFIG.band.tagline)}<br>© ${new Date().getFullYear()} <span class="wordmark">hospital radio<span class="dot">.</span></span>`;
+    `broadcasting from manchester<br>${esc(CONFIG.band.tagline)}<br>© ${new Date().getFullYear()} <span class="wordmark">hospital <span class="wm-2">radio</span><span class="dot">.</span></span>`;
   $("#footSocials").innerHTML = socialList()
     .map(([n,u])=>`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(n)}</a>`).join("");
 
