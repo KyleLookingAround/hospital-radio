@@ -109,9 +109,9 @@ never tangled together.
   file in `assets/` and add a block in `site.yml` pointing at it.
 - **Logo** — set `band.logoImage` in `site.yml` to a different file/URL any
   time (or `""` to use the typed wordmark, which always looks right).
-- **Share image** — link previews (WhatsApp, Discord, etc.) use
-  `assets/gallery-promo-1.jpg` via the `og:image`/`twitter:image` tags in
-  `src/index.html`.
+- **Share image** — link previews (WhatsApp, Discord, etc.) use a dedicated
+  1200×630 card, `assets/og-image.jpg`, via the `og:image`/`twitter:image` tags
+  in `src/index.html`.
 - **Lyrics** for the released singles (‘L.A.’ and ‘Dreaming’) are in
   `content/lyrics/`; add a file per song as new ones come out.
 - **Mailing list** — the sign-up section is currently hidden on the home page.
