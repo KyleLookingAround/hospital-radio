@@ -25,7 +25,7 @@ import { transformSync } from 'esbuild';
 
 // The published URL — keep in sync with og:url/canonical in src/index.html.
 // (Both move to the custom domain when there is one.)
-const SITE_URL = 'https://kylelookingaround.github.io/hospital-radio/';
+const SITE_URL = 'https://hospitalradiofullstop.co.uk/';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const r = (...p) => join(root, ...p);
@@ -116,6 +116,7 @@ writeFileSync(r('dist/styles.css'), minify('styles.css', 'css'));
 writeFileSync(r('dist/app.js'), minify('app.js', 'js'));
 cpSync(r('src/404.html'), r('dist/404.html'));
 cpSync(r('src/site.webmanifest'), r('dist/site.webmanifest'));
+if (existsSync(r('src/CNAME'))) cpSync(r('src/CNAME'), r('dist/CNAME'));   // GitHub Pages custom domain
 if (existsSync(r('assets'))) cpSync(r('assets'), r('dist/assets'), { recursive: true });
 
 console.log(`✓ Built dist/  —  ${shows.length} shows · ${songs.length} songs · ${(site.gallery || []).length} photos`);

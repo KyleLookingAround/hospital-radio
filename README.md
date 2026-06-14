@@ -5,7 +5,7 @@ A grain-soaked broadcast: shows, releases, a docked radio player, lyrics,
 photos and a press kit — all driven from a few plain-text content files so
 anyone can update it.
 
-**Live site: https://kylelookingaround.github.io/hospital-radio/**
+**Live site: https://hospitalradiofullstop.co.uk/**
 
 It's a **static site**. A small build step turns the content files into a
 finished site in `dist/`, and GitHub Pages serves it. There's no database and
@@ -117,5 +117,7 @@ never tangled together.
 - **Mailing list** — the sign-up section is currently hidden on the home page.
   Its config still lives in `site.yml` (`mailingList:`); re-enable it by adding
   `mailingForm()` back to `viewHome` in `src/app.js`.
-- **Custom domain** — add a `CNAME` file (or set it in Settings → Pages) when
-  you've got one.
+- **Custom domain** — the site is configured for **hospitalradiofullstop.co.uk**
+  via `src/CNAME` (copied to `dist/` by the build) and the `SITE_URL` /
+  `og:url` / `canonical` values. Point the domain's DNS at GitHub Pages and tick
+  *Settings → Pages → Enforce HTTPS* to finish the switch.
