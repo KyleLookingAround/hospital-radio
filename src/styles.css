@@ -313,6 +313,32 @@ main{ position:relative; z-index:5; min-height:60vh; }
 .archive .show:hover{ opacity:1; }
 .archive .show .day{ color:var(--muted); }
 .aired{ position:absolute; right:6px; top:14px; font-family:var(--mono); font-size:9px; letter-spacing:.26em; color:var(--faint); border:1px solid var(--line-2); padding:2px 7px; border-radius:2px; transform:rotate(4deg); }
+/* expandable setlist on archived shows */
+.setlist{ margin-top:12px; }
+.setlist summary{
+  display:inline-flex; align-items:center; gap:8px; cursor:pointer; width:fit-content;
+  font-family:var(--mono); font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--rose); list-style:none; transition:color .2s;
+}
+.setlist summary::-webkit-details-marker{ display:none; }
+.setlist summary::before{ content:"▸"; font-size:9px; transition:transform .2s; }
+.setlist[open] summary::before{ transform:rotate(90deg); }
+.setlist summary:hover{ color:var(--rose-deep); }
+.setlist summary .n{
+  font-size:9px; letter-spacing:.1em; color:var(--soft);
+  border:1px solid var(--line-2); border-radius:2px; padding:1px 5px;
+}
+.setlist ol{
+  margin:12px 0 2px; padding:0; list-style:none; counter-reset:set;
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:4px 22px;
+}
+.setlist li{
+  counter-increment:set; font-family:var(--mono); font-size:12px; letter-spacing:.04em;
+  color:var(--ink); padding:3px 0; border-bottom:1px solid var(--line); display:flex; gap:10px;
+}
+.setlist li::before{
+  content:counter(set,decimal-leading-zero); color:var(--rose); opacity:.8; min-width:18px;
+}
 
 /* empty state */
 .empty{ text-align:center; padding:70px 20px; border:1px dashed var(--line-2); border-radius:6px; background:rgba(255,253,246,.4); }

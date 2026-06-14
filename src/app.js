@@ -84,6 +84,10 @@ function showRow(s, archived){
       <h3>${esc(s.venue)}</h3>
       <div class="sub">${esc(s.city||"")}${s.with?` &nbsp;·&nbsp; <span class="w">${esc(s.with)}</span>`:""}</div>
       ${s.note?`<div class="note">${esc(s.note)}</div>`:""}
+      ${archived && Array.isArray(s.setlist) && s.setlist.length ? `<details class="setlist">
+        <summary>Setlist <span class="n">${s.setlist.length}</span></summary>
+        <ol>${s.setlist.map(song=>`<li>${esc(song)}</li>`).join("")}</ol>
+      </details>` : ""}
       ${s.example?`<span class="stamp eg">Example — delete me</span>`:""}
     </div>
     ${act}
