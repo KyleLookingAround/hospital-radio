@@ -12,7 +12,7 @@ band:
   tagline: "Manchester · midwest emo"
   members: [Mike, Curtis, Russo, Tom]
   scrawl: "dead air never sounded so good"          # handwritten line under the logo
-  foundedRoman: "MMXXV"
+  foundedRoman: "MMXXIII"
   spotifyListeners: "157"                            # shown on the press page — update now and then
   # Hero logo image (the band's "Shade" graphic, hosted in this repo's
   # assets/ folder). Set to "" to show the typed wordmark instead (same as
@@ -26,7 +26,7 @@ band:
     - "‘L.A.’ — out now on all platforms"
     - "‘Dreaming’ — out now"
     - "new merch in the store"
-    - "broadcasting from manchester since MMXXV"
+    - "broadcasting from manchester since MMXXIII"
 
 # Your links. Leave any value as "" to hide it everywhere.
 links:
@@ -43,7 +43,7 @@ links:
 releases:
   - title: "L.A."
     type:  "Single"
-    year:  "2026"
+    year:  "2025"
     url:   "https://youtu.be/OrpC1DCIOz0"
     label: "Watch the video"
   - title: "Dreaming"

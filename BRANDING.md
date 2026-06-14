@@ -2,8 +2,8 @@
 
 *A grain-soaked midwest-emo broadcast from Manchester.*
 
-Hospital Radio. is a four-piece (Mike, Curtis, Russo, Tom), formed **MMXXV**
-(2025). The brand is built on one idea: the band as a **derelict in-hospital
+Hospital Radio. is a four-piece (Mike, Curtis, Russo, Tom), formed **MMXXIII**
+(2023). The brand is built on one idea: the band as a **derelict in-hospital
 radio station** — a lo-fi 87.7 FM transmission, heart-on-sleeve and a little
 broken. Everything (palette, type, motion, copy) serves that conceit.
 
@@ -122,7 +122,7 @@ Write like a late-night radio broadcast that's a bit in love and a bit falling
 apart. Warm, wry, lowercase, never corporate.
 
 **Lexicon (use these):** transmission · broadcast · on air · now broadcasting ·
-tune in · dead air · the booth · the dial · signal · 87.7 FM · est. MMXXV.
+tune in · dead air · the booth · the dial · signal · 87.7 FM · est. MMXXIII.
 Hospital nods are welcome but dry (the press kit is a "patient file", ref
 **HR-877**).
 
@@ -191,7 +191,7 @@ All of it respects `prefers-reduced-motion`.
 --scrawl:"Caveat",cursive;                       /* handwritten accents  */
 ```
 
-**Constants:** Name *Hospital Radio.* · Frequency *87.7 FM* · Founded *MMXXV* ·
+**Constants:** Name *Hospital Radio.* · Frequency *87.7 FM* · Founded *MMXXIII* ·
 From *Manchester* · Genre *midwest emo* · Tagline *"Manchester · midwest emo"* ·
 Scrawl *"dead air never sounded so good"*.
 
