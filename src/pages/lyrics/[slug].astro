@@ -1,0 +1,46 @@
+---
+import Base from '../../layouts/Base.astro';
+import Ekg from '../../components/Ekg.astro';
+import VideoPlayer from '../../components/VideoPlayer.astro';
+import { getSongs, getShows, renderLyrics, playedLive } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const songs = await getSongs();
+  return songs.map((song, i) => ({
+    params: { slug: song.slug },
+    props: { song, prev: i > 0 ? songs[i - 1] : null, next: i < songs.length - 1 ? songs[i + 1] : null },
+  }));
+}
+
+const { song, prev, next } = Astro.props;
+const { past, upcoming } = await getShows();
+const plays = playedLive(song.title, [...past, ...upcoming]);
+const meta = [song.type || 'Single', song.year].filter(Boolean).join(' · ');
+const titleHtml = song.title.endsWith('.')
+  ? `${song.title.slice(0, -1)}<span class="dot">.</span>`
+  : song.title;
+---
+
+<Base title={`${song.title} · Hospital Radio.`} description={`Lyrics — ${song.title} by Hospital Radio.`} nav="/lyrics" page={`lyrics/${song.slug}.html`}>
+
+<section class="wrap section">
+  <div class="kicker" data-reveal>Words</div>
+  <a class="lyric-back" href="/lyrics.html">← all lyrics</a>
+  <h1 class="lyric-title" data-reveal set:html={titleHtml} />
+  <div class="lyric-meta" data-reveal>{meta}{plays > 0 && <span class="plays"> · played live {plays}×</span>}</div>
+  <Ekg />
+  {song.listen && (
+    <div class="lyric-player" data-reveal>
+      <VideoPlayer title="Watch the video" url={song.listen} />
+    </div>
+  )}
+  <div class="lyrics-body" data-reveal set:html={renderLyrics(song.lyrics)} />
+  {(prev || next) && (
+    <nav class="lyric-nav" data-reveal>
+      {prev ? <a class="ln-prev" href={`/lyrics/${prev.slug}.html`}><span class="d">← Previous</span><span class="t">{prev.title}</span></a> : <span></span>}
+      {next ? <a class="ln-next" href={`/lyrics/${next.slug}.html`}><span class="d">Next →</span><span class="t">{next.title}</span></a> : <span></span>}
+    </nav>
+  )}
+</section>
+
+</Base>

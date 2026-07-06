@@ -1,0 +1,179 @@
+---
+/**
+ * The shared shell: head (meta/OG/JSON-LD), CRT intro, header nav, footer,
+ * the persistent "Tune In" broadcast dock and the gallery lightbox.
+ * Ported from the old src/index.html; every page renders inside this.
+ */
+import { getBand, getShows, socialList, jsonLd } from '../lib/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** which nav item is highlighted, e.g. "/shows" — "/" for home */
+  nav?: string;
+  /** the page's file name, e.g. "shows.html" — empty for the home page */
+  page?: string;
+}
+
+const SITE_URL = 'https://hospitalradiofullstop.co.uk/';
+const band = await getBand();
+const { upcoming } = await getShows();
+
+const {
+  title = 'Hospital Radio. — Manchester midwest emo',
+  description = 'Hospital Radio. — a midwest emo transmission from Manchester. Shows, releases, merch.',
+  nav = '/',
+  page = '',
+} = Astro.props;
+
+const pageUrl = SITE_URL + page;
+const socials = socialList(band.links);
+const members = band.members.map((n) => n.toLowerCase());
+const memStr = members.length > 1 ? members.slice(0, -1).join(', ') + ' & ' + members.slice(-1) : (members[0] || '');
+const radioOn = band.radio.enabled && band.radio.embedUrl;
+const navItems: [string, string, string][] = [
+  ['/', '/', 'Index'],
+  ['/shows', '/shows.html', 'Shows'],
+  ['/archive', '/archive.html', 'Archive'],
+  ['/listen', '/listen.html', 'Listen'],
+  ['/lyrics', '/lyrics.html', 'Lyrics'],
+  ['/photos', '/photos.html', 'Photos'],
+  ['/booking', '/booking.html', 'Booking'],
+];
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{title}</title>
+<meta name="description" content={description}>
+<meta name="theme-color" content="#F5E9D7">
+<meta name="color-scheme" content="light">
+<link rel="canonical" href={pageUrl}>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content={band.name}>
+<meta property="og:title" content={title}>
+<meta property="og:description" content={description}>
+<meta property="og:url" content={pageUrl}>
+<meta property="og:image" content={`${SITE_URL}assets/og-image.jpg`}>
+<meta property="og:image:secure_url" content={`${SITE_URL}assets/og-image.jpg`}>
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content={title}>
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content={title}>
+<meta name="twitter:description" content={description}>
+<meta name="twitter:image" content={`${SITE_URL}assets/og-image.jpg`}>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F5E9D7'/%3E%3Ccircle cx='16' cy='20' r='6' fill='%23DF8090'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="sitemap" href="/sitemap-index.xml">
+<link rel="preload" href="/assets/fonts/fraunces-300-900.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/ibmplexmono-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd(band, upcoming, SITE_URL)).replace(/</g, '\\u003c')} />
+<!-- old links used hash routes (/#/shows) — send them to the real pages -->
+<script is:inline>
+(function () {
+  var h = location.hash;
+  if (!h || h.indexOf('#/') !== 0) return;
+  var p = h.slice(2).replace(/\/+$/, '');
+  if (!p) { location.replace('/'); return; }
+  location.replace('/' + p + '.html');
+})();
+</script>
+</head>
+<body class={radioOn ? undefined : 'no-dock'}>
+{band.intro.enabled && (
+  <div id="intro" aria-hidden="true">
+    <div class="static"></div>
+    <div class="isweep"></div>
+    <div class="ibox">
+      <div class="iread" id="introRead">○&nbsp;&nbsp;scanning the dial…</div>
+      <div class="ifreq" id="introFreq">87.7 FM</div>
+      <div class="iword">hospital <span class="wm-2">radio</span><span class="dot">.</span></div>
+    </div>
+    <div class="ihint">tap to tune in</div>
+  </div>
+)}
+<div class="fx grain"></div>
+<div class="fx grain fine"></div>
+<div class="fx scan"></div>
+<div class="fx vignette"></div>
+<div class="leaks"></div>
+
+<header>
+  <div class="bar">
+    <a class="brand" href="/" aria-label="Hospital Radio. home">
+      <span class="word">hospital <span class="wm-2">radio</span><span class="dot">.</span></span>
+    </a>
+    <span class="onair"><span class="lamp"></span> On Air</span>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false"><span></span></button>
+    <nav id="nav">
+      {navItems.map(([route, href, label]) => (
+        <a href={href} class={nav === route ? 'active' : undefined}>{label}</a>
+      ))}
+      {band.links.merch && <a class="ext" href={band.links.merch} target="_blank" rel="noopener">Merch</a>}
+    </nav>
+  </div>
+</header>
+
+<main id="view">
+<slot />
+</main>
+
+<footer>
+  <div class="wrap foot-grid">
+    <div>
+      <div class="foot-word">hospital <span class="wm-2">radio</span><span class="dot">.</span></div>
+      <div class="foot-cred">{memStr ? `an emo transmission from ${memStr}` : 'an emo transmission'}</div>
+      <div class="foot-meta">broadcasting from manchester<br>{band.tagline}<br>© {new Date().getFullYear()} <span class="wordmark">hospital <span class="wm-2">radio</span><span class="dot">.</span></span></div>
+    </div>
+    <div class="socials">
+      {socials.map(([n, u]) => <a href={u} target="_blank" rel="noopener">{n}</a>)}
+    </div>
+  </div>
+  <nav class="foot-nav wrap" aria-label="Footer">
+    <a href="/">Index</a><a href="/shows.html">Shows</a><a href="/archive.html">Archive</a><a href="/listen.html">Listen</a><a href="/lyrics.html">Lyrics</a><a href="/photos.html">Photos</a><a href="/booking.html">For promoters</a>
+  </nav>
+</footer>
+
+<!-- hidden sink so the subscribe form posts without navigating away -->
+<iframe name="tuneSink" title="subscribe" style="display:none" aria-hidden="true"></iframe>
+
+<!-- persistent broadcast dock (transport bar) -->
+{radioOn && (
+  <div class="dock" id="dock" aria-label="Hospital Radio player" data-embed={band.radio.embedUrl}>
+    <div class="dock-embed">
+      <iframe id="radioFrame" title="Hospital Radio — now playing" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style={`height:${band.radio.height}px`}></iframe>
+    </div>
+    <div class="dock-bar">
+      <div class="dock-id">
+        <span class="freqdot"></span>
+        <span class="dock-freq"><b>{band.radio.frequency}</b><span>FM</span></span>
+        <span class="wordmark dock-word">hospital <span class="wm-2">radio</span><span class="dot">.</span></span>
+      </div>
+      <div class="dock-dial" aria-hidden="true"><span class="needle"></span></div>
+      <div class="dock-now"><span class="bars"><i></i><i></i><i></i><i></i></span> now broadcasting</div>
+      <button class="dock-toggle" id="radioLaunch" aria-expanded="false">
+        <span class="ring"></span> <span class="dock-toggle-t">Tune In</span>
+      </button>
+    </div>
+  </div>
+)}
+
+<!-- gallery lightbox -->
+<div id="lightbox" class="lightbox" aria-hidden="true" role="dialog" aria-label="Photo viewer">
+  <button class="lb-close" id="lbClose" aria-label="Close">✕</button>
+  <button class="lb-nav lb-prev" id="lbPrev" aria-label="Previous photo">‹</button>
+  <img class="lb-img" id="lbImg" alt="">
+  <button class="lb-nav lb-next" id="lbNext" aria-label="Next photo">›</button>
+  <div class="lb-cap" id="lbCap"></div>
+</div>
+
+<script src="../scripts/app.ts"></script>
+</body>
+</html>

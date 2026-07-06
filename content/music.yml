@@ -1,0 +1,36 @@
+# ════════════════════════════════════════════════════════════════════
+#  HOSPITAL RADIO. · music (releases, extra videos, merch teaser)
+# ════════════════════════════════════════════════════════════════════
+
+# Music videos shown on the home + Listen pages (any YouTube link works).
+releases:
+  - title: "L.A."
+    type:  "Single"
+    year:  "2025"
+    url:   "https://youtu.be/OrpC1DCIOz0"
+    label: "Watch the video"
+  - title: "Dreaming"
+    type:  "Single"
+    year:  "2025"
+    url:   "https://youtu.be/FF8WYLawQEc"
+    label: "Watch the video"
+
+# Extra videos (interviews, sessions…) shown on the Listen page.
+videos:
+  - title: "Interview w/ Showing Up!"
+    url:   "https://youtu.be/StTJi448Njs"
+
+# Merch teaser — these links open your Big Cartel store.
+merchItems:
+  - name:  "Spaghetti Head Sergio Tee"
+    price: "£25.00"
+    url:   "https://hospitalradiofullstop.bigcartel.com/product/spaghetti-head-sergio-tee"
+  - name:  "Running Man T-Shirt"
+    price: "£25.00"
+    url:   "https://hospitalradiofullstop.bigcartel.com/product/running-man-t-shirt"
+  - name:  "Weird Items Tee"
+    price: "£25.00"
+    url:   "https://hospitalradiofullstop.bigcartel.com/product/stranger-things-tee"
+  - name:  "Radio Guy Sticker"
+    price: "£3.00"
+    url:   "https://hospitalradiofullstop.bigcartel.com/product/radio-guy-sticker"

@@ -1,0 +1,41 @@
+---
+/**
+ * A click-to-play YouTube facade — loads nothing until tapped (app.ts swaps
+ * in the youtube-nocookie iframe on click). Non-YouTube URLs fall back to a
+ * plain link card.
+ */
+import { ytId } from '../lib/site';
+
+interface Props {
+  title: string;
+  url: string;
+  type?: string;
+  year?: string;
+}
+
+const { title, url, type = '', year = '' } = Astro.props;
+const id = ytId(url);
+const meta = [type, year].filter(Boolean).join(' · ');
+const thumb = id ? `https://i.ytimg.com/vi/${id}/maxresdefault.jpg` : '';
+const fallback = id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : '';
+---
+
+<figure class="video" data-reveal>
+  <div class="video-frame">
+    {id ? (
+      <button class="video-fac" data-yt={id} aria-label={`Play ${title}`}>
+        <img class="thumb" src={thumb} data-fallback={fallback} alt="">
+        <span class="rec">Play</span>
+        <span class="play-big"><span class="tri"></span></span>
+      </button>
+    ) : (
+      <a class="video-fac" href={url} target="_blank" rel="noopener">
+        <span class="play-big"><span class="tri"></span></span>
+      </a>
+    )}
+  </div>
+  <figcaption>
+    <span class="vt">{title}</span>
+    {meta && <span class="vm">{meta}</span>}
+  </figcaption>
+</figure>

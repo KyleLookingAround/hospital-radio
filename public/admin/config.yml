@@ -1,0 +1,158 @@
+# Sveltia CMS configuration — maps the site's content files to edit forms.
+# Docs: https://github.com/sveltia/sveltia-cms
+backend:
+  name: github
+  repo: KyleLookingAround/hospital-radio
+  branch: main
+
+media_folder: public/assets   # where uploaded photos land in the repo
+public_folder: /assets        # how the content files refer to them
+
+site_url: https://hospitalradiofullstop.co.uk/
+display_url: https://hospitalradiofullstop.co.uk/
+
+collections:
+  - name: site
+    label: The Site
+    files:
+
+      - name: band
+        label: "The band (identity, links, radio, mailing list)"
+        file: content/band.yml
+        fields:
+          - { name: name, label: "Band name", widget: string }
+          - { name: tagline, label: "Tagline", widget: string }
+          - name: members
+            label: "Members"
+            widget: list
+            field: { name: member, label: Member, widget: string }
+          - { name: scrawl, label: "Handwritten line under the logo", widget: string }
+          - { name: foundedRoman, label: "Founded (roman numerals)", widget: string }
+          - { name: spotifyListeners, label: "Spotify monthly listeners (press page)", widget: string }
+          - { name: logoImage, label: "Hero logo image (blank = typed wordmark)", widget: image, required: false }
+          - name: ticker
+            label: "Home-page ticker headlines"
+            widget: list
+            field: { name: line, label: Line, widget: string }
+          - { name: bio, label: "Bio (Listen page)", widget: text }
+          - name: links
+            label: "Links (blank = hidden)"
+            widget: object
+            fields:
+              - { name: spotify, label: "Spotify", widget: string, required: false }
+              - { name: appleMusic, label: "Apple Music", widget: string, required: false }
+              - { name: youtube, label: "YouTube", widget: string, required: false }
+              - { name: tiktok, label: "TikTok", widget: string, required: false }
+              - { name: instagram, label: "Instagram", widget: string, required: false }
+              - { name: facebook, label: "Facebook", widget: string, required: false }
+              - { name: soundcloud, label: "SoundCloud", widget: string, required: false }
+              - { name: merch, label: "Merch store", widget: string, required: false }
+          - name: radio
+            label: "The 'Tune In' radio dock"
+            widget: object
+            fields:
+              - { name: enabled, label: "Enabled", widget: boolean, default: true }
+              - { name: frequency, label: "Frequency shown", widget: string, default: "87.7" }
+              - { name: embedUrl, label: "Spotify embed URL", widget: string, required: false }
+              - { name: height, label: "Player height (352 = full list, 152 = compact)", widget: number, default: 352 }
+          - name: mailingList
+            label: "Mailing list (blank action = off)"
+            widget: object
+            fields:
+              - { name: action, label: "Form provider URL", widget: string, required: false, default: "" }
+              - { name: fieldName, label: "Email field name", widget: string, default: "email" }
+          - name: intro
+            label: "CRT intro on first visit"
+            widget: object
+            fields:
+              - { name: enabled, label: "Enabled", widget: boolean, default: true }
+
+      - name: music
+        label: "Music (releases, videos, merch)"
+        file: content/music.yml
+        fields:
+          - name: releases
+            label: "Releases (music videos)"
+            widget: list
+            fields:
+              - { name: title, label: "Title", widget: string }
+              - { name: type, label: "Type", widget: string, default: "Single" }
+              - { name: year, label: "Year", widget: string }
+              - { name: url, label: "YouTube link", widget: string }
+              - { name: label, label: "Label text", widget: string, required: false }
+          - name: videos
+            label: "Extra videos (interviews, sessions…)"
+            widget: list
+            required: false
+            fields:
+              - { name: title, label: "Title", widget: string }
+              - { name: url, label: "YouTube link", widget: string }
+          - name: merchItems
+            label: "Merch teaser (first four show on the home page)"
+            widget: list
+            fields:
+              - { name: name, label: "Name", widget: string }
+              - { name: price, label: "Price", widget: string }
+              - { name: url, label: "Store link", widget: string }
+
+      - name: gallery
+        label: "Photos"
+        file: content/gallery.yml
+        fields:
+          - name: photos
+            label: "Photos"
+            widget: list
+            fields:
+              - { name: src, label: "Photo", widget: image }
+              - { name: caption, label: "Caption", widget: string, required: false }
+              - { name: credit, label: "Credit", widget: string, required: false }
+
+      - name: booking
+        label: "Press kit / booking"
+        file: content/booking.yml
+        fields:
+          - { name: email, label: "Booking email", widget: string, required: false }
+          - { name: contactUrl, label: "Contact URL (fallback)", widget: string, required: false }
+          - { name: pitch, label: "The pitch", widget: text }
+          - { name: forFansOf, label: "For fans of (blank = hidden)", widget: string, required: false }
+          - { name: stageNotes, label: "Stage notes (blank = hidden)", widget: string, required: false }
+
+  - name: shows
+    label: Shows
+    files:
+      - name: shows
+        label: "Tour dates (upcoming & played)"
+        file: content/shows.yml
+        fields:
+          - name: shows
+            label: "Shows"
+            widget: list
+            fields:
+              - { name: date, label: "Date", widget: string, hint: "YYYY-MM-DD — the site sorts upcoming vs archive for you" }
+              - { name: venue, label: "Venue", widget: string }
+              - { name: city, label: "City", widget: string }
+              - { name: with, label: "With / support (optional)", widget: string, required: false }
+              - { name: tickets, label: "Tickets link (optional)", widget: string, required: false }
+              - { name: soldOut, label: "Sold out?", widget: boolean, required: false, default: false }
+              - { name: note, label: "Handwritten note (optional)", widget: string, required: false }
+              - name: setlist
+                label: "Setlist (optional, shows on the archive)"
+                widget: list
+                required: false
+                field: { name: song, label: Song, widget: string }
+
+  - name: lyrics
+    label: Lyrics
+    folder: content/lyrics
+    extension: md
+    format: frontmatter
+    create: true
+    identifier_field: title
+    filter: { field: title, pattern: ".+" }
+    fields:
+      - { name: title, label: "Song title", widget: string }
+      - { name: type, label: "Type", widget: string, required: false, default: "Single" }
+      - { name: year, label: "Year", widget: string, required: false }
+      - { name: listen, label: "YouTube link (optional)", widget: string, required: false }
+      - { name: order, label: "Order in the list", widget: number, default: 1 }
+      - { name: body, label: "The words", widget: text, hint: "One line per line; blank line between verses. Repeated verses are styled as the chorus automatically; (parenthetical) lines read as backing vocals." }
