@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import { getBand, getBooking } from '../lib/site';
+
+const band = await getBand();
+const b = await getBooking();
+const members = band.members.join(' · ');
+const contact = b.email
+  ? `mailto:${b.email}?subject=Booking%20enquiry%20—%20Hospital%20Radio.`
+  : (b.contactUrl || band.links.instagram || '#');
+const contactLabel = b.email ? b.email : 'Get in touch';
+const wordmarkHtml = band.name.endsWith('.')
+  ? `${band.name.slice(0, -1)}<span class="dot">.</span>`
+  : band.name;
+---
+
+<Base title="For promoters · Hospital Radio." description="Hospital Radio. press kit — booking, line-up, links and photos for promoters." nav="/booking" page="booking.html">
+
+<section class="wrap section">
+  <div class="kicker" data-reveal>Press kit · for promoters</div>
+  <div class="sec-head" data-reveal style="margin-top:14px"><h2 class="wordmark" set:html={wordmarkHtml} /></div>
+  <p class="promo-sub" data-reveal>{band.tagline} · est. {band.foundedRoman}</p>
+  <div class="bio" data-reveal style="margin:18px 0 30px"><p style="font-size:20px;line-height:1.65;color:var(--muted)">{b.pitch || band.bio}</p></div>
+
+  <div class="dossier" data-reveal>
+    <div class="d-top"><span class="tag">● Patient file — press</span><span class="ref">REF · HR-877 · {band.foundedRoman}</span></div>
+    <dl style="margin:0">
+      <div class="d-row"><dt>Origin</dt><dd>Manchester, UK</dd></div>
+      <div class="d-row"><dt>Genre</dt><dd>{band.tagline}</dd></div>
+      {members && <div class="d-row"><dt>Line-up</dt><dd><span class="mono">{members}</span></dd></div>}
+      {band.foundedRoman && <div class="d-row"><dt>Formed</dt><dd>{band.foundedRoman}</dd></div>}
+      {b.forFansOf && <div class="d-row"><dt>For fans of</dt><dd><span class="mono">{b.forFansOf}</span></dd></div>}
+      {band.spotifyListeners && <div class="d-row"><dt>Spotify</dt><dd><span class="mono">{band.spotifyListeners} monthly listeners</span></dd></div>}
+      {b.stageNotes && <div class="d-row"><dt>Stage notes</dt><dd><span class="mono">{b.stageNotes}</span></dd></div>}
+      {(b.email || b.contactUrl) && (
+        <div class="d-row"><dt>Booking</dt><dd>{b.email
+          ? <a class="mono" href={`mailto:${b.email}`}>{b.email}</a>
+          : <a class="mono" href={b.contactUrl} target="_blank" rel="noopener">{b.contactUrl}</a>}</dd></div>
+      )}
+    </dl>
+  </div>
+
+  <div class="d-assets" data-reveal>
+    {b.email
+      ? <a class="btn solid" href={contact}>✉ Book us · {contactLabel}</a>
+      : <a class="btn solid" href={contact} target="_blank" rel="noopener">✉ Book us · {contactLabel}</a>}
+    {band.logoImage && <a class="btn" href={band.logoImage} target="_blank" rel="noopener" download>↓ Logo</a>}
+    <a class="btn" href="/photos.html">Press photos</a>
+    {band.links.spotify && <a class="btn" href={band.links.spotify} target="_blank" rel="noopener">Spotify ↗</a>}
+    {band.links.youtube && <a class="btn" href={band.links.youtube} target="_blank" rel="noopener">YouTube ↗</a>}
+    <button class="btn" type="button" data-print>⎙ Print / Save as PDF</button>
+  </div>
+</section>
+
+</Base>

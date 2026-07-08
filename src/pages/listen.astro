@@ -1,0 +1,49 @@
+---
+import Base from '../layouts/Base.astro';
+import Ekg from '../components/Ekg.astro';
+import VideoPlayer from '../components/VideoPlayer.astro';
+import { getBand, getMusic, socialList } from '../lib/site';
+
+const band = await getBand();
+const music = await getMusic();
+const plats = socialList(band.links)
+  .filter(([n]) => ['Spotify', 'Apple Music', 'YouTube', 'SoundCloud'].includes(n));
+---
+
+<Base title="Listen · Hospital Radio." description="Hospital Radio. on every platform — releases, music videos and where to stream." nav="/listen" page="listen.html">
+
+<section class="wrap section">
+  <div class="kicker" data-reveal>On the dial</div>
+  <div class="sec-head" data-reveal style="margin-top:16px"><h2>Listen <em>in</em></h2></div>
+  <div class="bio" data-reveal style="margin-bottom:34px">
+    <p class="pq">Now broadcasting<span class="dot">.</span></p>
+    <p style="margin-top:22px">{band.bio}</p>
+    {band.members.length > 0 && (
+      <p style="font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--rose);margin-top:20px">Line-up · {band.members.join('  ·  ')}</p>
+    )}
+  </div>
+  <div class="grid plat-grid">
+    {plats.map(([n, u]) => (
+      <a class="plat" data-reveal href={u} target="_blank" rel="noopener"><span class="nm">{n}</span><span class="go">Open ↗</span></a>
+    ))}
+  </div>
+</section>
+
+<Ekg />
+
+<section class="wrap section">
+  <div class="sec-head" data-reveal><h2>Music <em>videos</em></h2></div>
+  <div class="grid vid-grid">
+    {music.releases.map((r) => <VideoPlayer title={r.title} url={r.url} type={r.type} year={r.year} />)}
+  </div>
+  {music.videos.length > 0 && (
+    <>
+      <div class="sec-head" data-reveal style="margin-top:50px"><h2 style="font-size:30px">Watch</h2></div>
+      <div class="grid vid-grid">
+        {music.videos.map((v) => <VideoPlayer title={v.title} url={v.url} />)}
+      </div>
+    </>
+  )}
+</section>
+
+</Base>

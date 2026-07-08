@@ -1,0 +1,25 @@
+---
+/**
+ * The "join the broadcast" mailing-list section. Inert (with a friendly
+ * note) until a provider's form action URL is set in content/band.yml.
+ */
+import { getBand } from '../lib/site';
+
+const band = await getBand();
+const m = band.mailingList;
+const on = !!m.action;
+---
+
+<section class="wrap section">
+  <div class="tune" data-reveal>
+    <div class="tune-scrawl">don't miss a transmission</div>
+    <div class="kicker">Join the broadcast</div>
+    <h2>Tune <em>in</em>.</h2>
+    <p>New singles, show announcements and the occasional transmission from the booth — straight to your inbox. No noise, just the signal.</p>
+    <form class="tune-form" id="tuneForm" action={on ? m.action : undefined} method={on ? 'post' : undefined} target={on ? 'tuneSink' : undefined} data-connected={on ? '1' : '0'} novalidate>
+      <input type="email" name={m.fieldName || 'email'} id="tuneEmail" placeholder="you@example.com" autocomplete="email" required disabled={!on}>
+      <button class="btn solid" type="submit" disabled={!on}>Subscribe</button>
+    </form>
+    <div class={`tune-msg ${on ? '' : 'note'}`} id="tuneMsg" role="status">{on ? '' : "Mailing list isn't connected yet — drop your provider's form URL into the config to switch it on."}</div>
+  </div>
+</section>

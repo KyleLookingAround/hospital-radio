@@ -1,0 +1,99 @@
+---
+import Base from '../layouts/Base.astro';
+import Ekg from '../components/Ekg.astro';
+import VideoPlayer from '../components/VideoPlayer.astro';
+import MailingForm from '../components/MailingForm.astro';
+import { getBand, getMusic, getShows, MON, yearSuffix } from '../lib/site';
+
+const band = await getBand();
+const music = await getMusic();
+const { upcoming } = await getShows();
+const next = upcoming[0];
+const merch = music.merchItems.slice(0, 4);
+---
+
+<Base nav="/" page="">
+
+<section class="wrap hero">
+  <div class="rec-tag" data-reveal><span class="rdot"></span> REC · ON AIR</div>
+  <div class="freq" data-reveal>
+    <span><b>87.7</b> FM</span>
+    <span>EST. MANCHESTER · {band.foundedRoman}</span>
+    {next
+      ? <span class="up-next" data-date={next.date}>▸ UP NEXT · {String(next._d.getDate()).padStart(2, '0')} {MON[next._d.getMonth()]} · {next.venue}</span>
+      : <span>NOW BROADCASTING</span>}
+  </div>
+  <div class="logo-stage" id="logoStage" data-reveal>
+    {band.logoImage && <img class="logo-img" id="logoImg" src={band.logoImage} alt="Hospital Radio.">}
+    <h1 class="logo-fallback glitch">hospital <span class="wm-2">radio</span><span class="dot">.</span></h1>
+  </div>
+  <div class="hero-tag" data-reveal>{band.tagline}</div>
+  <div class="hero-sub" data-reveal>{band.scrawl}</div>
+
+  <div class="ticker" data-reveal>
+    <div class="ticker-row">
+      {band.ticker.map((t) => <><span>{t}</span><i>+</i></>)}
+      {band.ticker.map((t) => <><span>{t}</span><i>+</i></>)}
+    </div>
+  </div>
+
+  <div class="quick" data-reveal>
+    {band.links.spotify && <a class="btn solid" href={band.links.spotify} target="_blank" rel="noopener">▶ Listen now</a>}
+    <a class="btn" href="/shows.html">Shows</a>
+    {band.links.merch && <a class="btn red" href={band.links.merch} target="_blank" rel="noopener">Merch ↗</a>}
+  </div>
+</section>
+
+<Ekg />
+
+<section class="wrap section">
+  <div class="sec-head" data-reveal>
+    <h2>Latest <em>transmissions</em></h2>
+    <a class="btn" href="/listen.html">All releases →</a>
+  </div>
+  <div class="grid vid-grid">
+    {music.releases.map((r) => <VideoPlayer title={r.title} url={r.url} type={r.type} year={r.year} />)}
+  </div>
+</section>
+
+{next && (
+  <div class="section">
+    <div class="kicker" data-reveal>Next transmission</div>
+    <div class="teaser" data-reveal style="margin-top:24px" data-date={next.date}>
+      <div class="when">
+        <div class="d">{String(next._d.getDate()).padStart(2, '0')}</div>
+        <div class="m">{MON[next._d.getMonth()]}{yearSuffix(next._d)}</div>
+      </div>
+      <div class="info">
+        <h3>{next.venue}</h3>
+        <div class="loc">{next.city || ''}{next.with ? ` · ${next.with}` : ''}</div>
+      </div>
+      <div>{next.soldOut
+        ? <span class="soldout">Sold out</span>
+        : next.tickets
+          ? <a class="btn solid" href={next.tickets} target="_blank" rel="noopener">Get tickets</a>
+          : <a class="btn" href="/shows.html">All shows</a>}</div>
+    </div>
+  </div>
+)}
+
+<section class="wrap section">
+  <div class="sec-head" data-reveal>
+    <h2>Wear the <em>signal</em></h2>
+    {band.links.merch && <a class="btn red" href={band.links.merch} target="_blank" rel="noopener">Full store ↗</a>}
+  </div>
+  <div class="grid merch-grid">
+    {merch.map((m) => (
+      <a class="mitem" data-reveal href={m.url} target="_blank" rel="noopener">
+        <div class="tag">Merch</div>
+        <h3>{m.name}</h3>
+        <div class="price">{m.price}</div>
+        <div class="shop">Shop ↗</div>
+      </a>
+    ))}
+  </div>
+</section>
+
+{band.mailingList.action && <MailingForm />}
+
+</Base>

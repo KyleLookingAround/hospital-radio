@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import ShowRow from '../components/ShowRow.astro';
+import { getShows } from '../lib/site';
+
+const { upcoming } = await getShows();
+---
+
+<Base title="Shows · Hospital Radio." description="Upcoming Hospital Radio. shows — the broadcast schedule." nav="/shows" page="shows.html">
+
+<section class="wrap section">
+  <div class="kicker" data-reveal>Broadcast schedule</div>
+  <div class="sec-head" data-reveal style="margin-top:16px">
+    <h2>Upcoming <em>shows</em></h2>
+    <span style="font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:var(--soft)" data-show-count>{upcoming.length} SCHEDULED</span>
+  </div>
+  {upcoming.length > 0 ? (
+    <div class="shows">
+      {upcoming.map((s) => <ShowRow show={s} />)}
+    </div>
+  ) : (
+    <div class="empty" data-reveal>
+      <div class="big">Dead air.</div>
+      <div class="small">No shows on the schedule right now</div>
+      <div class="static">…but we'll be back on the airwaves soon</div>
+    </div>
+  )}
+  {upcoming.length > 0 && (
+    <div class="empty" hidden data-empty-fallback>
+      <div class="big">Dead air.</div>
+      <div class="small">No shows on the schedule right now</div>
+      <div class="static">…but we'll be back on the airwaves soon</div>
+    </div>
+  )}
+  <p style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--faint);margin-top:30px">
+    Looking for a past gig? → <a href="/archive.html" style="color:var(--rose)">the archive</a>
+  </p>
+</section>
+
+</Base>

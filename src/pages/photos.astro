@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import { getGallery } from '../lib/site';
+
+const photos = await getGallery();
+---
+
+<Base title="Photos · Hospital Radio." description="Transmissions — photos of Hospital Radio. live and off duty." nav="/photos" page="photos.html">
+
+<section class="wrap section">
+  <div class="kicker" data-reveal>Transmissions</div>
+  <div class="sec-head" data-reveal style="margin-top:16px">
+    <h2>Photos</h2>
+    {photos.length > 0 && <span style="font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:var(--soft)">TAP TO ENLARGE</span>}
+  </div>
+  {photos.length > 0 ? (
+    <div class="gallery" data-reveal>
+      {photos.map((p, i) => (
+        <button class="ph" data-i={i} aria-label={`View photo ${i + 1}`} data-cap={[p.caption, p.credit].filter(Boolean).join('  ·  ')}>
+          <img src={p.src} alt={p.caption || 'Hospital Radio.'} loading="lazy">
+          {(p.caption || p.credit) && <span class="cap">{[p.caption, p.credit].filter(Boolean).join(' · ')}</span>}
+        </button>
+      ))}
+    </div>
+  ) : (
+    <div class="empty" data-reveal><div class="big">No photos yet.</div><div class="small">Add image files and list them in the gallery config</div></div>
+  )}
+</section>
+
+</Base>

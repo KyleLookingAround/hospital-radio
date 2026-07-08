@@ -1,12 +1,18 @@
 name: Build & deploy
 
 # Builds the site and publishes it to GitHub Pages on every push to main.
-# (Editing content on GitHub.com counts as a push — so the band can update
-#  shows/lyrics in the browser and the site rebuilds itself.)
+# (Saving in the /admin/ editor or editing content/*.yml on GitHub.com counts
+#  as a push — so the site rebuilds itself after every content change. If the
+#  build fails, the previously deployed site stays live and GitHub emails the
+#  committer.)
+# The weekly schedule keeps the upcoming/archive show split fresh even when
+# nothing has been edited for a while.
 
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: '0 4 * * 1'   # Mondays 04:00 UTC — refresh the show-date split
   workflow_dispatch:
 
 permissions:
@@ -22,14 +28,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
       - run: npm ci
       - run: npm run build
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: dist
 
@@ -41,4 +47,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

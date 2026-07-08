@@ -1,47 +1,46 @@
 # Hospital Radio. — website
 
-The official site for Hospital Radio., a Manchester midwest-emo four-piece.
-A grain-soaked broadcast: shows, releases, a docked radio player, lyrics,
-photos and a press kit — all driven from a few plain-text content files so
-anyone can update it.
+The site for **Hospital Radio.**, a midwest-emo four-piece from Manchester.
+Shows, the archive (with setlists), releases, lyrics, photos and a press kit —
+all driven from a handful of plain-text content files so anyone in the band
+can update it.
 
 **Live site: https://hospitalradiofullstop.co.uk/**
 
-It's a **static site**. A small build step turns the content files into a
-finished site in `dist/`, and GitHub Pages serves it. There's no database and
-nothing to run in the background.
+It's a **static site**, built with [Astro](https://astro.build) and served by
+GitHub Pages. Every page is real HTML (search engines can finally read the
+shows and lyrics), with a light JavaScript layer on top for the CRT intro, the
+"Tune In" broadcast dock, click-to-play videos and the photo lightbox. The
+site works with JavaScript switched off.
 
 ---
 
 ## ✏️ Updating the site (no coding needed)
 
-You only ever touch the **`content/`** folder. The three things you'll change:
+**The easy way: the editor at [`/admin/`](https://hospitalradiofullstop.co.uk/admin/).**
+Every content file as a simple form — add a show, paste lyrics, upload photos.
+Hit **Save** and the site rebuilds and goes live a minute or two later.
 
-### Add or change a gig → `content/shows.yml`
-Open the file, copy one of the show blocks, paste it, and change the details.
-Dates go in quotes as `"YYYY-MM-DD"`. The site automatically files anything
-in the future under **Shows** and anything past under **Archive** — you never
-sort by hand. Past gigs can carry a `setlist:` list, which shows as an
-expandable setlist on the Archive.
+Signing in: you need a (free) GitHub account added as a **collaborator** on
+this repository, and a *classic* personal access token (GitHub → Settings →
+Developer settings → Tokens (classic) → Generate new token, tick the **repo**
+scope). Paste it into the editor's sign-in box once; it's remembered.
 
-### Add lyrics → `content/lyrics/`
-Each song is its own file. Copy `_TEMPLATE.md`, rename it (e.g.
-`3-new-song.md`), fill in the title/year/link at the top, and type the words
-below. That's it — it appears on the Lyrics page automatically.
+**The hands-on way:** edit the files in [`content/`](content/) on github.com:
 
-### Everything else → `content/site.yml`
-Band name, social links, releases, merch, the photo gallery, the radio
-player and the press-kit details all live here, each clearly labelled with a
-comment explaining what it does. Change the text inside the `"quotes"`, keep
-the labels and the indentation as they are.
+| File | What's in it |
+|---|---|
+| `content/shows.yml` | Tour dates — the file you'll edit most. The site sorts upcoming vs archive by date automatically. |
+| `content/lyrics/` | One markdown file per song (`_TEMPLATE.md` shows the format). Repeated verses style as the chorus automatically. |
+| `content/band.yml` | Name, members, ticker headlines, links, the radio dock, mailing list |
+| `content/music.yml` | Releases, extra videos, the merch teaser |
+| `content/gallery.yml` | Photos (files live in `public/assets/`) |
+| `content/booking.yml` | The press kit / booking page |
 
-> **Editing on github.com is the easy way:** open any file in the `content/`
-> folder, click the ✏️ pencil, make your change, and hit *Commit*. The site
-> rebuilds and goes live on its own a minute or two later.
-
-A couple of gentle rules so nothing breaks: keep dates inside quotes, use
-spaces (never tabs) for indentation, and line up the `-` and indentation in a
-list with the examples already there.
+**A safety net either way:** every edit is checked when the site rebuilds. If
+something's off, the build stops with a clear message and **the live site
+stays exactly as it was** — you'll get an email from GitHub saying the
+workflow failed, which just means the last edit didn't go live.
 
 ---
 
@@ -49,20 +48,21 @@ list with the examples already there.
 
 ```bash
 npm install      # one time
+npm run dev      # live-reloading dev server at http://localhost:4321
 npm run build    # writes the finished site to dist/
-npm run serve    # builds, then serves dist/ at http://localhost:5173
+npm run preview  # serves the built dist/
 ```
 
 ---
 
 ## 🚀 How it gets published
 
-Pushing to the `main` branch (including editing content on github.com) triggers
-the GitHub Actions workflow in `.github/workflows/deploy.yml`, which builds the
-site and deploys `dist/` to **GitHub Pages**.
-
-One-time setup: in the repo, go to **Settings → Pages → Build and deployment**
-and set **Source = "GitHub Actions"**.
+Pushing to `main` (including saving in `/admin/`) triggers
+`.github/workflows/deploy.yml`, which builds and deploys `dist/` to GitHub
+Pages on the custom domain (`public/CNAME`). Pull requests get a build check
+(`ci.yml`). A weekly scheduled build keeps the upcoming/archive show split
+fresh even when nothing's been edited — and the site also nudges stale rows
+client-side between builds.
 
 ---
 
@@ -70,54 +70,24 @@ and set **Source = "GitHub Actions"**.
 
 ```
 hospital-radio/
-├── content/                  ← edit these (plain text, no code)
-│   ├── site.yml              ← band, links, releases, merch, gallery, press, settings
-│   ├── shows.yml             ← tour dates
-│   └── lyrics/
-│       ├── _TEMPLATE.md      ← copy this to add a song (ignored by the build)
-│       ├── 1-la.md
-│       └── 2-dreaming.md
-├── src/                      ← the site itself (for developers)
-│   ├── index.html            ← page structure
-│   ├── styles.css            ← all styling
-│   └── app.js                ← behaviour (routing, players, gallery, intro…)
-├── assets/                   ← icons & images copied into the site as-is
-├── build.mjs                 ← merges content/ → dist/
-├── package.json
-├── .github/workflows/        ← deploy.yml (publish on main) · ci.yml (PR build check)
-├── dist/                     ← the built site (generated; not committed)
-└── reference/
-    └── original-single-file.html   ← the pre-split version, for reference
+├── content/                  ← edit these: all the site's words
+├── src/
+│   ├── content.config.ts       schemas that guard every content file at build time
+│   ├── layouts/Base.astro      shared shell (head, nav, footer, radio dock, lightbox)
+│   ├── components/             show rows, video facades, the EKG divider…
+│   ├── pages/                  one .astro file per page (+ lyrics/[slug])
+│   ├── scripts/app.ts          the behaviour layer (intro, dock, lightbox, reveals)
+│   └── lib/site.ts             build-time helpers (show split, lyrics, JSON-LD)
+├── public/                   ← served as-is
+│   ├── styles.css              all styling (design tokens at the top)
+│   ├── assets/                 photos, fonts (self-hosted), icons
+│   ├── admin/                  the content editor (Sveltia CMS)
+│   └── CNAME · robots.txt · 404.html · site.webmanifest
+├── astro.config.mjs
+└── .github/workflows/        deploy.yml (publish on main + weekly) · ci.yml (PR check)
 ```
 
-**How the build works:** `build.mjs` reads `site.yml`, `shows.yml` and the
-lyrics files, combines them into one object, and injects it into the page as
-`window.SITE`. `src/app.js` reads `window.SITE` and renders everything. So the
-*content* lives in `content/` and the *behaviour* lives in `src/` — they're
-never tangled together.
-
----
-
-## 📌 Good to know / nice next steps
-
-- **Brand palette** — the whole look is driven by the band's three colours
-  (cream `#F5E9D7`, navy `#2D458F`, pink `#DF8090`), defined once as design
-  tokens at the top of `src/styles.css` (`:root`). Change them there and the
-  entire site re-themes.
-- **Images are self-hosted** — the logo, gallery photos and share image all
-  live in `assets/` and deploy with the site. To add a gallery photo, drop the
-  file in `assets/` and add a block in `site.yml` pointing at it.
-- **Logo** — set `band.logoImage` in `site.yml` to a different file/URL any
-  time (or `""` to use the typed wordmark, which always looks right).
-- **Share image** — link previews (WhatsApp, Discord, etc.) use a dedicated
-  1200×630 card, `assets/og-image.jpg`, via the `og:image`/`twitter:image` tags
-  in `src/index.html`.
-- **Lyrics** for the released singles (‘L.A.’ and ‘Dreaming’) are in
-  `content/lyrics/`; add a file per song as new ones come out.
-- **Mailing list** — the sign-up section is currently hidden on the home page.
-  Its config still lives in `site.yml` (`mailingList:`); re-enable it by adding
-  `mailingForm()` back to `viewHome` in `src/app.js`.
-- **Custom domain** — the site is configured for **hospitalradiofullstop.co.uk**
-  via `src/CNAME` (copied to `dist/` by the build) and the `SITE_URL` /
-  `og:url` / `canonical` values. Point the domain's DNS at GitHub Pages and tick
-  *Settings → Pages → Enforce HTTPS* to finish the switch.
+Good to know: old share links using hash routes (`/#/shows`, `/#/lyrics/l-a`)
+still work — a tiny shim on every page bounces them to the real pages. Fonts
+are self-hosted in `public/assets/fonts/` (no Google Fonts CDN call). The
+gallery JPGs are served as-is; resizing the largest ones is a nice future win.

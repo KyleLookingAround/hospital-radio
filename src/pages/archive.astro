@@ -1,0 +1,34 @@
+---
+import Base from '../layouts/Base.astro';
+import ShowRow from '../components/ShowRow.astro';
+import { getShows, getSongs } from '../lib/site';
+
+const { past } = await getShows();
+const songs = await getSongs();
+const lyricSlugs = songs.map((s) => s.slug);
+---
+
+<Base title="Archive · Hospital Radio." description="The Hospital Radio. transmission log — every show played, with setlists." nav="/archive" page="archive.html">
+
+<section class="wrap section">
+  <div class="kicker" data-reveal>Transmission log</div>
+  <div class="sec-head" data-reveal style="margin-top:16px">
+    <h2>The <em>archive</em></h2>
+    <span style="font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:var(--soft)">{past.length} PLAYED</span>
+  </div>
+  {past.length > 0 ? (
+    <div class="shows archive">
+      {past.map((s) => <ShowRow show={s} archived lyricSlugs={lyricSlugs} />)}
+    </div>
+  ) : (
+    <div class="empty" data-reveal>
+      <div class="big">Nothing logged yet.</div>
+      <div class="small">Past shows will appear here once they've aired</div>
+    </div>
+  )}
+  <p style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--faint);margin-top:30px">
+    → <a href="/shows.html" style="color:var(--rose)">upcoming shows</a>
+  </p>
+</section>
+
+</Base>

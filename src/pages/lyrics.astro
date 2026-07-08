@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import { getSongs } from '../lib/site';
+
+const songs = await getSongs();
+---
+
+<Base title="Lyrics · Hospital Radio." description="The words — lyrics to every Hospital Radio. song." nav="/lyrics" page="lyrics.html">
+
+<section class="wrap section">
+  <div class="kicker" data-reveal>Words</div>
+  <div class="sec-head" data-reveal style="margin-top:16px"><h2>Lyrics</h2></div>
+  {songs.length > 0 ? (
+    <div class="lyric-list">
+      {songs.map((s, i) => (
+        <a class="lyric-card" data-reveal href={`/lyrics/${s.slug}.html`}>
+          <span class="ix">{String(i + 1).padStart(2, '0')}</span>
+          <span class="ti">{s.title}</span>
+          <span class="yr">{[s.type || 'Single', s.year].filter(Boolean).join(' · ')}</span>
+        </a>
+      ))}
+    </div>
+  ) : (
+    <div class="empty" data-reveal><div class="big">No words logged yet.</div></div>
+  )}
+</section>
+
+</Base>

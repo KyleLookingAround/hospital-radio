@@ -1,0 +1,9 @@
+# ════════════════════════════════════════════════════════════════════
+#  HOSPITAL RADIO. · press / booking kit ("for promoters")
+# ════════════════════════════════════════════════════════════════════
+
+email: "hospitalradiomusic@gmail.com"             # shows a one-tap "Book us" button
+contactUrl: "https://hospitalradiofullstop.bigcartel.com/contact"   # fallback if no email yet
+pitch: "Hospital Radio. are a Manchester four-piece dealing in big-hearted midwest emo. Tight live, easy to work with, and building a loyal following across the North. Available for headline shows, supports and festivals."
+forFansOf: ""                                     # e.g. "Band A · Band B · Band C" — leave "" to hide
+stageNotes: ""                                    # e.g. set length / backline needs — leave "" to hide

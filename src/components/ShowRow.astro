@@ -1,0 +1,51 @@
+---
+/**
+ * One show row — used by the Shows page (upcoming) and the Archive
+ * (with expandable setlist; setlist songs deep-link to their lyrics page).
+ */
+import { DOW, MON, yearSuffix, slug, type Show } from '../lib/site';
+
+interface Props {
+  show: Show;
+  archived?: boolean;
+  /** slugs of songs that have a lyrics page */
+  lyricSlugs?: string[];
+}
+
+const { show: s, archived = false, lyricSlugs = [] } = Astro.props;
+const dow = DOW[s._d.getDay()];
+const day = String(s._d.getDate()).padStart(2, '0');
+const m = MON[s._d.getMonth()];
+const hasLyrics = (song: string) => lyricSlugs.includes(slug(song));
+---
+
+<div class="show" data-reveal data-date={archived ? undefined : s.date}>
+  <div class="date">
+    <div class="dow">{dow}</div>
+    <div class="day">{day}</div>
+    <div class="my">{m}{yearSuffix(s._d)}</div>
+  </div>
+  <div class="body">
+    <h3>{s.venue}</h3>
+    <div class="sub">{s.city || ''}{s.with && <>&nbsp;·&nbsp;<span class="w">{s.with}</span></>}</div>
+    {s.note && <div class="note">{s.note}</div>}
+    {archived && Array.isArray(s.setlist) && s.setlist.length > 0 && (
+      <details class="setlist">
+        <summary>Setlist <span class="n">{s.setlist.length}</span></summary>
+        <ol>{s.setlist.map((song) => (
+          <li>{hasLyrics(song) ? <a href={`/lyrics/${slug(song)}.html`}>{song}</a> : song}</li>
+        ))}</ol>
+      </details>
+    )}
+    {s.example && <span class="stamp eg">Example — delete me</span>}
+  </div>
+  {archived ? (
+    <div class="aired">aired</div>
+  ) : s.soldOut ? (
+    <div class="act"><span class="soldout">Sold out</span></div>
+  ) : s.tickets ? (
+    <div class="act"><a class="btn" href={s.tickets} target="_blank" rel="noopener">Tickets <span class="arr">↗</span></a></div>
+  ) : (
+    <div class="act"><span class="soldout" style="color:var(--soft);border-color:var(--line-2)">Info soon</span></div>
+  )}
+</div>
