@@ -21,6 +21,32 @@
 
 shows:
   # ─── Upcoming ─────────────────────────────────────────────────────
+  #  UK Headline Tour · September 2026
+  - date:    "2026-09-10"
+    venue:   "Zed Alley"
+    city:    "Bristol"
+    note:    "UK Headline Tour"
+
+  - date:    "2026-09-11"
+    venue:   "Santiago Bar"
+    city:    "Leeds"
+    note:    "UK Headline Tour"
+
+  - date:    "2026-09-12"
+    venue:   "Mist Rolling Inn"
+    city:    "Nottingham"
+    note:    "UK Headline Tour"
+
+  - date:    "2026-09-13"
+    venue:   "The Jam Factory"
+    city:    "Hereford"
+    note:    "UK Headline Tour"
+
+  - date:    "2026-09-19"
+    venue:   "The Kings Arms"
+    city:    "Manchester"
+    note:    "UK Headline Tour"
+
   - date:    "2026-07-13"
     venue:   "The Deaf Institute"
     city:    "Manchester"
