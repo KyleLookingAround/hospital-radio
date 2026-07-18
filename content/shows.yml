@@ -21,31 +21,41 @@
 
 shows:
   # ─── Upcoming ─────────────────────────────────────────────────────
-  #  UK Headline Tour · September 2026
+  #  Crying Over Split Milk EP Release Tour · September 2026 (w/ When Suddenly)
   - date:    "2026-09-10"
     venue:   "Zed Alley"
     city:    "Bristol"
-    note:    "UK Headline Tour"
+    with:    "co-headline w/ When Suddenly"
+    note:    "Crying Over Split Milk EP Release Tour"
+    tickets: "https://www.fatsoma.com/e/p5q6c83m/when-suddenly-hospital-radio-crying-over-split-milk-tour"
 
   - date:    "2026-09-11"
     venue:   "Santiago Bar"
     city:    "Leeds"
-    note:    "UK Headline Tour"
+    with:    "co-headline w/ When Suddenly"
+    note:    "Crying Over Split Milk EP Release Tour"
+    tickets: "https://www.fatsoma.com/e/p1x6ev3p/when-suddenly-hospital-radio-crying-over-split-milk-tour"
 
   - date:    "2026-09-12"
     venue:   "Mist Rolling Inn"
     city:    "Nottingham"
-    note:    "UK Headline Tour"
+    with:    "co-headline w/ When Suddenly"
+    note:    "Crying Over Split Milk EP Release Tour"
+    tickets: "https://www.fatsoma.com/e/7wbx29et/when-suddenly-hospital-radio-crying-over-split-milk-tour"
 
   - date:    "2026-09-13"
     venue:   "The Jam Factory"
     city:    "Hereford"
-    note:    "UK Headline Tour"
+    with:    "co-headline w/ When Suddenly"
+    note:    "Crying Over Split Milk EP Release Tour"
+    tickets: "https://www.fatsoma.com/e/3bi7ptc2/when-suddenly-hospital-radio-crying-over-split-milk-tour"
 
   - date:    "2026-09-19"
     venue:   "The Kings Arms"
-    city:    "Manchester"
-    note:    "UK Headline Tour"
+    city:    "Salford"
+    with:    "co-headline w/ When Suddenly"
+    note:    "Crying Over Split Milk EP Release Tour"
+    tickets: "https://www.fatsoma.com/e/r57q096d/when-suddenly-and-hospital-radio"
 
   - date:    "2026-07-13"
     venue:   "The Deaf Institute"
