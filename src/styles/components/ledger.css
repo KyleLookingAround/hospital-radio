@@ -53,12 +53,13 @@
 .chart-row .meta{ grid-area:meta; font-family:var(--mono); font-size:var(--t-xs); letter-spacing:.03em; color:var(--muted); display:flex; flex-wrap:wrap; gap:4px 14px; }
 .chart-row .meta a{ color:var(--rose-text); }
 .chart-row .meta a:hover{ text-decoration:underline; }
-.chart-row.inverted{ background:var(--booth-2); color:var(--booth-ink); border-color:transparent; border-radius:var(--r2); margin:0 -10px; padding-inline:20px; box-shadow:0 20px 40px -24px rgba(0,0,0,.6); }
+.chart-row.inverted{ padding-block:24px; }
+.chart-row.inverted .title{ font-size:var(--t-xl); font-weight:340; }
 .chart-row.inverted .rank,.chart-row.inverted .count{ color:var(--pink); }
 .chart-row.inverted .title,.chart-row.inverted .title a{ color:var(--booth-ink); }
 .chart-row.inverted .meta,.chart-row.inverted .count small{ color:var(--booth-dim); }
 .chart-row.inverted .meta a{ color:var(--pink); }
-.chart-row.inverted + .chart-row{ border-top-color:transparent; }
+
 
 /* ---- punch card: one square per logged show ---- */
 .punch{ display:flex; flex-wrap:wrap; gap:6px; }

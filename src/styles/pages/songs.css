@@ -1,1 +1,212 @@
-/* page: songs — owned by the songs page */
+/* page: songs — the chart (lyrics.html) + the song pages (lyrics/[slug].html)
+   Scoped under body.songs / body.songpage. Builds on .chart-row and .punch from components/ledger.css. */
+
+/* ===================== the chart ===================== */
+.songs .page-head .title{ max-width:12ch; }
+.songs .chart-sheet{ overflow:visible; }
+.songs .sets-sticker{ position:absolute; right:18px; top:-15px; z-index:3; }
+.songs .sheet-head .mono.dim{ font-size:var(--t-xs); letter-spacing:.08em; text-transform:uppercase; }
+
+/* rows: add the punch strip line between the tally and the meta */
+.songs .chart-row{
+  grid-template-columns:auto 1fr auto;
+  grid-template-areas:"rank title count" "rank tally count" "rank card card" "rank meta meta";
+  row-gap:8px; padding:20px 10px;
+}
+.songs .chart-row .meta{ align-items:center; }
+.songs .chart-row .card{ grid-area:card; display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; }
+.songs .chart-row .card .pct{ font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+.songs .chart-row .meta .words{ font-weight:600; letter-spacing:.08em; text-transform:uppercase; font-size:10px; min-height:24px; display:inline-flex; align-items:center; }
+.songs .chart-row .meta .nowords{ color:var(--soft); font-style:italic; letter-spacing:.02em; }
+.songs .chart-row .meta .no1-line{ flex-basis:100%; color:var(--pink); letter-spacing:.14em; text-transform:uppercase; font-weight:500; }
+.songs .chart-row.unplayed .rank{ color:var(--soft); }
+.songs .chart-row.unplayed .count{ color:var(--muted); }
+.songs .chart-row .tally.none{ display:none; }
+.songs .chart-row .title .stamp{ font-size:8px; padding:2px 6px; }
+
+/* the mini punch strip (decorative, inside chart rows) */
+.punch.mini{ display:inline-flex; gap:3px; flex-wrap:nowrap; }
+.punch.mini i{ width:10px; height:10px; border:1px solid var(--line-2); border-radius:1px; display:block; position:relative; }
+.punch.mini i.on{ background:var(--ink); border-color:var(--ink); }
+.punch.mini i.on.opener::after{ content:""; position:absolute; inset:2px; border-radius:50%; border:1.5px solid var(--paper); }
+.punch.mini i.on.closer::after{ content:""; position:absolute; left:2px; right:2px; top:50%; height:2px; margin-top:-1px; background:var(--paper); }
+.punch.mini i.on.opener.closer::after{ inset:3px; border-radius:50%; border:0; background:var(--paper); left:3px; right:3px; top:3px; height:auto; margin:0; }
+.inverted .punch.mini i{ border-color:var(--booth-line-2); }
+.inverted .punch.mini i.on{ background:var(--pink); border-color:var(--pink); }
+.inverted .punch.mini i.on::after{ border-color:var(--booth-3); background:var(--booth-3); }
+.inverted .punch.mini i.on.opener::after{ background:transparent; }
+.inverted .punch.mini i.on.opener.closer::after{ background:var(--booth-3); }
+.inverted .card .pct{ color:var(--booth-dim); }
+
+/* ---- the #1 row: a billboard on the booth ---- */
+.songs .chart-row.no1{
+  position:relative; isolation:isolate; overflow:hidden;
+  margin:4px calc(-1 * clamp(10px, 3vw, 30px)) 14px;
+  padding:clamp(26px, 5vw, 48px) clamp(18px, 3.5vw, 40px) clamp(22px, 4vw, 36px);
+  border-radius:var(--r3);
+  grid-template-columns:auto 1fr;
+  grid-template-areas:"rank title" "rank count" "rank tally" "rank card" "rank meta";
+  row-gap:12px; column-gap:clamp(12px, 3vw, 28px);
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgba(223,128,144,.22), transparent 55%),
+    repeating-linear-gradient(to bottom, transparent 0 3px, rgba(15,23,51,.18) 3px 4px),
+    var(--booth-2);
+  box-shadow:0 40px 70px -34px rgba(0,0,0,.8), inset 0 0 0 1px var(--booth-line);
+}
+.songs .chart-row.no1::before{ /* a faint station ident behind the row */
+  content:"88.9"; position:absolute; right:-.06em; bottom:-.32em; z-index:-1; font-family:var(--serif); font-weight:700; font-size:clamp(120px, 26vw, 300px); letter-spacing:-.06em; color:var(--booth-ink); opacity:.045; pointer-events:none; line-height:1;
+}
+.songs .chart-row.no1:hover{ background-color:var(--booth-2); }
+.songs .chart-row.no1 .rank{ font-size:var(--t-ledger); line-height:.78; color:var(--pink); text-shadow:0 0 24px rgba(223,128,144,.45); align-self:start; margin-top:-.04em; }
+.songs .chart-row.no1 .title{ font-size:var(--t-2xl); font-weight:330; letter-spacing:-.035em; line-height:.95; gap:10px 16px; }
+.songs .chart-row.no1 .title .stamp{ font-size:9px; }
+.songs .chart-row.no1 .count{ text-align:left; display:flex; align-items:baseline; gap:10px; font-size:clamp(34px, 5vw, 56px); }
+.songs .chart-row.no1 .count small{ display:inline; margin:0; font-size:11px; letter-spacing:.24em; }
+.songs .chart-row.no1 .tally{ gap:8px 14px; }
+.songs .chart-row.no1 .tally svg{ height:26px; }
+.songs .chart-row.no1 .meta{ font-size:var(--t-xs); }
+.songs .chart-row.no1 .meta .words{ color:var(--pink); }
+.songs .chart-row.no1 .meta .nowords{ color:var(--booth-dim); }
+.songs .chart-row.no1 .no1-sticker{ position:absolute; right:14px; top:14px; z-index:2; }
+.songs .chart-row.no1 + .chart-row{ border-top-color:transparent; }
+.chart-foot{ margin-top:22px; font-size:var(--t-xs); max-width:72ch; }
+
+@media (max-width:759px){
+  .songs .chart-row{ padding:18px 4px; column-gap:12px; }
+  .songs .chart-row .rank{ font-size:26px; min-width:2ch; }
+  .songs .chart-row.no1{ margin-inline:calc(-1 * clamp(18px, 4vw, 44px) + 4px); grid-template-columns:1fr; grid-template-areas:"rank" "title" "count" "tally" "card" "meta"; row-gap:10px; }
+  .songs .chart-row.no1 .rank{ font-size:clamp(96px, 30vw, 140px); margin-top:0; margin-bottom:-6px; }
+  .songs .chart-row.no1 .no1-sticker{ top:16px; right:12px; --rot:6; }
+}
+
+/* ---- the trio under the chart ---- */
+.trio{ display:grid; gap:clamp(18px, 3vw, 28px); align-items:start; }
+.trio .sheet{ max-width:none; }
+.trio .h3{ margin-top:10px; }
+.trio .sheet-head{ margin-bottom:10px; }
+.trio .sheet-head .h3{ margin-top:8px; }
+@media (min-width:900px){
+  .trio{ grid-template-columns:1fr 1.25fr; grid-template-rows:auto auto; }
+  .trio .open-slip{ grid-column:1; grid-row:1; }
+  .trio .close-slip{ grid-column:1; grid-row:2; }
+  .trio .lately-slip{ grid-column:2; grid-row:1 / span 2; }
+}
+.open-list{ margin-top:14px; display:grid; }
+.open-list li{ display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:baseline; min-height:46px; padding:10px 2px; border-top:1px solid var(--line); }
+.open-list li:last-child{ border-bottom:1px solid var(--line); }
+.open-list .r{ font-family:var(--serif); font-weight:700; font-size:22px; letter-spacing:-.04em; color:var(--rose); font-variant-numeric:tabular-nums; }
+.open-list .t{ font-family:var(--serif); font-size:clamp(18px, 1.6vw, 22px); letter-spacing:-.02em; color:var(--ink); min-width:0; }
+.open-list .t a:hover{ color:var(--rose-text); }
+.open-list .n{ font-size:var(--t-xs); color:var(--muted); letter-spacing:.06em; white-space:nowrap; }
+.open-list .n b{ color:var(--rose-text); font-weight:600; }
+.open-list li:first-child .r{ font-size:30px; }
+.lately-slip .shows .show{ padding-inline:0; border-top:0; }
+.lately-slip .shows > .show:last-child{ border-bottom:0; }
+.lately-slip .show .no{ right:0; top:0; }
+.lately-slip .setlist{ margin-top:2px; }
+.lately-slip .setlist ol{ grid-template-columns:1fr; }
+.lately-scrawl{ margin-top:14px; display:inline-block; }
+.request-line{ padding-top:0; }
+.request-line .quiet{ max-width:62ch; }
+
+/* ===================== the song page ===================== */
+.songpage .page-head .title{ max-width:none; overflow-wrap:anywhere; }
+.songpage .page-head .title .dot{ color:var(--pink); text-shadow:var(--pink-glow); font-style:normal; }
+.songpage .page-head .back{ justify-self:start; margin-left:-6px; }
+.songpage .head-row{ display:flex; flex-wrap:wrap; align-items:center; gap:14px 22px; margin-top:4px; }
+.songpage .head-row .tally svg{ color:var(--pink); height:20px; }
+.songpage .head-row .sticker{ font-size:10px; }
+
+/* the words on a reading sheet */
+.words-sheet{ --paper-bg:var(--card); }
+.words-sheet .sheet-head .mono.dim{ font-size:var(--t-xs); letter-spacing:.1em; text-transform:uppercase; }
+.words{
+  margin-top:8px; display:grid; gap:clamp(20px, 3vw, 30px);
+  font-family:var(--serif); font-size:clamp(19px, 2.3vw, 24px); font-weight:340; line-height:1.45; letter-spacing:-.012em; color:var(--ink);
+}
+.words .verse{ white-space:pre-line; text-wrap:pretty; }
+.words .verse.chorus{
+  position:relative; padding:12px 14px 12px 20px; margin-left:-4px; border-left:3px solid var(--rose); border-radius:0 var(--r1) var(--r1) 0;
+  background:linear-gradient(90deg, var(--marker), color-mix(in srgb, var(--marker) 35%, transparent) 60%, transparent);
+  font-weight:420;
+}
+.words .verse.chorus::before{ content:"chorus"; position:absolute; right:10px; top:-9px; font-family:var(--mono); font-size:9px; font-weight:600; letter-spacing:.24em; text-transform:uppercase; color:var(--rose-text); background:var(--paper-bg); padding:2px 6px; border:1px solid var(--line-2); border-radius:2px; transform:rotate(2deg); }
+.words .bk{ color:var(--muted); font-style:italic; font-size:.86em; }
+.words-foot{ display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-top:clamp(22px, 4vw, 36px); padding-top:16px; border-top:1px solid var(--line); }
+.nowords-sheet{ text-align:left; }
+.nowords-sheet .scrawl.big{ display:block; margin:12px 0 10px; font-size:clamp(32px, 6vw, 48px); transform:rotate(-2deg); }
+.songpage .video-wrap{ max-width:var(--w-read); margin:clamp(26px, 5vw, 44px) auto 0; }
+
+/* the punch card panel — the memorable moment */
+.punch-panel{
+  position:relative; overflow:hidden; padding:clamp(22px, 4vw, 40px);
+  background:radial-gradient(90% 70% at 0% 100%, rgba(223,128,144,.14), transparent 60%), var(--booth-2);
+}
+.punch-panel::after{ /* punched-card rail */
+  content:""; position:absolute; left:0; right:0; top:0; height:6px; background:repeating-linear-gradient(90deg, var(--pink) 0 18px, transparent 18px 28px); opacity:.55; pointer-events:none;
+}
+.punch-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:12px 24px; flex-wrap:wrap; margin-bottom:clamp(18px, 3vw, 28px); }
+.punch-head .h2{ margin-top:10px; }
+.punch-head .readout{ font-size:var(--t-s); letter-spacing:.06em; color:var(--booth-dim); padding:8px 12px; border:1px solid var(--booth-line-2); border-radius:var(--r1); }
+.punch-head .readout b{ color:var(--pink); font-weight:600; font-size:var(--t-m); }
+.punch-panel .punch{ --sq:40px; gap:8px; align-items:flex-end; }
+.punch-panel .punch a{ width:var(--sq); height:var(--sq); border-radius:3px; border-color:var(--booth-line-2); background:rgba(15,23,51,.35); box-shadow:inset 0 1px 0 rgba(255,255,255,.06); }
+.punch-panel .punch a.on{ background:var(--pink); border-color:var(--pink); box-shadow:0 0 16px rgba(223,128,144,.35); }
+.punch-panel .punch a.opener::after{ width:14px; height:14px; border-width:3px; }
+.punch-panel .punch a.closer::after{ width:18px; height:4px; }
+.punch-panel .punch a.on.opener.closer::after{ width:14px; height:14px; }
+.punch-panel .punch a:hover,.punch-panel .punch a:focus-visible{ transform:scale(1.12) translateY(-2px); }
+.punch .yr{ flex-basis:100%; font-family:var(--mono); font-size:10px; font-weight:600; letter-spacing:.24em; text-transform:uppercase; color:var(--pink); margin-top:8px; }
+.punch .yr:first-child{ margin-top:0; }
+.punch-hint{ margin-top:14px; font-size:var(--t-xs); }
+@media (min-width:760px){ .punch-panel .punch{ --sq:46px; gap:10px; } }
+
+/* the facts + heard at */
+.facts-row{ gap:clamp(24px, 4vw, 48px); }
+@media (min-width:900px){ .facts-row{ grid-template-columns:1fr 1fr; } }
+.facts-sheet{ max-width:none; }
+.facts-sheet .ledger{ margin-top:16px; }
+.facts-sheet .ledger-line{ min-height:40px; font-size:var(--t-s); }
+.facts-sheet .ledger-line .v{ overflow-wrap:anywhere; }
+.facts-sheet .ledger-line .v b{ font-family:var(--serif); font-size:var(--t-l); font-weight:600; letter-spacing:-.03em; }
+.facts-sheet .ledger-line .v b.marker{ padding:0 .15em; }
+.heard-block .sec-head{ margin-bottom:8px; }
+.heard{ display:grid; }
+.heard li a{ display:grid; grid-template-columns:auto 1fr auto; gap:6px 14px; align-items:baseline; min-height:48px; padding:12px 6px; border-top:1px solid var(--booth-line); transition:background var(--fast), color var(--fast); }
+.heard li:last-child a{ border-bottom:1px solid var(--booth-line); }
+.heard li a:hover{ background:rgba(223,128,144,.08); }
+.heard .d{ font-size:var(--t-xs); letter-spacing:.08em; color:var(--pink); white-space:nowrap; }
+.heard .v{ font-family:var(--serif); font-size:clamp(17px, 1.6vw, 20px); color:var(--booth-ink); min-width:0; }
+.heard .v small{ font-size:.8em; color:var(--booth-dim); }
+.heard .p{ font-size:var(--t-xs); letter-spacing:.1em; color:var(--booth-dim); white-space:nowrap; }
+.heard li a:hover .p{ color:var(--pink); }
+
+/* prev / next by rank */
+.song-nav{ display:grid; gap:12px; padding-top:0; }
+@media (min-width:640px){ .song-nav{ grid-template-columns:1fr 1fr; } }
+.song-nav a{ display:grid; gap:6px; padding:18px 20px; min-height:72px; border:1px solid var(--booth-line-2); border-radius:var(--r2); background:var(--booth-2); transition:border-color var(--fast), transform var(--fast); }
+.song-nav a:hover{ border-color:var(--pink); transform:translateY(-2px); }
+.song-nav .d{ font-family:var(--mono); font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:var(--pink); }
+.song-nav .t{ font-family:var(--serif); font-size:var(--t-l); letter-spacing:-.02em; color:var(--booth-ink); line-height:1.05; }
+.song-nav .next{ text-align:right; }
+
+/* dial it back: #1 is just the biggest row; the chorus is a quiet wash; the punch card is a plain card */
+.chart-row.no1,.chart-row.inverted{ background:none !important; box-shadow:none !important; border:0; border-top:1px solid var(--line); border-radius:0; margin:0; padding:28px 4px 24px; color:var(--ink); }
+.chart-row.no1::before,.chart-row.no1::after,.chart-row.inverted::before,.chart-row.inverted::after{ display:none !important; }
+.chart-row.no1 .rank,.chart-row.inverted .rank{ color:var(--rose); font-size:clamp(40px, 6vw, 64px); }
+.chart-row.no1 .title,.chart-row.inverted .title,.chart-row.no1 .title a,.chart-row.inverted .title a{ color:var(--ink); font-size:var(--t-xl); font-weight:340; }
+.chart-row.no1 .count,.chart-row.inverted .count{ color:var(--ink); }
+.chart-row.no1 .meta,.chart-row.inverted .meta,.chart-row.no1 .count small,.chart-row.inverted .count small,.inverted .card .pct{ color:var(--muted); }
+.chart-row.no1 .meta a,.chart-row.inverted .meta a{ color:var(--rose-text); }
+.no1-sticker{ display:none; }
+.inverted .punch.mini i{ border-color:var(--line-2); } .inverted .punch.mini i.on{ background:var(--rose-text); border-color:var(--rose-text); }
+.inverted .punch.mini i.on::after{ border-color:var(--paper); background:var(--paper); }
+.words .verse.chorus{ background:linear-gradient(90deg, var(--marker), transparent 70%); border-left:2px solid var(--rose); }
+.words .verse.chorus::before{ transform:none; border:0; background:transparent; right:12px; top:4px; }
+.punch-panel{ background:var(--card); box-shadow:none; }
+.punch-panel::after{ display:none; }
+.punch-panel .punch a{ background:transparent; border-color:var(--line-2); box-shadow:none; }
+.punch-panel .punch a.on{ background:var(--rose-text); border-color:var(--rose-text); box-shadow:none; }
+.punch-panel .punch a:hover,.punch-panel .punch a:focus-visible{ transform:scale(1.06); }
+.nowords{ color:var(--muted) !important; }
+.songs .chart-row.unplayed .rank{ color:var(--muted); }

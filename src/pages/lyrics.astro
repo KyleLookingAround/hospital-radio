@@ -1,28 +1,103 @@
 ---
+/**
+ * 88.9 FM — the chart. Every song ever played, ranked by the number of
+ * logged sets it appeared in. Everything here is derived from the show log.
+ */
 import Base from '../layouts/Base.astro';
-import { getSongs } from '../lib/site';
+import PageHead from '../components/PageHead.astro';
+import Sheet from '../components/Sheet.astro';
+import ChartRow from '../components/ChartRow.astro';
+import ShowRow from '../components/ShowRow.astro';
+import { getShows, getSongs } from '../lib/site';
+import { songStats, headline, loggedShows, displayTitle, shortDate, medianSetLength } from '../lib/stats';
 
+const { upcoming, past } = await getShows();
 const songs = await getSongs();
+const lyricSlugs = new Set(songs.map((s) => s.slug));
+const stats = songStats(past, songs.map((s) => s.title));
+// lyric files for songs never played live sit at the bottom with no tally
+for (const s of songs) if (!stats.some((st) => st.slug === s.slug)) {
+  stats.push({ title: s.title, slug: s.slug, plays: 0, opened: 0, closed: 0, firstPlayed: null, lastPlayed: null, cover: false, shows: [] });
+}
+const h = headline(past, upcoming);
+const logged = loggedShows(past);
+const latest = h.latestShow?.date ?? null;
+const lately = logged[logged.length - 1];
+const openers = [...stats].filter((s) => s.opened > 0).sort((a, b) => b.opened - a.opened || b.plays - a.plays).slice(0, 3);
+const closers = [...stats].filter((s) => s.closed > 0).sort((a, b) => b.closed - a.closed || b.plays - a.plays).slice(0, 3);
+const tiedWith = stats[1] && stats[0] && stats[1].plays === stats[0].plays ? displayTitle(stats[1].title) : undefined;
+const withWords = songs.length;
+const meta = `<b>${stats.length}</b> songs · <b>${logged.length}</b> sets logged · avg set <b>${h.avgSetLength}</b>`;
 ---
 
-<Base title="Lyrics · Hospital Radio." description="The words — lyrics to every Hospital Radio. song." nav="/lyrics" page="lyrics.html">
+<Base title="Songs · the chart · Hospital Radio." description={`Every song Hospital Radio. have played live, ranked by the ${logged.length} logged setlists — plus the words to ${withWords} of them.`} station="lyrics" page="lyrics.html" bodyClass="songs">
 
-<section class="wrap section">
-  <div class="kicker" data-reveal>Words</div>
-  <div class="sec-head" data-reveal style="margin-top:16px"><h2>Lyrics</h2></div>
-  {songs.length > 0 ? (
-    <div class="lyric-list">
-      {songs.map((s, i) => (
-        <a class="lyric-card" data-reveal href={`/lyrics/${s.slug}.html`}>
-          <span class="ix">{String(i + 1).padStart(2, '0')}</span>
-          <span class="ti">{s.title}</span>
-          <span class="yr">{[s.type || 'Single', s.year].filter(Boolean).join(' · ')}</span>
-        </a>
-      ))}
+<PageHead kicker="the chart" title="Every song we’ve <em>played</em>" meta={meta} />
+
+<section class="wrap section songs-chart" aria-labelledby="chart-h">
+  <Sheet width="ledger" tilt={0.35} class="chart-sheet" id="chart">
+    <span class="tape tl" aria-hidden="true"></span>
+    <span class="sticker paper sets-sticker" style="--rot:4" aria-hidden="true">{logged.length} sets logged</span>
+    <div class="sheet-head">
+      <div><div class="kicker">most played live</div><h2 class="h2" id="chart-h">The <em>chart</em></h2></div>
+      <span class="mono dim">ranked by sets played · {h.firstShow ? `since ${shortDate(h.firstShow.date)}` : ''}</span>
     </div>
-  ) : (
-    <div class="empty" data-reveal><div class="big">No words logged yet.</div></div>
-  )}
+    {stats.length ? (
+      <ol class="chart">
+        {stats.map((s, i) => (
+          <ChartRow rank={i + 1} stat={s} hasLyrics={lyricSlugs.has(s.slug)} inverted={i === 0 && s.plays > 0} latest={latest} logged={logged} tiedWith={i === 0 ? tiedWith : undefined} />
+        ))}
+      </ol>
+    ) : (
+      <p class="quiet">no setlists logged yet — the chart starts with the first running order.</p>
+    )}
+    <p class="quiet chart-foot">one play = one logged set the song appeared in · twice in one set still counts once · the strip is the punch card: one square per logged set, oldest first · {past.length - logged.length} shows have no running order on file and aren’t counted</p>
+  </Sheet>
+</section>
+
+<section class="wrap section trio" aria-label="How the sets go">
+  <Sheet width="full" tilt={-0.4} class="slip open-slip" settle>
+    <div class="kicker">how we open</div>
+    <h2 class="h3">First <em>song</em></h2>
+    {openers.length ? (
+      <ol class="open-list">
+        {openers.map((s, i) => (
+          <li><span class="r">{String(i + 1).padStart(2, '0')}</span><span class="t"><a href={`/lyrics/${s.slug}.html`}>{displayTitle(s.title)}</a></span><span class="n mono">opened <b class={i === 0 ? 'marker' : undefined}>{s.opened}×</b></span></li>
+        ))}
+      </ol>
+    ) : <p class="quiet">no openers logged yet.</p>}
+  </Sheet>
+
+  <Sheet width="full" tilt={0.5} class="slip close-slip" settle>
+    <div class="kicker">how we close</div>
+    <h2 class="h3">Last <em>song</em></h2>
+    {closers.length ? (
+      <ol class="open-list">
+        {closers.map((s, i) => (
+          <li><span class="r">{String(i + 1).padStart(2, '0')}</span><span class="t"><a href={`/lyrics/${s.slug}.html`}>{displayTitle(s.title)}</a></span><span class="n mono">closed <b class={i === 0 ? 'marker' : undefined}>{s.closed}×</b></span></li>
+        ))}
+      </ol>
+    ) : <p class="quiet">no closers logged yet.</p>}
+  </Sheet>
+
+  <Sheet width="full" tilt={-0.3} class="lately-slip" settle>
+    <span class="tape tr" aria-hidden="true"></span>
+    <div class="sheet-head">
+      <div><div class="kicker">the set, lately</div><h2 class="h3">The last <em>running order</em></h2></div>
+      <span class="mono dim">typical set · {medianSetLength(past)} songs</span>
+    </div>
+    {lately ? (
+      <div class="shows">
+        <ShowRow show={lately} archived openSetlist number={logged.length} />
+      </div>
+    ) : <p class="quiet">no running order on file yet.</p>}
+    <p class="scrawl lately-scrawl">every set is a page in the log</p>
+    <p class="actions" style="margin-top:14px"><a class="btn text" href="/archive.html">the whole log →</a></p>
+  </Sheet>
+</section>
+
+<section class="wrap section request-line" aria-label="Request line">
+  <p class="quiet">want one of these at the next show? the most-requested song gets played — <a class="link" href="/request.html">the request line is open</a></p>
 </section>
 
 </Base>

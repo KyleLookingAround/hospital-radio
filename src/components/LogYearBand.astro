@@ -1,0 +1,41 @@
+---
+/**
+ * The log's year band (archive page only): a sticky paper strip with the
+ * year as a big numeral and that year's shows drawn as an ECG — one QRS
+ * complex per transmission, placed by date, so a tour reads as a flutter
+ * and the quiet months flatline.
+ */
+import type { Show } from '../lib/site';
+import { shortDate } from '../lib/stats';
+interface Props { year: string; shows: Show[]; index: number }
+const { year, shows, index } = Astro.props;
+const W = 1000, H = 64, BASE = 40;
+const chrono = [...shows].sort((a, b) => +a._d - +b._d);
+const y0 = +new Date(+year, 0, 1), y1 = +new Date(+year + 1, 0, 1);
+const x = (t: number) => 14 + ((t - y0) / (y1 - y0)) * (W - 28);
+let d = `M0 ${BASE}`;
+let lastX = 0;
+for (const s of chrono) {
+  const px = x(+s._d);
+  const gap = px - lastX;
+  const w = Math.min(16, Math.max(7, gap * 0.9));
+  d += ` H${(px - w / 2).toFixed(1)} l${(w * 0.15).toFixed(1)} -4 l${(w * 0.15).toFixed(1)} 4 l${(w * 0.15).toFixed(1)} -30 l${(w * 0.2).toFixed(1)} 44 l${(w * 0.15).toFixed(1)} -16 l${(w * 0.2).toFixed(1)} 2`;
+  lastX = px + w / 2;
+}
+d += ` H${W}`;
+const first = chrono[0], last = chrono[chrono.length - 1];
+const span = first && last ? (first.date === last.date ? shortDate(first.date, false) : `${shortDate(first.date, false)} → ${shortDate(last.date, false)}`) : '';
+// month ticks
+const months = Array.from({ length: 12 }, (_, m) => x(+new Date(+year, m, 1)));
+---
+<div class="year-band" id={`y${year}`} style={`--i:${index}`}>
+  <h2 class="yb-year"><span class="numeral">{year}</span></h2>
+  <div class="yb-trace" role="img" aria-label={`${shows.length} shows in ${year}, drawn as a heartbeat trace`}>
+    <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true">
+      {months.map((mx) => <line x1={mx.toFixed(1)} x2={mx.toFixed(1)} y1={H - 8} y2={H} class="yb-tick" />)}
+      <path class="yb-flat" d={`M0 ${BASE} H${W}`} />
+      <path class="yb-path" d={d} />
+    </svg>
+  </div>
+  <p class="yb-meta mono"><b>{shows.length}</b> {shows.length === 1 ? 'transmission' : 'transmissions'}{span && <span class="yb-span"> · {span}</span>}</p>
+</div>

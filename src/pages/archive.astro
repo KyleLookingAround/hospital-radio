@@ -1,34 +1,117 @@
 ---
+/**
+ * 88.5 FM · the log. Every transmission, newest first, numbered oldest-first
+ * (№ 24 at the top → № 01 at the bottom), grouped by year under a sticky ECG
+ * band — one beat per show. Running orders carry opener / closer / debut / ×2
+ * stamps; the first-ever gig is stamped FIRST TRANSMISSION. The stats sheet
+ * rides alongside on desktop. "were you there?" stamps live in localStorage.
+ */
 import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Sheet from '../components/Sheet.astro';
 import ShowRow from '../components/ShowRow.astro';
+import StatStrip from '../components/StatStrip.astro';
+import LedgerLine from '../components/LedgerLine.astro';
+import LogYearBand from '../components/LogYearBand.astro';
 import { getShows, getSongs } from '../lib/site';
+import { headline, songStats, cityStats, debutSlugsByShow, medianSetLength, monthYear, shortDate, displayTitle } from '../lib/stats';
 
-const { past } = await getShows();
+const { past, upcoming } = await getShows();
 const songs = await getSongs();
-const lyricSlugs = songs.map((s) => s.slug);
+const h = headline(past, upcoming);
+const stats = songStats(past, songs.map((s) => s.title));
+const cities = cityStats(past);
+const debuts = debutSlugsByShow(past);
+const median = medianSetLength(past);
+const total = past.length;
+const first = h.firstShow;
+const latest = h.latestShow;
+
+// newest first, grouped by year; numbering counts up from the first gig
+const years: { year: string; shows: { show: typeof past[number]; n: number }[] }[] = [];
+past.forEach((s, i) => {
+  const y = s.date.slice(0, 4);
+  let g = years.find((x) => x.year === y);
+  if (!g) { g = { year: y, shows: [] }; years.push(g); }
+  g.shows.push({ show: s, n: total - i });
+});
+
+const range = first && latest ? `${monthYear(first.date)} → ${monthYear(latest.date)}` : '';
+const meta = `<b>${h.showsPlayed}</b> played · ${h.showsWithSetlists} running orders · ${range}<span data-attended hidden> · <span data-attended-none>were you there? stamp a row</span><span data-attended-some hidden>you were at <b data-attended-n>0</b> of these</span></span>`;
+
+// cross-setlist highlight: hover one song, every play of it lights up
+const hoverCss = stats.map((s) => `body:has(li[data-song="${s.slug}"]:hover) li[data-song="${s.slug}"]{background:var(--marker);}`).join('\n');
+const opener = h.usualOpener, closer = h.usualCloser, most = h.mostPlayed;
 ---
 
-<Base title="Archive · Hospital Radio." description="The Hospital Radio. transmission log — every show played, with setlists." nav="/archive" page="archive.html">
+<Base title="The log · Hospital Radio." description="The Hospital Radio. transmission log — every show played, with running orders." station="archive" page="archive.html" bodyClass="log-page">
 
-<section class="wrap section">
-  <div class="kicker" data-reveal>Transmission log</div>
-  <div class="sec-head" data-reveal style="margin-top:16px">
-    <h2>The <em>archive</em></h2>
-    <span style="font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:var(--soft)">{past.length} PLAYED</span>
-  </div>
-  {past.length > 0 ? (
-    <div class="shows archive">
-      {past.map((s) => <ShowRow show={s} archived lyricSlugs={lyricSlugs} />)}
+<style is:inline set:html={hoverCss} />
+
+<PageHead kicker="the transmission log" title="The <em>log</em>" meta={meta} />
+
+<div class="wrap section log-layout">
+  <Sheet width="ledger" tilt={0.3} class="log-sheet" id="log">
+    <span class="tape tr" aria-hidden="true"></span>
+    <div class="log-head">
+      <div class="kicker">every transmission · newest first</div>
+      <p class="mono dim log-key"><span class="stamp opener">opener</span> <span class="stamp closer">closer</span> <span class="stamp debut">debut</span> = first ever play · <span class="stamp twice">×2</span> = played twice in one set</p>
     </div>
-  ) : (
-    <div class="empty" data-reveal>
-      <div class="big">Nothing logged yet.</div>
-      <div class="small">Past shows will appear here once they've aired</div>
+
+    {years.length === 0 && <p class="quiet">nothing logged yet — past shows will appear here once they’ve aired.</p>}
+
+    {years.map((g, gi) => (
+      <section class="year-group" aria-labelledby={`y${g.year}`}>
+        <LogYearBand year={g.year} shows={g.shows.map((x) => x.show)} index={gi} />
+        <div class="shows log-rows">
+          {g.shows.map(({ show, n }) => (
+            <div class="log-row" data-row={show.date}>
+              <ShowRow show={show} archived number={n} debutSlugs={debuts.get(show.date)} first={!!first && show.date === first.date} openSetlist={!!first && show.date === first.date} />
+              <button class="stamp attend" type="button" data-attend={show.date} aria-pressed="false" hidden><span class="a-off">i was there</span><span class="a-on">you were there</span></button>
+            </div>
+          ))}
+        </div>
+      </section>
+    ))}
+
+    <div class="log-foot">
+      <p class="scrawl">missing a setlist? we were there, we just forgot.</p>
+      <div class="actions">
+        <a class="btn" href="/shows.html">the schedule →</a>
+        <a class="btn text" href="/lyrics.html">the chart →</a>
+      </div>
     </div>
-  )}
-  <p style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--faint);margin-top:30px">
-    → <a href="/shows.html" style="color:var(--rose)">upcoming shows</a>
-  </p>
-</section>
+  </Sheet>
+
+  <aside class="log-rail" aria-label="The stats sheet">
+    <div class="rail-sticky">
+      <StatStrip class="rail-stats" items={[{ n: h.showsPlayed, label: 'transmissions' }, { n: h.showsWithSetlists, label: 'running orders' }, { n: h.cities, label: 'cities' }, { n: h.venues, label: 'rooms' }]} />
+
+      <div class="panel stats-sheet">
+        <p class="label sheet-k">the stats sheet</p>
+        <div class="ledger">
+          {most && <LedgerLine label="most played" href={`/lyrics/${most.slug}.html`}>{displayTitle(most.title)}{' '}<b>{most.plays}×</b></LedgerLine>}
+          {opener && <LedgerLine label="usual opener" href={`/lyrics/${opener.slug}.html`}>{displayTitle(opener.title)}{' '}<b>opened {opener.opened} of {h.showsWithSetlists}</b></LedgerLine>}
+          {closer && <LedgerLine label="usual closer" href={`/lyrics/${closer.slug}.html`}>{displayTitle(closer.title)}{' '}<b>closed {closer.closed} of {h.showsWithSetlists}</b></LedgerLine>}
+          {median > 0 && <LedgerLine label="typical set"><b>{median}</b> songs</LedgerLine>}
+          <LedgerLine label="songs in the set" href="/lyrics.html"><b>{stats.length}</b></LedgerLine>
+          {first && <LedgerLine label="first gig" href={`#show-${first.date}`}>{shortDate(first.date)} · <b>{first.venue}</b></LedgerLine>}
+          {latest && <LedgerLine label="latest" href={`#show-${latest.date}`}>{shortDate(latest.date)} · <b>{latest.venue}</b></LedgerLine>}
+        </div>
+        <p class="label sheet-k" id="reach" style="margin-top:18px">where the signal reached</p>
+        <ul class="tags rail-tags">
+          {cities.map((c) => <li class="tag">{c.city.toLowerCase()} <b>×{c.count}</b></li>)}
+        </ul>
+      </div>
+
+      <div class="panel wristband" data-attended hidden>
+        <p class="label sheet-k">patient record</p>
+        <p class="wb-line mono"><span data-attended-none>tap <i>i was there</i> on a row to stamp it.</span><span data-attended-some hidden>you were at <b data-attended-n>0</b> of {h.showsPlayed}.</span> kept in this browser only.</p>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script src="../scripts/attend.ts"></script>
 
 </Base>

@@ -1,0 +1,39 @@
+---
+/**
+ * The punch card: one square per logged setlist show, oldest first. Filled
+ * when the song was in the set, a ring when it opened, a bar when it closed.
+ * `size="full"` renders real links into the log (/archive.html#show-{date});
+ * `size="mini"` is the decorative strip on the chart rows (no links).
+ * Owned by the songs pages.
+ */
+import type { Show } from '../lib/site';
+import type { SongStat } from '../lib/stats';
+import { shortDate } from '../lib/stats';
+interface Props { stat?: SongStat; shows: Show[]; size?: 'full' | 'mini'; class?: string }
+const { stat, shows, size = 'full', class: cls = '' } = Astro.props;
+const at = new Map((stat?.shows ?? []).map((s) => [s.date, s]));
+const cells = shows.map((sh) => {
+  const hit = at.get(sh.date);
+  const opener = !!hit && hit.position === 1;
+  const closer = !!hit && hit.of > 1 && hit.position === hit.of;
+  const state = hit ? `played${opener ? ', opened the set' : ''}${closer ? ', closed the set' : ''}` : 'not in the set';
+  return { sh, hit, opener, closer, state, year: sh.date.slice(0, 4) };
+});
+const played = cells.filter((c) => c.hit).length;
+---
+{size === 'mini' ? (
+  <span class:list={['punch', 'mini', cls]} aria-hidden="true">
+    {cells.map((c) => <i class:list={{ on: !!c.hit, opener: c.opener, closer: c.closer }}></i>)}
+  </span>
+) : (
+  <div class:list={['punch', cls]} aria-label={`Punch card: in the set at ${played} of ${shows.length} logged shows`}>
+    {cells.map((c, i) => (
+      <>
+        {(i === 0 || cells[i - 1].year !== c.year) && <span class="yr" aria-hidden="true">’{c.year.slice(2)}</span>}
+        <a href={`/archive.html#show-${c.sh.date}`} class:list={{ on: !!c.hit, opener: c.opener, closer: c.closer }}
+           title={`${c.sh.venue} · ${shortDate(c.sh.date)}`}
+           aria-label={`${c.sh.venue}, ${shortDate(c.sh.date)}: ${c.state}`}></a>
+      </>
+    ))}
+  </div>
+)}

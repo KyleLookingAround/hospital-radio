@@ -1,0 +1,43 @@
+---
+/**
+ * The header: wordmark, the page links, and a small "listen" control that
+ * opens the Spotify player. On phones the links sit behind a <details>
+ * menu, so it all works with JavaScript off.
+ */
+import { STATIONS } from '../lib/site';
+import type { LampState } from '../lib/stats';
+interface Props { stationId: string; lamp: LampState; spotify: string; embedUrl: string; embedHeight: number; merch: string }
+const { stationId, lamp, spotify, embedUrl, embedHeight, merch } = Astro.props;
+const lampWord: Record<LampState, string> = { standby: 'on air since may ’25', scheduled: 'on air', live: 'live tonight' };
+---
+<header class="header">
+  <div class="wrap header-bar">
+    <a class="brand wordmark" href="/" aria-label="Hospital Radio. home">hospital <span>radio</span><i>.</i></a>
+    <span class="lamp" data-state={lamp}><span>{lampWord[lamp]}</span></span>
+    <nav class="nav" aria-label="Pages">
+      {STATIONS.map((s) => <a href={s.href} aria-current={s.id === stationId ? 'page' : undefined}>{s.label}</a>)}
+      {merch && <a class="ext" href={merch} target="_blank" rel="noopener">merch</a>}
+    </nav>
+    {embedUrl ? (
+      <button class="listen" id="tunein" type="button" aria-expanded="false" aria-controls="tray"><span class="t">listen</span></button>
+    ) : (
+      spotify && <a class="listen" href={spotify} target="_blank" rel="noopener">listen</a>
+    )}
+    <details class="menu" id="menu">
+      <summary aria-label="Menu"><span></span></summary>
+      <div class="menu-sheet">
+        {STATIONS.map((s) => <a href={s.href} aria-current={s.id === stationId ? 'page' : undefined}>{s.id === 'index' ? 'home' : s.label}</a>)}
+        {merch && <a href={merch} target="_blank" rel="noopener">merch ↗</a>}
+      </div>
+    </details>
+  </div>
+  {embedUrl && (
+    <div class="tray" id="tray" hidden data-embed={embedUrl}>
+      <div class="wrap tray-inner">
+        <div class="tray-head"><span class="label">now playing</span><button class="tray-close" type="button" id="trayClose" aria-label="Close the player">✕</button></div>
+        <iframe id="radioFrame" title="Hospital Radio on Spotify" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style={`height:${embedHeight}px`}></iframe>
+      </div>
+    </div>
+  )}
+  {embedUrl && spotify && <noscript><a class="listen-nojs" href={spotify}>open in spotify</a></noscript>}
+</header>

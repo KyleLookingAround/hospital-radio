@@ -1,12 +1,10 @@
 /* ============================================================
    Hospital Radio. — the behaviour layer.
    Every page is fully rendered at build time; this only adds the live
-   touches. The site works without it: the tuner's DIAL is a <details>,
-   the lightbox is :target-driven, Tune In has a <noscript> link.
+   touches. The site works without it: the menu is a <details>, the
+   lightbox is :target-driven, "listen" has a <noscript> link.
    ============================================================ */
 import './tuner';
-import './clock';
-import './radio';
 import './video';
 import './lightbox';
 import './shows';

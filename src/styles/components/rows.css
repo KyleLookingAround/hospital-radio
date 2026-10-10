@@ -13,7 +13,7 @@
 .show .body .sub{ font-family:var(--mono); font-size:12px; color:var(--muted); letter-spacing:.03em; line-height:1.6; }
 .show .body .sub .w{ color:var(--ink); }
 .show .body .note{ margin-top:2px; }
-.show .no{ position:absolute; right:10px; top:10px; font-family:var(--mono); font-size:10px; letter-spacing:.18em; color:var(--soft); }
+.show .no{ position:absolute; right:10px; top:10px; font-family:var(--mono); font-size:10px; letter-spacing:.18em; color:var(--muted); }
 .show .act{ text-align:right; display:grid; gap:8px; justify-items:end; }
 .soldout,.soon{ font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; padding:9px 12px; border:1px solid; border-radius:var(--r1); white-space:nowrap; }
 .soldout{ color:var(--rose-text); } .soon{ color:var(--muted); border-style:dashed; }

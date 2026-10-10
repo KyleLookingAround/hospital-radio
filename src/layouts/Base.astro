@@ -5,10 +5,9 @@
  * inside this. The old hash-route shim is kept so shared links still work.
  */
 import '../styles/index.css';
-import { getBand, getShows, getSongs, getGallery, getMusic, jsonLd, station as getStation, STATIONS, BAND, ytId } from '../lib/site';
-import { PROGRAMMES, DEFAULT_PROGRAMME } from '../lib/programme';
-import { lampState, songStats, daysSince, shortDate } from '../lib/stats';
-import Tuner from '../components/Tuner.astro';
+import { getBand, getShows, jsonLd, station as getStation } from '../lib/site';
+import { lampState } from '../lib/stats';
+import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 
 interface Props {
@@ -23,10 +22,7 @@ interface Props {
 
 const SITE_URL = 'https://hospitalradiofullstop.co.uk/';
 const band = await getBand();
-const music = await getMusic();
-const { upcoming, past } = await getShows();
-const songs = await getSongs();
-const photos = await getGallery();
+const { upcoming } = await getShows();
 
 const {
   title = 'Hospital Radio. — Manchester midwest emo',
@@ -39,48 +35,18 @@ const {
 const pageUrl = SITE_URL + page;
 const st = getStation(station);
 const lamp = lampState(upcoming);
-const songCount = songStats(past, songs.map((s) => s.title)).length;
-const last = past[0];
-const meta: Record<string, string> = {
-  index: 'the booth',
-  shows: upcoming.length ? `${upcoming.length} scheduled` : (last ? `nothing booked · ${daysSince(last.date)} days of dead air` : 'nothing booked'),
-  archive: `${past.length} logged`,
-  lyrics: `${songCount} songs · ${songs.length} with words`,
-  listen: `${music.releases.length} releases`,
-  photos: `${photos.length} photos`,
-  booking: 'patient file · hr-877',
-};
 const radioOn = band.radio.enabled && band.radio.embedUrl;
-const release = music.releases[0];
-const nowPlaying = release ? `${release.title} · ${[release.type, release.year].filter(Boolean).join(' ')}` : '';
-const next = upcoming[0];
-const lyricLine = (songs.find((s) => s.lyrics)?.lyrics || '').split('\n').map((l) => l.trim()).filter((l) => l && !/^\(/.test(l))[0] || '';
-const fragments: Record<string, string> = {
-  index: `${band.radio.frequency} fm · hospital radio · manchester`,
-  shows: next ? `up next · ${shortDate(next.date)} · ${next.venue}` : (last ? `nothing booked · ${daysSince(last.date)} days of dead air` : 'nothing booked yet'),
-  archive: last ? `last transmission · ${shortDate(last.date)} · ${last.venue}${last.city ? ', ' + last.city : ''}` : 'the log is empty',
-  lyrics: lyricLine ? `“${lyricLine.toLowerCase()}”` : `${songCount} songs in the set`,
-  listen: release ? `‘${release.title.toLowerCase()}’ · out now on every platform` : 'on the air',
-  photos: `${photos.length} photos from the booth`,
-  booking: 'patient file hr-877 · bookings open',
-  request: 'the request line is open · dedicate a song to someone on the ward',
-};
-const radioConfig = {
-  min: BAND.min, max: BAND.max, current: st.id,
-  stations: STATIONS.map((s) => ({ id: s.id, freq: +s.freq, href: s.href, label: s.id === 'index' ? 'the booth' : s.id === 'shows' ? 'the schedule' : s.id === 'photos' ? 'the darkroom' : s.id === 'booking' ? 'for promoters' : s.id === 'request' ? 'the request line' : s.label, fragment: fragments[s.id] || '' })),
-  music: { freq: +STATIONS[0].freq, audio: release?.audio || '', yt: release ? (ytId(release.url) || '') : '', title: release?.title || '' },
-};
 ---
 
 <!doctype html>
-<html lang="en" style={`--freq:${st.freq}`} data-station={st.id} data-static={band.intro.enabled ? 'on' : 'off'} data-programme={DEFAULT_PROGRAMME.id} data-shift={DEFAULT_PROGRAMME.shift}>
+<html lang="en" data-station={st.id}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{title}</title>
 <meta name="description" content={description}>
-<meta name="theme-color" content="#1D2E63">
-<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#F5E9D7">
+<meta name="color-scheme" content="light">
 <link rel="canonical" href={pageUrl}>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content={band.name}>
@@ -97,7 +63,7 @@ const radioConfig = {
 <meta name="twitter:title" content={title}>
 <meta name="twitter:description" content={description}>
 <meta name="twitter:image" content={`${SITE_URL}assets/og-image.jpg`}>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2316224A'/%3E%3Ccircle cx='16' cy='17' r='6' fill='%23DF8090'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23F5E9D7'/%3E%3Ccircle cx='16' cy='17' r='6' fill='%23DF8090'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <link rel="sitemap" href="/sitemap-index.xml">
@@ -118,14 +84,7 @@ const radioConfig = {
 <body class={bodyClass}>
 <a class="skip" href="#main">skip to content</a>
 
-<header class="topstrip">
-  <a class="brand wordmark" href="/" aria-label="Hospital Radio. home">hospital <span>radio</span><i>.</i></a>
-  <span class="lamp" data-state={lamp}><span>{lamp === 'standby' ? 'standby' : lamp === 'live' ? 'live tonight' : 'on air'}</span></span>
-</header>
-
-<Tuner stationId={st.id} lamp={lamp} meta={meta} spotify={band.links.spotify} embedUrl={radioOn ? band.radio.embedUrl : ''} embedHeight={band.radio.height} frequency={band.radio.frequency} nowPlaying={nowPlaying} programmeName={DEFAULT_PROGRAMME.name} hasVideo={!!radioConfig.music.yt || !!radioConfig.music.audio} />
-<script type="application/json" id="radio-config" set:html={JSON.stringify(radioConfig).replace(/</g, '\\u003c')} />
-<script type="application/json" id="programmes" set:html={JSON.stringify(PROGRAMMES).replace(/</g, '\\u003c')} />
+<Header stationId={st.id} lamp={lamp} spotify={band.links.spotify} embedUrl={radioOn ? band.radio.embedUrl : ''} embedHeight={band.radio.height} merch={band.links.merch} />
 
 <main id="main">
 <slot />

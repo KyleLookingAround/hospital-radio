@@ -1,60 +1,13 @@
-/* ============================================================
-   MOTION — everything that moves lives here, inside the
-   reduced-motion guard. Motion only ever reads state: the needle
-   moving between stations, paper settling, a trace drawing.
-   ============================================================ */
+/* Motion is sparse and only ever reads state. Everything sits inside the reduced-motion guard. */
 @media (prefers-reduced-motion: no-preference){
-  /* station change: cross-document view transition with a flash of static */
-  @view-transition{ navigation:auto; }
-  html[data-static="off"]{ view-transition-name:none; }
-  ::view-transition-old(root){ animation:static-out .2s steps(4) both; }
-  ::view-transition-new(root){ animation:static-in .32s steps(6) both; }
-  ::view-transition-group(needle),::view-transition-group(readout){ animation-duration:.42s; animation-timing-function:cubic-bezier(.2,.75,.2,1); }
-  ::view-transition-old(tuner),::view-transition-new(tuner){ animation:none; mix-blend-mode:normal; }
-  @keyframes static-out{ 0%{ opacity:1; } 50%{ opacity:.6; filter:contrast(1.6) brightness(1.2); } 100%{ opacity:0; filter:contrast(2) brightness(1.4); } }
-  @keyframes static-in{ 0%{ opacity:0; filter:contrast(2.2) brightness(1.5) saturate(.4); } 40%{ opacity:.85; filter:contrast(1.4) brightness(1.15) saturate(.7); } 100%{ opacity:1; filter:none; } }
-
-  /* the lamp breathes on standby, beats when live / on air */
-  .lamp[data-state="standby"]::before{ animation:breathe 4s ease-in-out infinite; }
-  .lamp[data-state="live"]::before,.lamp[data-state="onair"]::before,.tuner:has(.tunein[aria-expanded="true"]) .lamp::before{ animation:beat 1.1s ease-in-out infinite; }
-  @keyframes breathe{ 0%,100%{ opacity:.45; } 50%{ opacity:.9; } }
-  @keyframes beat{ 0%,100%{ transform:scale(1); } 14%{ transform:scale(1.35); } 28%{ transform:scale(1); } 42%{ transform:scale(1.2); } 56%{ transform:scale(1); } }
-
-  /* the tray and dial sheet slide */
-  .tray{ animation:tray-in var(--mid) var(--ease) both; }
-  @keyframes tray-in{ from{ opacity:0; transform:translateY(-8px); } }
-  @media (max-width:759px){ @keyframes tray-in{ from{ opacity:0; transform:translateY(12px); } } }
-  .dial[open] .dial-sheet{ animation:sheet-up var(--mid) var(--ease) both; }
-  @keyframes sheet-up{ from{ opacity:0; transform:translateY(16px); } }
-
-  /* signal lock: the home hero resolves from static */
-  .hero-img{ animation:lock .9s var(--ease) both; }
-  .hero-word,.hero-ident,.hero-tag{ animation:rise .8s var(--ease) both; animation-delay:.25s; }
-  .hero-tag{ animation-delay:.4s; }
-  @keyframes lock{ from{ filter:contrast(.5) brightness(.4) blur(6px); transform:scale(1.04); } to{ filter:none; transform:none; } }
-  @keyframes rise{ from{ opacity:0; transform:translateY(14px); } }
-
-  /* scroll-driven: sheets settle, traces draw, tallies fill */
+  .hero-img{ animation:hero-in 1.2s var(--ease) both; }
+  @keyframes hero-in{ from{ opacity:0; transform:scale(1.02); } }
+  .menu[open] .menu-sheet{ animation:menu-in var(--fast) var(--ease) both; }
+  @keyframes menu-in{ from{ opacity:0; transform:translateY(-4px); } }
   @supports (animation-timeline: view()){
-    .sheet[data-settle]{ animation:settle linear both; animation-timeline:view(); animation-range:entry 0% entry 35%; }
-    @keyframes settle{ from{ opacity:.4; transform:translateY(22px) rotate(calc(var(--tilt, 0) * 1deg - .6deg)); } to{ opacity:1; transform:translateY(0) rotate(calc(var(--tilt, 0) * 1deg)); } }
-    .ekg .pulse{ stroke-dasharray:1400; stroke-dashoffset:1400; animation:trace linear both; animation-timeline:view(); animation-range:entry 0% entry 90%; }
+    .pulse path{ stroke-dasharray:6000; stroke-dashoffset:6000; animation:trace linear both; animation-timeline:view(); animation-range:entry 0% entry 80%; }
     @keyframes trace{ to{ stroke-dashoffset:0; } }
     .tally{ clip-path:inset(0 100% 0 0); animation:fill linear both; animation-timeline:view(); animation-range:entry 10% entry 60%; }
     @keyframes fill{ to{ clip-path:inset(0 0 0 0); } }
-    .stat .n{ animation:rise linear both; animation-timeline:view(); animation-range:entry 0% entry 40%; }
   }
-  .btn,.preset,.swing,.photos .ph img,.strip img{ transition-duration:var(--fast); }
-}
-
-/* radio face + monitor motion */
-@media (prefers-reduced-motion: no-preference){
-  .mon-sweep{ animation:sweep 6s linear infinite; }
-  @keyframes sweep{ from{ left:-20%; } to{ left:102%; } }
-  .mon-trace{ stroke-dasharray:4000; stroke-dashoffset:4000; animation:trace-in 3s ease-out .4s both; }
-  @keyframes trace-in{ to{ stroke-dashoffset:0; } }
-  .face .riso-ghost{ animation:misreg 7s ease-in-out infinite alternate; }
-  @keyframes misreg{ from{ transform:translate(3px, -2px); } to{ transform:translate(-4px, 3px); } }
-  html[data-radio="on"] .face-bg{ animation:flicker 4s steps(12) infinite; }
-  @keyframes flicker{ 0%,100%{ opacity:1; } 45%{ opacity:.96; } 50%{ opacity:1; } 70%{ opacity:.93; } 72%{ opacity:1; } }
 }

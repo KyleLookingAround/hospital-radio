@@ -1,0 +1,46 @@
+---
+/**
+ * One row of the chart: rank, title, tally, count, the mini punch strip,
+ * stamps and the meta line. `inverted` sits the row on the booth (the #1).
+ * Owned by the songs pages.
+ */
+import type { Show } from '../lib/site';
+import type { SongStat } from '../lib/stats';
+import { displayTitle, shortDate, parseDay, ONE_DAY } from '../lib/stats';
+import Tally from './Tally.astro';
+import Stamp from './Stamp.astro';
+import PunchCard from './PunchCard.astro';
+interface Props { rank: number; stat: SongStat; hasLyrics: boolean; inverted?: boolean; latest?: string | null; logged?: Show[]; tiedWith?: string }
+const { rank, stat, hasLyrics, inverted = false, latest = null, logged = [], tiedWith } = Astro.props;
+const title = displayTitle(stat.title);
+const coverNote = (stat.title.match(/\(([^)]*)\)/)?.[1] || 'cover').toLowerCase();
+const daysBetween = (a: string, b: string) => Math.round((+parseDay(a) - +parseDay(b)) / ONE_DAY);
+const opener = stat.plays > 0 && stat.opened > 0 && stat.opened * 2 >= stat.plays;
+const closer = stat.plays > 0 && stat.closed > 0 && stat.closed * 2 >= stat.plays;
+const debut = !!(latest && stat.firstPlayed && daysBetween(latest, stat.firstPlayed) <= 120);
+const dormant = !!(latest && stat.lastPlayed && daysBetween(latest, stat.lastPlayed) > 180);
+const sets = logged.length;
+const pct = sets && stat.plays ? Math.round((stat.plays / sets) * 100) : 0;
+const href = `/lyrics/${stat.slug}.html`;
+---
+<li class:list={['chart-row', { inverted, no1: inverted, unplayed: stat.plays === 0 }]} id={`rank-${stat.slug}`}>
+  <span class="rank" aria-label={stat.plays ? `number ${rank}` : 'unranked'}>{stat.plays ? String(rank).padStart(2, '0') : '—'}</span>
+  <span class="title">
+    <a href={href}>{title}</a>
+    {stat.cover && <Stamp kind="cover" text={coverNote} />}
+    {opener && <Stamp kind="opener" text={`opener ×${stat.opened}`} />}
+    {closer && <Stamp kind="closer" text={`closer ×${stat.closed}`} />}
+    {debut && stat.firstPlayed && <Stamp kind="debut" text={`debut ’${stat.firstPlayed.slice(2, 4)}`} />}
+    {dormant && <Stamp kind="dormant" class="soft" />}
+  </span>
+  {stat.plays > 0 ? <Tally n={stat.plays} /> : <span class="tally none" aria-hidden="true"></span>}
+  <span class="count">{stat.plays}<small>{stat.plays === 1 ? 'play' : 'plays'}</small></span>
+  {sets > 0 && <span class="card"><PunchCard stat={stat} shows={logged} size="mini" /><span class="pct">{stat.plays}/{sets} sets{pct === 100 ? ' · every one' : ''}</span></span>}
+  <span class="meta">
+    {inverted && <span class="no1-line">№ {String(rank).padStart(2, '0')} · most played live{tiedWith ? ` · joint first with ${tiedWith}` : ''}</span>}
+    {stat.firstPlayed ? <span>first {shortDate(stat.firstPlayed)}</span> : <span>not played live yet</span>}
+    {stat.lastPlayed && <span>last {shortDate(stat.lastPlayed)}</span>}
+    {hasLyrics ? <a class="words" href={href}>words ▸</a> : <span class="nowords">no words filed yet</span>}
+  </span>
+  {inverted && <span class="sticker no1-sticker" style="--rot:5" aria-hidden="true">{tiedWith ? 'joint №1' : 'number one'}</span>}
+</li>

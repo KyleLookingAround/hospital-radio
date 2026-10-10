@@ -1,0 +1,27 @@
+---
+/**
+ * The pulse: the band's history as one thin ECG line, a beat per show,
+ * placed by date. Flat in dead air, busy on tour. A signature detail, not
+ * a dashboard.
+ */
+import type { Show } from '../lib/site';
+interface Props { past: Show[]; class?: string }
+const { past, class: cls = '' } = Astro.props;
+const W = 1200, H = 60, BASE = 40;
+const chrono = [...past].sort((a, b) => +a._d - +b._d);
+const t0 = chrono[0] ? +chrono[0]._d : Date.now();
+const t1 = Math.max(Date.now(), chrono.length ? +chrono[chrono.length - 1]._d : Date.now()) + 14 * 86400000;
+const x = (t: number) => ((t - t0) / (t1 - t0)) * (W - 40) + 20;
+let d = `M0 ${BASE} H${Math.max(0, x(t0) - 8)}`;
+let lastX = x(t0) - 8;
+for (const s of chrono) {
+  const px = x(+s._d);
+  const w = Math.min(12, Math.max(5, (px - lastX) * 0.9));
+  d += ` H${(px - w / 2).toFixed(1)} l${(w * .15).toFixed(1)} -4 l${(w * .15).toFixed(1)} 4 l${(w * .15).toFixed(1)} -26 l${(w * .2).toFixed(1)} 36 l${(w * .15).toFixed(1)} -12 l${(w * .2).toFixed(1)} 2`;
+  lastX = px + w / 2;
+}
+d += ` H${W}`;
+---
+<svg class:list={['pulse', cls]} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role="img" aria-label={`${past.length} shows played, drawn as a heartbeat line`}>
+  <path d={d} fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
+</svg>

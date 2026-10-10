@@ -1,4 +1,4 @@
-/* the tuner: player tray, the DIAL sheet, the lamp */
+/* the header: the player tray, the phone menu, the lamp */
 const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector<T>(s);
 
 const tunein = $<HTMLButtonElement>('#tunein');
@@ -9,13 +9,12 @@ const lamp = $('#lamp');
 let lampWas = lamp?.dataset.state || 'standby';
 let wordWas = lampWord?.textContent || '';
 
-const spot = document.querySelector<HTMLDetailsElement>('.tray-spotify');
-spot?.addEventListener('toggle', () => { if (spot.open && frame && !frame.src) frame.src = tray?.dataset.embed || ''; }); // load the embed only when asked for
 const setOpen = (open: boolean) => {
   if (!tunein || !tray) return;
+  if (open && frame && !frame.src) frame.src = tray.dataset.embed || ''; // load (and start) only on first open
   tray.hidden = !open;
   tunein.setAttribute('aria-expanded', open ? 'true' : 'false');
-  const t = tunein.querySelector('.t'); if (t) t.textContent = open ? 'close' : 'monitor';
+  const t = tunein.querySelector('.t'); if (t) t.textContent = open ? 'close' : 'listen';
   if (lamp && lampWord) {
     if (open) { lampWas = lamp.dataset.state || lampWas; wordWas = lampWord.textContent || wordWas; lamp.dataset.state = 'onair'; lampWord.textContent = 'on air'; }
     else { lamp.dataset.state = lampWas; lampWord.textContent = wordWas; }
@@ -25,12 +24,9 @@ const setOpen = (open: boolean) => {
 tunein?.addEventListener('click', () => setOpen(tray?.hidden ?? true));
 $('#trayClose')?.addEventListener('click', () => setOpen(false));
 
-/* the DIAL sheet (mobile): lock scroll while open, Escape closes, focus the current station */
-const dial = $<HTMLDetailsElement>('#dial');
-dial?.addEventListener('toggle', () => {
-  document.documentElement.style.overflow = dial.open ? 'hidden' : '';
-  if (dial.open) (dial.querySelector<HTMLElement>('[aria-current="page"]') || dial.querySelector<HTMLElement>('.dial-row'))?.focus();
-});
+/* the phone menu: Escape closes, click outside closes */
+const dial = $<HTMLDetailsElement>('#menu');
+document.addEventListener('click', (e) => { if (dial?.open && !dial.contains(e.target as Node)) dial.open = false; });
 
 document.addEventListener('keydown', (e) => {
   if (e.key !== 'Escape') return;

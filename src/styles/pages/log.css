@@ -1,1 +1,130 @@
-/* page: log — owned by the log page */
+/* page: log — owned by the log page (root: body.log-page) */
+
+/* ---- layout: the sheet + the stats rail ---- */
+.log-page .log-layout{ display:grid; gap:clamp(28px, 4vw, 44px); align-items:start; }
+.log-page .log-sheet{ overflow:visible; }
+.log-page .log-head{ display:grid; gap:10px; margin-bottom:clamp(16px, 3vw, 26px); }
+.log-page .log-key{ font-size:var(--t-xs); letter-spacing:.04em; display:flex; flex-wrap:wrap; align-items:center; gap:6px 8px; line-height:1.8; }
+.log-page .log-key .stamp{ transform:none; }
+@media (min-width:920px){
+  .log-page .log-layout{ grid-template-columns:minmax(0, 1fr) 300px; }
+  .log-page .rail-sticky{ position:sticky; top:calc(var(--tuner-h) + 20px); display:grid; gap:18px; }
+}
+@media (min-width:1100px){ .log-page .log-layout{ grid-template-columns:minmax(0, 1fr) 340px; } }
+
+/* ---- the year bands: one sticky ECG per year ---- */
+.log-page .year-group{ display:grid; gap:0; margin-top:clamp(18px, 3vw, 28px); }
+.log-page .year-group:first-of-type{ margin-top:0; }
+.log-page .year-band{
+  position:sticky; top:var(--tuner-h); z-index:3; display:grid; grid-template-columns:auto 1fr; grid-template-areas:"year trace" "year meta"; column-gap:clamp(12px, 2.5vw, 24px); row-gap:2px; align-items:center;
+  margin:0 calc(-1 * clamp(18px, 4vw, 44px)); padding:10px clamp(18px, 4vw, 44px) 8px;
+  background:var(--paper); border-bottom:1px solid var(--line-2); box-shadow:0 10px 18px -16px rgba(0,0,0,.35);
+}
+.log-page .yb-year{ grid-area:year; font-size:clamp(40px, 6vw, 64px); color:var(--ink); line-height:.85; letter-spacing:-.05em; }
+.log-page .yb-year .numeral{ display:block; }
+.log-page .yb-trace{ grid-area:trace; min-width:0; }
+.log-page .yb-trace svg{ display:block; width:100%; height:clamp(44px, 6vw, 64px); overflow:visible; }
+.log-page .yb-tick{ stroke:var(--line-2); stroke-width:1; vector-effect:non-scaling-stroke; }
+.log-page .yb-flat{ fill:none; stroke:var(--line); stroke-width:1; vector-effect:non-scaling-stroke; }
+.log-page .yb-path{ fill:none; stroke:var(--rose); stroke-width:1.8; stroke-linejoin:round; vector-effect:non-scaling-stroke; filter:drop-shadow(0 0 3px rgba(197,88,108,.45)); }
+.log-page .yb-meta{ grid-area:meta; font-size:var(--t-xs); letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+.log-page .yb-meta b{ color:var(--rose-text); font-weight:600; }
+.log-page .yb-span{ letter-spacing:.06em; text-transform:none; }
+@media (prefers-reduced-motion: no-preference){
+  @supports (animation-timeline: view()){
+    .log-page .yb-path{ stroke-dasharray:2400; stroke-dashoffset:2400; animation:yb-trace linear both; animation-timeline:view(); animation-range:entry 0% entry 80%; }
+    @keyframes yb-trace{ to{ stroke-dashoffset:0; } }
+  }
+}
+
+/* ---- the rows ---- */
+.log-page .show{ scroll-margin-top:calc(var(--tuner-h) + 120px); }
+.log-page .log-row{ position:relative; }
+.log-page .log-row:last-child .show{ border-bottom:1px solid var(--line); }
+.log-page .log-row:first-child .show{ border-top:0; }
+.log-page .show .no{ font-size:11px; color:var(--muted); letter-spacing:.2em; }
+.log-page .show.aired .date .day{ font-weight:500; color:var(--ink); }
+.log-page .setlist li .stamp.twice{ color:var(--muted); }
+.log-page .log-row.went .show{ background:rgba(223,128,144,.09); }
+
+/* the first transmission: a stamped ticket */
+.log-page .show.first{ background:linear-gradient(90deg, var(--card) 0, transparent 70%); border:1px dashed var(--line-2); border-radius:var(--r2); padding:22px 14px; margin-top:10px; }
+.log-page .show.first .body h3{ gap:10px 16px; }
+.log-page .show.first .body h3 .stamp.first{ font-size:11px; padding:7px 11px; border-width:2px; transform:rotate(-5deg); color:var(--rose-text); background:rgba(245,233,215,.6); box-shadow:0 1px 0 rgba(0,0,0,.08); }
+.log-page .show.first .date .day{ color:var(--rose-text); }
+.log-page .show.first .body h3::before{ content:""; position:absolute; left:0; right:0; top:0; height:6px; background:repeating-linear-gradient(90deg, var(--rose) 0 14px, transparent 14px 22px); opacity:.45; border-radius:var(--r2) var(--r2) 0 0; }
+.log-page .show.first .note .scrawl{ font-size:clamp(22px, 3vw, 30px); background:linear-gradient(transparent 50%, var(--marker) 50% 92%, transparent 92%); padding:0 .25em; transform:rotate(-2deg); }
+
+/* "were you there?" stamp */
+.log-page .attend{
+  position:absolute; left:10px; top:96px; width:78px; min-height:44px; display:grid; place-items:center; padding:5px 6px; cursor:pointer;
+  background:transparent; border:1.5px solid var(--rose); color:var(--rose-text); font-size:8.5px; letter-spacing:.14em; line-height:1.35; text-align:center; white-space:normal;
+  transform:rotate(-6deg); transition:background var(--fast), color var(--fast), transform var(--fast), opacity var(--fast); opacity:.75;
+}
+.log-page .attend[hidden]{ display:none; }
+.log-page .attend:hover,.log-page .attend:focus-visible{ opacity:1; transform:rotate(-3deg); }
+.log-page .attend .a-on{ display:none; }
+.log-page .attend[aria-pressed="true"]{ opacity:1; background:var(--rose-text); border-color:var(--rose-text); color:var(--paper); transform:rotate(-8deg) scale(1.04); box-shadow:0 2px 0 rgba(0,0,0,.18); }
+.log-page .attend[aria-pressed="true"] .a-off{ display:none; }
+.log-page .attend[aria-pressed="true"] .a-on{ display:block; }
+.log-page .show.first ~ .attend{ left:16px; top:118px; }
+@media (max-width:640px){
+  .log-page .year-band{ top:0; grid-template-columns:auto 1fr; margin-inline:calc(-1 * clamp(18px, 4vw, 44px)); padding-inline:clamp(18px, 4vw, 44px); }
+  .log-page .yb-year{ font-size:38px; }
+  .log-page .show{ scroll-margin-top:96px; padding-right:4px; }
+  .log-page .show .no{ margin-bottom:-2px; }
+  .log-page .attend{ left:auto; right:8px; top:10px; width:72px; }
+  .log-page .show.first ~ .attend{ left:auto; right:14px; top:30px; }
+  .log-page .show.first{ padding:22px 10px 18px; }
+}
+
+/* ---- the foot ---- */
+.log-page .log-foot{ margin-top:clamp(26px, 5vw, 44px); display:grid; gap:14px; }
+.log-page .log-foot .scrawl{ font-size:clamp(24px, 3vw, 32px); }
+
+/* ---- the stats rail (booth) ---- */
+.log-page .log-rail{ display:grid; gap:18px; }
+.log-page .rail-stats{ grid-template-columns:repeat(2, 1fr); gap:14px 18px; }
+.log-page .rail-stats .stat .n{ font-size:clamp(36px, 4vw, 52px); }
+.log-page .stats-sheet{ display:grid; gap:10px; }
+.log-page .sheet-k{ color:var(--pink); }
+.log-page .stats-sheet .ledger-line{ min-height:34px; }
+.log-page .stats-sheet .ledger-line .v{ text-align:right; max-width:60%; line-height:1.45; }
+.log-page .rail-tags .tag{ padding:5px 9px; }
+.log-page .wristband{ border:1.5px dashed var(--pink); background:repeating-linear-gradient(135deg, transparent 0 10px, rgba(223,128,144,.05) 10px 11px), var(--booth-2); display:grid; gap:8px; justify-items:start; }
+.log-page .wristband[hidden]{ display:none; }
+.log-page .wb-line{ font-size:var(--t-s); color:var(--booth-dim); letter-spacing:.03em; line-height:1.6; }
+.log-page .wb-line b{ color:var(--pink); font-weight:600; font-size:1.25em; }
+.log-page .wb-line i{ font-style:normal; color:var(--booth-ink); border:1px solid var(--pink); border-radius:2px; padding:0 4px; font-size:.85em; letter-spacing:.1em; text-transform:uppercase; }
+.log-page .stats-sheet .ledger-line .v{ max-width:64%; }
+/* local workaround (shared rows.css): a song with two stamps must not squeeze its title to one word per line */
+.log-page .setlist li{ flex-wrap:wrap; row-gap:4px; }
+.log-page .setlist li a{ flex:1 1 110px; min-width:0; }
+.log-page .setlist li .stamp{ flex:none; }
+.log-page .setlist li a{ padding-block:5px; }
+@media (max-width:640px){
+  /* keep the stamp clear of long venue names */
+  .log-page .log-row .show .body h3,.log-page .log-row .show .no{ padding-right:88px; }
+}
+@media (max-width:759px){ .log-page .sheet .tape.tr,.log-page .sheet .tape.br{ right:8px; } }
+/* phones: the stamp sits in flow under the row — nothing to collide with */
+@media (max-width:640px){
+  .log-page .log-row{ display:grid; }
+  .log-page .log-row .show .body h3,.log-page .log-row .show .no{ padding-right:0; }
+  .log-page .attend,.log-page .show.first ~ .attend{ position:static; justify-self:start; width:auto; min-width:96px; margin:-8px 0 14px 78px; padding:8px 12px; transform:rotate(-2deg); font-size:9px; }
+  .log-page .attend[aria-pressed="true"]{ transform:rotate(-3deg); }
+  .log-page .show.first ~ .attend{ margin:-4px 0 0 88px; }
+  .log-page .log-row.went .show{ background:transparent; }
+  .log-page .log-row.went{ background:rgba(223,128,144,.09); }
+}
+@media (max-width:640px){ .log-page .show.first ~ .attend{ margin:-30px 0 6px 96px; position:relative; z-index:2; transform:rotate(-5deg); } }
+
+/* dial it back: the "i was there" stamp is a quiet mono toggle */
+.log-page .attend,.log-page .attend[aria-pressed="true"],.log-page .attend:hover{ transform:none; box-shadow:none; opacity:1; }
+.log-page .attend{ font-size:10px; letter-spacing:.16em; color:var(--muted); border:1px solid var(--line-2); border-radius:2px; padding:5px 8px; background:transparent; }
+.log-page .attend .a-off,.log-page .attend .a-on{ color:inherit; }
+.log-page .attend:hover,.log-page .attend:focus-visible{ color:var(--rose-text); border-color:var(--rose); }
+.log-page .attend[aria-pressed="true"]{ color:var(--paper); background:var(--rose-text); border-color:var(--rose-text); }
+
+/* keep the year bands inside the viewport on phones */
+@media (max-width:640px){ .log-page .year-band{ margin-inline:0 !important; width:100% !important; left:0; right:0; } }

@@ -1,40 +1,131 @@
 ---
+/**
+ * 88.1 FM · the schedule. With shows booked: the running order of what's
+ * coming, grouped by tour. Without: the station's test card — the dead-air
+ * counter, the last three transmissions with their running orders open,
+ * where the signal has reached, and how to book the band. Never an empty box.
+ */
 import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Sheet from '../components/Sheet.astro';
 import ShowRow from '../components/ShowRow.astro';
-import { getShows } from '../lib/site';
+import Ekg from '../components/Ekg.astro';
+import { getBand, getShows } from '../lib/site';
+import { cityStats, daysSince, lastN, shortDate, toursByNote, debutSlugsByShow, headline, monthYear } from '../lib/stats';
 
-const { upcoming } = await getShows();
+const band = await getBand();
+const { upcoming, past } = await getShows();
+const next = upcoming[0];
+const last = past[0];
+const days = last ? daysSince(last.date) : 0;
+const recent = lastN(past, 3);
+// the newest shows may not have a running order logged yet — keep the latest one on file in view
+const lastLogged = past.find((s) => Array.isArray(s.setlist) && s.setlist.length);
+const extraOrder = lastLogged && !recent.includes(lastLogged) ? lastLogged : null;
+const cities = cityStats(past);
+const debuts = debutSlugsByShow(past);
+const tours = toursByNote(upcoming);
+const h = headline(past, upcoming);
+const lastLine = last ? `${shortDate(last.date)} · ${last.venue}${last.city ? `, ${last.city}` : ''}` : '';
+const title = next ? 'Up <em>next</em>.' : 'Between <em>transmissions</em>.';
+const meta = next
+  ? `<span data-show-count>${upcoming.length} scheduled</span>${last ? ` · last heard ${lastLine.toLowerCase()}` : ''}`
+  : `<b><span data-since="${last?.date ?? ''}">${days}</span> days</b> of dead air${last ? ` · last heard ${lastLine.toLowerCase()}` : ''}`;
+const status = band.status || 'the booth light’s still on — bookings open';
 ---
 
-<Base title="Shows · Hospital Radio." description="Upcoming Hospital Radio. shows — the broadcast schedule." nav="/shows" page="shows.html">
+<Base title="Shows · Hospital Radio." description="Upcoming Hospital Radio. shows — the broadcast schedule." station="shows" page="shows.html" bodyClass="schedule-page">
 
-<section class="wrap section">
-  <div class="kicker" data-reveal>Broadcast schedule</div>
-  <div class="sec-head" data-reveal style="margin-top:16px">
-    <h2>Upcoming <em>shows</em></h2>
-    <span style="font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:var(--soft)" data-show-count>{upcoming.length} SCHEDULED</span>
+<PageHead kicker="the schedule" title={title} meta={meta} />
+
+{/* ── the test card: shown when nothing is booked (also the JS fallback if every date slips past) ── */}
+<section class="deadair wrap" aria-label="Nothing booked" hidden={!!next} data-empty-fallback>
+  <div class="da-grid">
+    <div class="da-num"><span class="numeral da-days" data-since={last?.date}>{days}</span><span class="da-unit"><b>days</b> of dead air</span></div>
+    <dl class="da-read mono">
+      {last && <div><dt>last played</dt><dd><a href={`/archive.html#show-${last.date}`}>{shortDate(last.date)} · {last.venue.toLowerCase()}{last.city ? `, ${last.city.toLowerCase()}` : ''}</a></dd></div>}
+      <div><dt>next</dt><dd class="dim">not yet booked</dd></div>
+      <div><dt>on file</dt><dd>{h.showsPlayed} shows · {h.cities} cities</dd></div>
+    </dl>
   </div>
-  {upcoming.length > 0 ? (
-    <div class="shows">
-      {upcoming.map((s) => <ShowRow show={s} />)}
+</section>
+
+<section class="wrap section schedule-body">
+  <Sheet width="ledger" tilt={-0.4} class="schedule-sheet" id="schedule">
+    <span class="tape tl" aria-hidden="true"></span>
+    <span class="tape br" aria-hidden="true"></span>
+
+    {next && (
+      <div data-upcoming>
+        <div class="sheet-head">
+          <div><div class="kicker">the schedule</div><h2 class="h2">On the <em>air</em> soon</h2></div>
+          <span class="mono dim" data-show-count>{upcoming.length} scheduled</span>
+        </div>
+        {tours.map((g) => (
+          <div class="tour">
+            {g.note && <p class="tour-head mono"><span class="scrawl">{g.note}</span><span class="tour-n">{g.shows.length} dates</span></p>}
+            <div class="shows">
+              {g.shows.map((s) => <ShowRow show={s} upNext={s === next} />)}
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+
+    {/* between transmissions — the loud version */}
+    <div class="dead-air" hidden={!!next} data-empty-fallback>
+      <div class="sheet-head">
+        <div><div class="kicker">the schedule · nothing booked</div><h2 class="h2">The last three <em>transmissions</em></h2></div>
+        <span class="sticker paper" style="--rot:4">dead air · <span data-since={last?.date}>{days}</span> days</span>
+      </div>
+      <p class="quiet da-lead">no dates on the board, so here’s what went out last{extraOrder ? ' — and the last running order on file. tap a song for its page.' : ' — running orders open. tap a song for its page.'}</p>
+
+      <div class="shows recent">
+        {recent.map((s) => <ShowRow show={s} archived openSetlist debutSlugs={debuts.get(s.date)} />)}
+      </div>
+      {extraOrder && (
+        <div class="last-order">
+          <p class="label lo-k">the last running order on file · <a href={`/archive.html#show-${extraOrder.date}`}>№ {String(past.length - past.indexOf(extraOrder)).padStart(2, '0')} in the log</a></p>
+          <div class="shows recent">
+            <ShowRow show={extraOrder} archived openSetlist debutSlugs={debuts.get(extraOrder.date)} />
+          </div>
+        </div>
+      )}
+
+      <div class="prev-on">
+        <div class="sec-head">
+          <h3 class="h3">Where we’ve <em>played</em></h3>
+          <span class="mono dim">{h.cities} cities · {h.venues} rooms · since {h.firstShow ? monthYear(h.firstShow.date) : ''}</span>
+        </div>
+        <ul class="tags">
+          {cities.map((c) => <li><a class="tag" href="/archive.html">{c.city.toLowerCase()} <b>×{c.count}</b></a></li>)}
+        </ul>
+      </div>
+
+      <div class="da-foot">
+        <p class="scrawl">{status}</p>
+        <div class="actions">
+          <a class="btn solid" href="/booking.html">for promoters →</a>
+          {band.links.instagram && <a class="btn" href={band.links.instagram} target="_blank" rel="noopener">follow for dates ↗</a>}
+          <a class="btn text" href="/archive.html">the full log →</a>
+        </div>
+      </div>
     </div>
-  ) : (
-    <div class="empty" data-reveal>
-      <div class="big">Dead air.</div>
-      <div class="small">No shows on the schedule right now</div>
-      <div class="static">…but we'll be back on the airwaves soon</div>
+  </Sheet>
+</section>
+
+<section class="wrap section standby" aria-label="While you wait">
+  <div class="panel standby-panel">
+    <div>
+      <div class="kicker">while you wait</div>
+      <h2 class="h2" style="margin-top:10px">Put a <em>request</em> in.</h2>
+      <p class="dim" style="margin-top:10px;max-width:50ch">dedicate a song to someone on the ward — the most-requested one gets played at the next transmission, whenever that is.</p>
     </div>
-  )}
-  {upcoming.length > 0 && (
-    <div class="empty" hidden data-empty-fallback>
-      <div class="big">Dead air.</div>
-      <div class="small">No shows on the schedule right now</div>
-      <div class="static">…but we'll be back on the airwaves soon</div>
+    <div class="actions">
+      <a class="btn solid" href="/request.html">the request line</a>
+      {band.links.spotify && <a class="btn" href={band.links.spotify} target="_blank" rel="noopener">▶ listen now</a>}
     </div>
-  )}
-  <p style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--faint);margin-top:30px">
-    Looking for a past gig? → <a href="/archive.html" style="color:var(--rose)">the archive</a>
-  </p>
+  </div>
 </section>
 
 </Base>

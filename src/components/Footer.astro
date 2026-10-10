@@ -12,7 +12,7 @@ const socials = socialList(band.links).filter(([n]) => n !== 'Merch');
 const members = band.members.map((n) => n.toLowerCase()).join(' · ');
 const year = new Date().getFullYear();
 ---
-<footer class="footer">
+<footer class="footer booth">
   <div class="wrap">
     <div class="foot-id">
       {band.logoImage && <Picture class="mascot" src={band.logoImage} alt="" widths={[200, 400]} sizes="100px" width={96} height={117} />}
