@@ -1,12 +1,10 @@
 # Hospital Radio. — website
 
 The site for **Hospital Radio.**, a midwest-emo four-piece from Manchester.
-It is built as a radio station you tune: every page is a frequency on the
-dial, the home page is a working radio (static between stations, the band at
-87.7), a 24-hour programme reorders the front page by the clock, the show log
-is turned into a chart of every song ever played, and there is a request line
-for dedications. All of it is driven from a handful of plain-text content
-files so anyone in the band can update it. The design is explained in
+Shows, the log (every show with its running order), a chart of every song
+ever played, one page per song, photos, a promoter's file and a request line
+for dedications — all driven from a handful of plain-text content files so
+anyone in the band can update it. The design is explained in
 [docs/REDESIGN.md](docs/REDESIGN.md).
 
 **Live site: https://hospitalradiofullstop.co.uk/**
@@ -36,22 +34,15 @@ scope). Paste it into the editor's sign-in box once; it's remembered.
 |---|---|
 | `content/shows.yml` | Tour dates — the file you'll edit most. The site sorts upcoming vs archive by date automatically. |
 | `content/lyrics/` | One markdown file per song (`_TEMPLATE.md` shows the format). Repeated verses style as the chorus automatically. |
-| `content/band.yml` | Name, members, ticker headlines, links, the player, mailing list, the hero photo, the dead-air status line |
-| `content/music.yml` | Releases (optionally with an mp3 for the radio), extra videos, the merch teaser |
+| `content/band.yml` | Name, members, links, the player, mailing list, the hero photo, the dead-air status line |
+| `content/music.yml` | Releases, extra videos, the merch teaser |
 | `content/gallery.yml` | Photos (files live in `public/assets/`) |
 | `content/booking.yml` | The press kit / booking page (the promoter's file), incl. set length |
 
-**The radio and the band's music.** Flick `pwr` in the tuner and the site makes
-sound: static between stations, and the latest release as you tune towards
-87.7. By default that is the release video's audio on the booth monitor. For
-the full effect — the song heard through a real tuning filter, like a distant
-station locking in — add an mp3 under `public/assets/audio/` and set
-`audio: "/assets/audio/your-song.mp3"` on the release in `content/music.yml`
-(or upload it in `/admin/`). Nothing plays until a visitor taps the switch.
-
-**The programme.** The front page is ordered by what's "on air" in the
-visitor's local time (the night shift, ward rounds, visiting hours…). The
-schedule lives in `src/lib/programme.ts`; the copy is easy to change.
+**The chart and the song pages come from the setlists.** Every song that
+appears in a running order in `content/shows.yml` gets a page at
+`/lyrics/<song>.html` and a place on the chart, whether or not it has a lyrics
+file yet. Add the words later and the page fills in.
 
 **The request line** (`/request.html`) needs nothing set up: fans build a
 dedication card, save it, copy the text, and send it to the band by Instagram
@@ -94,11 +85,11 @@ hospital-radio/
 ├── docs/REDESIGN.md          ← what the design is and how the radio works
 ├── src/
 │   ├── content.config.ts       schemas that guard every content file at build time
-│   ├── layouts/Base.astro      shared shell (head, the tuner, the monitor, footer)
-│   ├── components/             the radio face, the vitals monitor, sheets, ledgers, stamps…
+│   ├── layouts/Base.astro      shared shell (head, header, footer)
+│   ├── components/             the pulse line, show rows, ledgers, tally marks, stamps…
 │   ├── pages/                  one .astro file per page (+ lyrics/[slug] for every song)
-│   ├── scripts/                the behaviour layer: radio.ts (the dial + audio), clock.ts
-│   │                           (the programme), tuner.ts, lightbox.ts, shows.ts…
+│   ├── scripts/                the behaviour layer: the player, the menu, the lightbox,
+│   │                           the shows split, "I was there" stamps
 │   ├── styles/                 all styling in cascade layers (tokens.css holds the palette)
 │   └── lib/                    site.ts (stations, helpers), stats.ts (the ledger), images.ts
 ├── public/                   ← served as-is
@@ -114,5 +105,5 @@ still work — a tiny shim on every page bounces them to the real pages. Fonts
 are self-hosted in `public/assets/fonts/` (no Google Fonts CDN call). Photos
 are resized to WebP at build time (`src/lib/images.ts`), so drop full-size
 JPGs into `public/assets/` and the site does the rest. Every page works with
-JavaScript switched off; the radio, the clock and the lightbox extras are
-enhancements on top.
+JavaScript switched off; the player and the lightbox extras are enhancements
+on top.

@@ -5,9 +5,9 @@
 Hospital Radio. is a four-piece (Mike, Curtis, Russo, Tom), formed **MMXXIII**
 (2023). The brand is built on one idea: the band as a **small in-hospital
 radio station** — an 87.7 FM transmission, heart-on-sleeve and a little
-broken. On the website that idea is literal: every page is a station on the
-dial, the home page is a radio you tune, and the station is always on air.
-Everything (palette, type, motion, copy) serves that conceit.
+broken. On the website that idea is carried quietly: in the words (the log,
+transmissions, dead air, the request line) and in one detail, the pulse line,
+not in gimmicks.
 
 > The whole system is defined once as design tokens in
 > `src/styles/tokens.css` (`:root`). This document explains those tokens;
@@ -44,14 +44,10 @@ Everything (palette, type, motion, copy) serves that conceit.
 The band's three colours — **cream, navy, pink** — carry the whole identity.
 Everything else is a tint or surface derived from them.
 
-### Two materials
-The site is built from two materials. The **booth** is deep navy
-(`--booth #16224A`, raised chrome `--booth-2 #1D2E63`, the darkroom
-`--booth-3 #0F1733`): photos, the tuner, the player, the footer live there,
-and text on it is cream (`--booth-ink`) or pink. **Paper** is cream sheets
-pinned onto the booth: anything you read (the schedule, the log, lyric sheets,
-the promoter's file) sits on paper in navy ink. The rule: navy ink only on
-paper; cream and pink only on the booth; handwriting (Caveat) only on paper.
+### One material, two accents
+The page is cream paper with navy ink. Navy as a surface (`--booth #16224A`)
+appears in exactly two places — the photo hero and the footer — where text is
+cream and the accent is pink. Everywhere else the accent is rose.
 
 ### Core three
 | Role | Hex | Token | Use |
@@ -151,59 +147,50 @@ Hospital nods are welcome but dry (the press kit is a "patient file", ref
 
 These recurring details *are* the brand as much as the logo:
 
-- **The dial** — the tuner is the navigation: a frequency band with the
-  stations on it, a needle, a knob and a readout. Pages are frequencies
-  (87.7 · 88.1 · 88.5 · 88.9 · 89.3 · 89.7 · 90.1 · 90.5). Changing page is
-  changing station: the needle slides and the page arrives through static.
-- **Riso print** — photographs are two-ink prints (navy and pink), halftoned
-  and slightly misregistered. Colour returns only under your finger.
-- **The ON AIR lamp** — a real status light: standby, on air, live tonight.
-- **The vitals monitor** — the band's history as a bedside ECG, one beat per
-  show, with the real numbers as readouts.
-- **Paper on the booth** — cream sheets with registration-tick pins, tape on
-  the corners, rubber stamps (OPENER, CLOSER, DEBUT, FIRST TRANSMISSION),
-  pencil tally marks, marker highlights, and pink stickers.
-- **Wayfinding signs** — the station list is set like hospital signage: a
-  pink bar, the ward name, an arrow.
-- **The programme** — the station has a schedule (the night shift, ward
-  rounds, visiting hours…) read from the visitor's clock.
+- **The pulse line** — the band's history as one thin ECG line, a beat per
+  show, placed by date. It sits under the home-page hero and marks the years
+  in the log.
+- **Tally marks** — pencil strokes in fives for play counts on the chart.
+- **Rubber stamps** — small mono labels: OPENER, CLOSER, DEBUT, FIRST
+  TRANSMISSION, UP NEXT.
+- **Ledger lines** — label, dotted leader, value: the footer, the facts on a
+  song page, the numbers on the promoter's file.
+- **The lamp** — a small rose dot in the header with the one line that matters
+  ("on air since may ’25", "live tonight").
 
 Dropped: the animated grain, scanline and vignette overlays, the light leaks,
-the glitch hover and the one-time CRT intro. Motion now only ever reads
-state — the needle moving, paper settling, a trace drawing — and all of it
-respects `prefers-reduced-motion`.
+the glitch hover, the ticker and the one-time CRT intro. Motion is sparse —
+the hero fades in, the pulse draws, tallies fill — and all of it respects
+`prefers-reduced-motion`.
 
 ---
 
 ## 6. Photography
 
-- **Treatment:** a two-ink riso print (`.riso`): desaturated, screened over
-  navy, pink multiplied over the top, a 4px halftone, a few pixels of
-  misregistration. Colour returns on hover and in the lightbox.
+- **Treatment:** used large and nearly natural — a light desaturation
+  (`grayscale(.35)`) so shots sit together; colour returns on hover and in
+  the lightbox. The home hero sits under a navy wash so the wordmark reads.
 - Live shots, grain, and low light suit the brand; over-polished, bright,
   saturated stock imagery does not.
 - **Self-host** everything in `public/assets/` (logo, gallery, share image)
   so it deploys with the site; the build resizes photos to WebP. The
-  link-preview/share image is `public/assets/og-image.jpg` (1200×630, the
-  riso treatment with the wordmark).
+  link-preview/share image is `public/assets/og-image.jpg` (1200×630).
 
 ---
 
 ## 7. Quick reference
 
 ```css
-/* The booth (body, chrome, photos) */
---booth:#16224A;  --booth-2:#1D2E63;  --booth-3:#0F1733;
---booth-ink:#F5E9D7;  --booth-dim:rgba(245,233,215,.68);
---pink:#DF8090;   --pink-soft:#F2A7B3;            /* the signal colour    */
-/* Paper (sheets) */
---paper:#F5E9D7;  --paper-2:#EFE2CB;            /* sheet / deeper cream */
---card:#FBF3E3;   --card-2:#F3E7CF;             /* slips                */
+/* Paper (the page) */
+--paper:#F5E9D7;  --paper-2:#EFE2CB;            /* page / deeper cream  */
+--card:#FBF3E3;   --card-2:#F3E7CF;             /* quiet cards          */
 --ink:#2D458F;    --ink-deep:#1D2E63;           /* navy text            */
 --muted:#4A5C97;  --soft:#6F7CAC;               /* secondary / display  */
 --rose:#C5586C;   --rose-text:#9E3A4F;  --rose-deep:#8C3142;  /* accents */
 --marker:color-mix(in srgb, var(--pink) 42%, transparent);  /* highlighter */
 --line:rgba(45,69,143,.22);  --line-2:rgba(45,69,143,.42);  /* hairlines */
+/* Navy, used as a surface only inside .booth (the hero, the footer) */
+--booth:#16224A;  --booth-ink:#F5E9D7;  --pink:#DF8090;
 
 /* Type */
 --serif:"Fraunces",Georgia,serif;               /* headings, body, mark */
