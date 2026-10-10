@@ -1,0 +1,16 @@
+---
+/**
+ * A content image ("/assets/…" path) rendered as responsive WebP variants via
+ * src/lib/images.ts, with width/height so nothing shifts. Falls back to the
+ * plain file if the path isn't in public/assets.
+ */
+import { responsive } from '../lib/images';
+interface Props { src: string; alt: string; widths?: number[]; sizes?: string; loading?: 'lazy' | 'eager'; fetchpriority?: 'high' | 'low' | 'auto'; decoding?: 'async' | 'sync' | 'auto'; class?: string; width?: number; height?: number; quality?: number }
+const { src, alt, widths = [480, 800, 1200], sizes = '100vw', loading = 'lazy', fetchpriority, decoding = 'async', class: cls, width, height, quality } = Astro.props;
+const r = await responsive(src, widths, quality);
+---
+{r ? (
+  <img class={cls} src={r.src} srcset={r.srcset} sizes={sizes} width={width ?? r.width} height={height ?? r.height} alt={alt} loading={loading} fetchpriority={fetchpriority} decoding={decoding} />
+) : (
+  <img class={cls} src={src} width={width} height={height} alt={alt} loading={loading} fetchpriority={fetchpriority} decoding={decoding} />
+)}

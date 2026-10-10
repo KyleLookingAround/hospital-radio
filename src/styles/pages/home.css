@@ -1,0 +1,34 @@
+/* page: home — the booth front */
+.hero{ position:relative; min-height:min(86svh, 820px); display:grid; align-items:end; overflow:hidden; background:var(--booth-3); isolation:isolate; }
+.hero-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 35%; z-index:0; filter:saturate(.9); }
+.hero-wash{ position:absolute; inset:0; z-index:1; background:linear-gradient(to top, var(--booth) 6%, rgba(22,34,74,.72) 42%, rgba(22,34,74,.38) 75%, rgba(22,34,74,.25)); }
+.hero-wash::after{ content:""; position:absolute; inset:0; background:var(--booth-2); mix-blend-mode:color; opacity:.55; }
+.hero-mascot{ position:absolute; z-index:3; right:clamp(14px, 4vw, 48px); top:clamp(14px, 3vw, 32px); width:clamp(72px, 9vw, 110px); height:auto; transform:rotate(5deg); filter:drop-shadow(0 10px 20px rgba(0,0,0,.5)); }
+.hero-inner{ z-index:2; padding:clamp(120px, 24vh, 240px) 0 clamp(28px, 5vw, 56px); display:grid; gap:12px; }
+.hero-ident{ color:var(--pink); display:flex; align-items:center; gap:10px; }
+.hero-ident .lampdot{ width:8px; height:8px; border-radius:50%; background:var(--pink); box-shadow:var(--pink-glow); }
+.hero-word{ font-size:var(--t-wordmark); line-height:.85; margin-left:-.04em; text-shadow:0 2px 30px rgba(0,0,0,.35); }
+.hero-tag{ color:var(--booth-dim); letter-spacing:.34em; }
+
+/* programme strip */
+.programme{ background:var(--booth-2); border-top:1px solid var(--booth-line-2); border-bottom:1px solid var(--booth-line); position:relative; z-index:1; }
+.programme .wrap{ padding:clamp(18px, 3vw, 28px) 0; display:grid; gap:18px 40px; align-items:center; }
+.prog{ display:grid; gap:4px; font-family:var(--mono); font-size:var(--t-s); letter-spacing:.03em; font-variant-numeric:tabular-nums; }
+.prog-line{ display:grid; grid-template-columns:58px 1fr; gap:12px; align-items:baseline; min-height:28px; }
+.prog-line dt{ font-size:10px; font-weight:600; letter-spacing:.26em; text-transform:uppercase; color:var(--pink); }
+.prog-line dd{ color:var(--booth-ink); line-height:1.5; }
+.prog-line dd a{ border-bottom:1px solid var(--booth-line-2); transition:border-color var(--fast), color var(--fast); }
+.prog-line dd a:hover{ color:var(--pink); border-color:var(--pink); }
+.prog-line.is-next dd a{ color:var(--pink); }
+.prog-line.also dt{ color:var(--booth-dim); }
+.prog-line.also dd{ text-transform:lowercase; }
+@media (min-width:900px){ .programme .wrap{ grid-template-columns:1fr auto; } .prog-line.also{ display:none; } }
+
+/* the two-up: schedule slip + chart */
+.two-up{ display:grid; gap:clamp(24px, 4vw, 40px); align-items:start; }
+@media (min-width:920px){ .two-up{ grid-template-columns:1.15fr 1fr; } }
+.chart.mini .chart-row{ padding:12px 6px; }
+.chart.mini .chart-row .count{ font-size:clamp(22px, 3vw, 28px); }
+.dead-air[hidden]{ display:none; }
+.dead-air .recent .show.compact{ padding-inline:0; }
+.merch-sheet{ --paper-bg:var(--paper-2); }

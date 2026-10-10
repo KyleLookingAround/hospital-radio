@@ -1,0 +1,31 @@
+/* ---- the sheet: cream paper pinned onto the booth ---- */
+.sheet{
+  --paper-bg:var(--paper);
+  position:relative; color:var(--ink); background:var(--paper-bg); color-scheme:light;
+  border-radius:var(--r2); box-shadow:var(--sheet-shadow); container-type:inline-size; container-name:sheet;
+  padding:clamp(22px, 4vw, 44px) clamp(18px, 4vw, 44px);
+  margin-inline:auto; width:100%;
+  background-image:linear-gradient(180deg, var(--card) 0, var(--paper) 120px);
+}
+.sheet.read{ max-width:var(--w-read); }
+.sheet.ledger{ max-width:var(--w-ledger); }
+.sheet.file{ max-width:var(--w-file); }
+.sheet.full{ max-width:none; }
+.sheet.tight{ padding:clamp(16px, 3vw, 28px) clamp(16px, 3vw, 28px); }
+/* registration ticks = the pins */
+.sheet::before,.sheet::after{ content:""; position:absolute; width:12px; height:12px; pointer-events:none; opacity:.55; }
+.sheet::before{ left:9px; top:9px; border-left:1px solid var(--rose); border-top:1px solid var(--rose); }
+.sheet::after{ right:9px; bottom:9px; border-right:1px solid var(--rose); border-bottom:1px solid var(--rose); }
+.sheet[data-tilt]{ transform:rotate(calc(var(--tilt, 0) * 1deg)); }
+@media (max-width:759px){ .sheet[data-tilt]{ transform:none; } }
+.sheet h2,.sheet h3,.sheet .h2,.sheet .h3{ color:var(--ink); }
+.sheet .sheet-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:12px 20px; flex-wrap:wrap; margin-bottom:clamp(16px, 3vw, 26px); }
+.sheet .sheet-head .kicker{ margin-bottom:10px; }
+.sheet p{ color:var(--muted); }
+.sheet p.lead{ color:var(--ink); font-size:var(--t-l); line-height:1.4; font-weight:340; letter-spacing:-.015em; }
+.sheet hr{ border:0; border-top:1px solid var(--line); margin:clamp(18px, 3vw, 28px) 0; }
+.sheet .rule{ border-top:1px solid var(--line); }
+/* a paper slip: a smaller sheet used for asides */
+.slip{ --paper-bg:var(--card); padding:clamp(16px, 3vw, 24px); }
+/* a dark panel on the booth (cards for video, stats) */
+.panel{ background:var(--booth-2); border:1px solid var(--booth-line); border-radius:var(--r2); padding:clamp(18px, 3vw, 28px); }

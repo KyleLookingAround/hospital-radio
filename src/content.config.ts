@@ -38,6 +38,10 @@ const band = defineCollection({
     foundedRoman: z.string().default(''),
     spotifyListeners: z.string().default(''),
     logoImage: z.union([z.literal(''), image]),
+    // the photo behind the home-page hero ("" = first landscape gallery photo)
+    heroPhoto: z.union([z.literal(''), image]).default(''),
+    // a line shown in the schedule when nothing is booked ("" = the default)
+    status: z.string().default(''),
     ticker: z.array(z.string()).default([]),
     bio: z.string().default(''),
     links: z.object({
@@ -122,6 +126,7 @@ const booking = defineCollection({
     pitch: z.string().default(''),
     forFansOf: z.string().default(''),
     stageNotes: z.string().default(''),
+    setLength: z.string().default(''),
   }),
 });
 

@@ -1,0 +1,20 @@
+/* ---- print: the promoter's file on A4; everything else is a web page ---- */
+@page{ size:A4 portrait; margin:14mm; }
+@media print{
+  html,body{ background:#fff !important; color:#111 !important; font-size:11pt; }
+  body::before,.topstrip,.tuner,.tray,.footer,.actions.no-print,.no-print,.skip,.video,.strip,.ekg{ display:none !important; }
+  body{ padding:0 !important; }
+  .wrap{ width:auto; max-width:none; }
+  .page-head{ padding:0 0 6mm; }
+  .page-head .title,.page-meta,.kicker{ color:#111 !important; }
+  .title em{ color:#9E3A4F !important; }
+  .sheet{ box-shadow:none !important; transform:none !important; background:#fff !important; border:1px solid #bbb; padding:8mm !important; max-width:none !important; color:#111 !important; break-inside:avoid; }
+  .sheet::before,.sheet::after{ opacity:1; border-color:#9E3A4F; }
+  .sheet p,.sheet .ledger-line .l,.sheet .ledger-line .v,.ledger-line .v b,.sheet .kicker,.sheet .h2,.sheet .h3{ color:#111 !important; }
+  .ledger-line .leader{ border-color:#999 !important; }
+  .stamp{ color:#9E3A4F !important; }
+  a{ color:#111 !important; text-decoration:none; }
+  a[href^="http"]::after{ content:" (" attr(href) ")"; font-size:8pt; color:#666; }
+  a[href^="mailto:"]::after{ content:""; }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+}

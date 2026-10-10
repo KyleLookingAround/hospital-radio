@@ -1,0 +1,9 @@
+---
+/** label …dotted leader… value */
+interface Props { label: string; href?: string; class?: string }
+const { label, href, class: cls = '' } = Astro.props;
+---
+<div class:list={['ledger-line', cls]}>
+  <span class="l">{label}</span><span class="leader" aria-hidden="true"></span>
+  {href ? <a class="v" href={href}><slot /></a> : <span class="v"><slot /></span>}
+</div>

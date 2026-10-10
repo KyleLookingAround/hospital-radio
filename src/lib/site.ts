@@ -4,6 +4,19 @@
  */
 import { getCollection, getEntry } from 'astro:content';
 
+/* ── the stations: every page is a frequency on the dial ── */
+export type Station = { id: string; freq: string; href: string; label: string };
+export const STATIONS: Station[] = [
+  { id: 'index',   freq: '87.7', href: '/',             label: 'index' },
+  { id: 'shows',   freq: '88.1', href: '/shows.html',   label: 'schedule' },
+  { id: 'archive', freq: '88.5', href: '/archive.html', label: 'the log' },
+  { id: 'lyrics',  freq: '88.9', href: '/lyrics.html',  label: 'songs' },
+  { id: 'listen',  freq: '89.3', href: '/listen.html',  label: 'listen' },
+  { id: 'photos',  freq: '89.7', href: '/photos.html',  label: 'darkroom' },
+  { id: 'booking', freq: '90.1', href: '/booking.html', label: 'promoters' },
+];
+export const station = (id: string) => STATIONS.find((s) => s.id === id) ?? STATIONS[0];
+
 export const DOW = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 export const MON = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 

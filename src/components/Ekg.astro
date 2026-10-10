@@ -1,7 +1,10 @@
 ---
-// The heartbeat divider, reused between sections.
+/** The heartbeat divider. `flat` draws the flatline only (dead air). */
+interface Props { flat?: boolean; class?: string }
+const { flat = false, class: cls = '' } = Astro.props;
+const d = 'M0 23 H360 l14 0 l10 -17 l11 33 l9 -28 l8 20 l7 -8 H520 l16 0 l9 -15 l10 28 l8 -22 l7 14 H1200';
 ---
-<svg class="ekg" viewBox="0 0 1200 46" preserveAspectRatio="none" aria-hidden="true">
-  <path d="M0 23 H360 l14 0 l10 -17 l11 33 l9 -28 l8 20 l7 -8 H520 l16 0 l9 -15 l10 28 l8 -22 l7 14 H1200"/>
-  <path class="pulse" d="M0 23 H360 l14 0 l10 -17 l11 33 l9 -28 l8 20 l7 -8 H520 l16 0 l9 -15 l10 28 l8 -22 l7 14 H1200"/>
+<svg class:list={['ekg', cls, { flat }]} viewBox="0 0 1200 46" preserveAspectRatio="none" aria-hidden="true">
+  <path d={flat ? 'M0 23 H1200' : d} />
+  {!flat && <path class="pulse" d={d} />}
 </svg>

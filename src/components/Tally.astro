@@ -1,0 +1,16 @@
+---
+/** Tally marks: groups of five pencil strokes (four bars + a diagonal). */
+interface Props { n: number; label?: string }
+const { n, label } = Astro.props;
+const groups = Math.floor(n / 5);
+const rest = n % 5;
+const stroke = (x: number) => `M${x} 1 L${x + 1.2} 15`;
+const group5 = `${stroke(2)} ${stroke(7)} ${stroke(12)} ${stroke(17)} M0 13 L21 3`;
+const partial = Array.from({ length: rest }, (_, i) => stroke(2 + i * 5)).join(' ');
+---
+<span class="tally" role="img" aria-label={label ?? `${n} plays`}>
+  {Array.from({ length: groups }).map(() => (
+    <svg viewBox="0 0 22 16" width="22" height="16" aria-hidden="true"><path d={group5} stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none" /></svg>
+  ))}
+  {rest > 0 && <svg viewBox={`0 0 ${rest * 5 + 2} 16`} width={rest * 5 + 2} height="16" aria-hidden="true"><path d={partial} stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none" /></svg>}
+</span>

@@ -1,35 +1,26 @@
 ---
 /**
- * A click-to-play YouTube facade — loads nothing until tapped (app.ts swaps
- * in the youtube-nocookie iframe on click). Non-YouTube URLs fall back to a
- * plain link card.
+ * A click-to-play YouTube facade — loads nothing until tapped (video.ts swaps
+ * in the youtube-nocookie iframe). Non-YouTube URLs fall back to a link card.
  */
 import { ytId } from '../lib/site';
-
-interface Props {
-  title: string;
-  url: string;
-  type?: string;
-  year?: string;
-}
-
-const { title, url, type = '', year = '' } = Astro.props;
+interface Props { title: string; url: string; type?: string; year?: string; sub?: string }
+const { title, url, type = '', year = '', sub = '' } = Astro.props;
 const id = ytId(url);
 const meta = [type, year].filter(Boolean).join(' · ');
 const thumb = id ? `https://i.ytimg.com/vi/${id}/maxresdefault.jpg` : '';
 const fallback = id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : '';
 ---
-
-<figure class="video" data-reveal>
+<figure class="video">
   <div class="video-frame">
     {id ? (
       <button class="video-fac" data-yt={id} aria-label={`Play ${title}`}>
-        <img class="thumb" src={thumb} data-fallback={fallback} alt="">
-        <span class="rec">Play</span>
+        <img class="thumb" src={thumb} data-fallback={fallback} alt="" width="1280" height="720" loading="lazy" decoding="async">
+        <span class="rec">play</span>
         <span class="play-big"><span class="tri"></span></span>
       </button>
     ) : (
-      <a class="video-fac" href={url} target="_blank" rel="noopener">
+      <a class="video-fac" href={url} target="_blank" rel="noopener" aria-label={`Open ${title}`}>
         <span class="play-big"><span class="tri"></span></span>
       </a>
     )}
@@ -37,5 +28,6 @@ const fallback = id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : '';
   <figcaption>
     <span class="vt">{title}</span>
     {meta && <span class="vm">{meta}</span>}
+    {sub && <span class="vs">{sub}</span>}
   </figcaption>
 </figure>

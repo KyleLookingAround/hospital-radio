@@ -1,0 +1,8 @@
+---
+/** A cream paper sheet pinned onto the booth — anything you read sits on one. */
+interface Props { width?: 'read' | 'ledger' | 'file' | 'full'; tilt?: number; class?: string; id?: string; settle?: boolean; tight?: boolean; }
+const { width = 'ledger', tilt = 0, class: cls = '', id, settle = true, tight = false } = Astro.props;
+---
+<section class:list={['sheet', width, cls, { tight }]} id={id} data-tilt={tilt ? '' : undefined} data-settle={settle ? '' : undefined} style={tilt ? `--tilt:${tilt}` : undefined}>
+  <slot />
+</section>

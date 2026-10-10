@@ -1,51 +1,61 @@
 ---
 /**
- * One show row — used by the Shows page (upcoming) and the Archive
- * (with expandable setlist; setlist songs deep-link to their lyrics page).
+ * One show. Variants: row (schedule + log), feature (the next show, big),
+ * compact (recent rows). The log passes `archived` for the running order,
+ * `number` for "№ 24", and `debutSlugs` so first-ever plays get a DEBUT stamp.
  */
 import { DOW, MON, yearSuffix, slug, type Show } from '../lib/site';
-
-interface Props {
-  show: Show;
-  archived?: boolean;
-  /** slugs of songs that have a lyrics page */
-  lyricSlugs?: string[];
-}
-
-const { show: s, archived = false, lyricSlugs = [] } = Astro.props;
+import { repeatsByShow } from '../lib/stats';
+import Stamp from './Stamp.astro';
+interface Props { show: Show; variant?: 'row' | 'feature' | 'compact'; archived?: boolean; number?: number; debutSlugs?: Set<string>; openSetlist?: boolean; upNext?: boolean; first?: boolean; hideAction?: boolean }
+const { show: s, variant = 'row', archived = false, number, debutSlugs, openSetlist = false, upNext = false, first = false, hideAction = false } = Astro.props;
 const dow = DOW[s._d.getDay()];
 const day = String(s._d.getDate()).padStart(2, '0');
 const m = MON[s._d.getMonth()];
-const hasLyrics = (song: string) => lyricSlugs.includes(slug(song));
+const set = Array.isArray(s.setlist) ? s.setlist.filter((t) => t && t.trim()) : [];
+const repeats = repeatsByShow(s);
+const songSlugs = Array.from(new Set(set.map(slug))).join(' ');
+const seen = new Set<string>();
 ---
-
-<div class="show" data-reveal data-date={archived ? undefined : s.date}>
+<article class:list={['show', variant, { aired: archived, first }]} id={archived ? `show-${s.date}` : undefined} data-date={archived ? undefined : s.date} data-songs={songSlugs || undefined}>
   <div class="date">
-    <div class="dow">{dow}</div>
-    <div class="day">{day}</div>
-    <div class="my">{m}{yearSuffix(s._d)}</div>
+    <span class="dow">{dow}</span>
+    <span class="day">{day}</span>
+    <span class="my">{m}{yearSuffix(s._d)}</span>
   </div>
   <div class="body">
-    <h3>{s.venue}</h3>
-    <div class="sub">{s.city || ''}{s.with && <>&nbsp;·&nbsp;<span class="w">{s.with}</span></>}</div>
-    {s.note && <div class="note">{s.note}</div>}
-    {archived && Array.isArray(s.setlist) && s.setlist.length > 0 && (
-      <details class="setlist">
-        <summary>Setlist <span class="n">{s.setlist.length}</span></summary>
-        <ol>{s.setlist.map((song) => (
-          <li>{hasLyrics(song) ? <a href={`/lyrics/${slug(song)}.html`}>{song}</a> : song}</li>
-        ))}</ol>
+    <h3>{s.venue}{upNext && <Stamp kind="upnext" />}{first && <Stamp kind="first" />}{s.soldOut && variant !== 'row' && <Stamp text="sold out" />}</h3>
+    <p class="sub">{s.city || ''}{s.with && <>&nbsp;·&nbsp;<span class="w">{s.with}</span></>}</p>
+    {s.note && <p class="note"><span class="scrawl">{s.note}</span></p>}
+    {archived && set.length > 0 && (
+      <details class="setlist" open={openSetlist}>
+        <summary>running order <span class="n">{set.length}</span></summary>
+        <ol>{set.map((song, i) => {
+          const k = slug(song);
+          const firstTime = !seen.has(k); seen.add(k);
+          const isDebut = firstTime && debutSlugs?.has(k);
+          const twice = firstTime && (repeats.get(k) ?? 0) > 1;
+          return (
+            <li data-song={k}>
+              <a href={`/lyrics/${k}.html`}>{song}</a>
+              {i === 0 && <Stamp kind="opener" />}
+              {i === set.length - 1 && set.length > 1 && <Stamp kind="closer" />}
+              {isDebut && <Stamp kind="debut" />}
+              {twice && <Stamp kind="twice" />}
+            </li>
+          );
+        })}</ol>
       </details>
     )}
-    {s.example && <span class="stamp eg">Example — delete me</span>}
+    {archived && variant !== 'compact' && set.length === 0 && <p class="quiet">no setlist logged for this one</p>}
+    {s.example && <Stamp text="example — delete me" class="soft" />}
   </div>
-  {archived ? (
-    <div class="aired">aired</div>
-  ) : s.soldOut ? (
-    <div class="act"><span class="soldout">Sold out</span></div>
-  ) : s.tickets ? (
-    <div class="act"><a class="btn" href={s.tickets} target="_blank" rel="noopener">Tickets <span class="arr">↗</span></a></div>
-  ) : (
-    <div class="act"><span class="soldout" style="color:var(--soft);border-color:var(--line-2)">Info soon</span></div>
+  {number !== undefined && <span class="no mono">№ {String(number).padStart(2, '0')}</span>}
+  {!archived && !hideAction && (
+    <div class="act">
+      {s.soldOut ? <span class="soldout">Sold out</span>
+        : s.tickets ? <a class="btn" href={s.tickets} target="_blank" rel="noopener">Tickets <span class="arr">↗</span></a>
+        : <span class="soon">Info soon</span>}
+    </div>
   )}
-</div>
+</article>

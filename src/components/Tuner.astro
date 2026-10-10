@@ -1,0 +1,62 @@
+---
+/**
+ * The tuner: the site's navigation, status lamp, frequency readout and
+ * player, rendered once. Sticky top bar on desktop; fixed bottom bar on
+ * phones (thumb reach) where the station list opens as a DIAL sheet.
+ * Everything works with JavaScript off (details/summary, real links).
+ */
+import { STATIONS, station as getStation } from '../lib/site';
+import type { LampState } from '../lib/stats';
+interface Props { stationId: string; lamp: LampState; meta: Record<string, string>; spotify: string; embedUrl: string; embedHeight: number; frequency: string; nowPlaying?: string }
+const { stationId, lamp, meta, spotify, embedUrl, embedHeight, frequency, nowPlaying } = Astro.props;
+const cur = getStation(stationId);
+const lampWord: Record<LampState, string> = { standby: 'standby', scheduled: 'on air', live: 'live tonight' };
+---
+<nav class="tuner" aria-label="Stations">
+  <div class="tuner-bar">
+    <a class="brand wordmark" href="/" aria-label="Hospital Radio. home">hospital <span>radio</span><i>.</i></a>
+    <span class="lamp" data-state={lamp} id="lamp"><span id="lampWord">{lampWord[lamp]}</span></span>
+    <span class="readout" aria-label={`Tuned to ${cur.freq} FM`}><b>{cur.freq}</b><small>FM</small></span>
+
+    <div class="ruler" aria-hidden="false">
+      <ul>
+        {STATIONS.map((s) => (
+          <li style={`--f:${s.freq}`}><a href={s.href} aria-current={s.id === stationId ? 'page' : undefined}>{s.label}</a></li>
+        ))}
+      </ul>
+      <span class="needle" aria-hidden="true"></span>
+    </div>
+
+    <details class="dial" id="dial">
+      <summary aria-label="Open the station list">dial</summary>
+      <div class="dial-sheet">
+        <div class="dial-head"><span class="label">87.7 fm · the dial</span><span class="label dim">tap a station</span></div>
+        {STATIONS.map((s) => (
+          <a class="dial-row" href={s.href} aria-current={s.id === stationId ? 'page' : undefined}>
+            <span class="f">{s.freq}</span><span class="n">{s.id === 'index' ? 'the booth' : s.id === 'shows' ? 'the schedule' : s.id === 'photos' ? 'the darkroom' : s.id === 'booking' ? 'for promoters' : s.label}</span>
+            {meta[s.id] && <span class="m">{meta[s.id]}</span>}
+          </a>
+        ))}
+      </div>
+    </details>
+
+    {embedUrl ? (
+      <button class="tunein" id="tunein" type="button" aria-expanded="false" aria-controls="tray"><span class="ring"></span><span class="t">tune in</span></button>
+    ) : (
+      spotify && <a class="tunein" href={spotify} target="_blank" rel="noopener"><span class="ring"></span><span class="t">listen</span></a>
+    )}
+  </div>
+
+  {embedUrl && (
+    <div class="tray" id="tray" hidden data-embed={embedUrl}>
+      <div class="tray-head">
+        <b>● {frequency} fm</b>
+        <span class="now">now playing · <i>{nowPlaying || 'hospital radio.'}</i></span>
+        <button class="tray-close" type="button" id="trayClose" aria-label="Close the player">✕</button>
+      </div>
+      <iframe id="radioFrame" title="Hospital Radio — now playing" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style={`height:${embedHeight}px`}></iframe>
+      <div class="tray-foot">dead air never sounded so good</div>
+    </div>
+  )}
+  {embedUrl && spotify && <noscript><a class="tunein tunein-nojs" href={spotify}>open in spotify</a></noscript>}
+</nav>

@@ -1,0 +1,40 @@
+---
+/** The sign-off card: ident, the ledger summary, socials, the stations. */
+import { getBand, getShows, socialList, STATIONS } from '../lib/site';
+import { headline, monthYear, songStats } from '../lib/stats';
+import LedgerLine from './LedgerLine.astro';
+import Picture from './Picture.astro';
+const band = await getBand();
+const { past, upcoming } = await getShows();
+const h = headline(past, upcoming);
+const songsInSet = songStats(past).length;
+const socials = socialList(band.links).filter(([n]) => n !== 'Merch');
+const members = band.members.map((n) => n.toLowerCase()).join(' · ');
+const year = new Date().getFullYear();
+---
+<footer class="footer">
+  <div class="wrap">
+    <div class="foot-id">
+      {band.logoImage && <Picture class="mascot" src={band.logoImage} alt="" widths={[200, 400]} sizes="100px" width={96} height={117} />}
+      <a class="wordmark" href="/">hospital <span>radio</span><i>.</i></a>
+      <p class="label">broadcasting from manchester · est. <b>{band.foundedRoman}</b><br>{members}</p>
+    </div>
+    <div class="foot-ledger">
+      <p class="label lead" style="color:var(--pink)">the ledger</p>
+      <div class="ledger">
+        <LedgerLine label="shows played" href="/archive.html"><b>{h.showsPlayed}</b></LedgerLine>
+        <LedgerLine label="songs in the set" href="/lyrics.html"><b>{songsInSet}</b></LedgerLine>
+        <LedgerLine label="cities reached" href="/archive.html#reach"><b>{h.cities}</b></LedgerLine>
+        {h.firstShow && <LedgerLine label="on air since">{monthYear(h.firstShow.date)}</LedgerLine>}
+      </div>
+    </div>
+    <div class="foot-social">
+      {socials.map(([n, u]) => <a href={u} target="_blank" rel="noopener">{n}</a>)}
+    </div>
+    <nav class="foot-bottom" aria-label="Footer">
+      {STATIONS.map((s) => <a href={s.href}>{s.label}</a>)}
+      {band.links.merch && <a href={band.links.merch} target="_blank" rel="noopener">↗ merch</a>}
+      <span class="copy">© {year} <span class="wordmark">hospital <span>radio</span><i>.</i></span></span>
+    </nav>
+  </div>
+</footer>

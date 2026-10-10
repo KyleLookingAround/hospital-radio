@@ -1,0 +1,7 @@
+---
+/** A rotated mono rubber stamp: OPENER ×11, CLOSER, DEBUT, COVER, DORMANT, FIRST TRANSMISSION… */
+interface Props { kind?: 'opener' | 'closer' | 'debut' | 'cover' | 'dormant' | 'first' | 'upnext' | 'twice' | 'plain'; text?: string; class?: string }
+const { kind = 'plain', text, class: cls = '' } = Astro.props;
+const defaults: Record<string, string> = { opener: 'opener', closer: 'closer', debut: 'debut', cover: 'cover', dormant: 'dormant', first: 'first transmission', upnext: 'up next', twice: '×2', plain: '' };
+---
+<span class:list={['stamp', kind, cls]}>{text ?? defaults[kind]}</span>

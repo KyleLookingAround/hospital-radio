@@ -1,0 +1,10 @@
+---
+/** Big numerals with mono labels. */
+interface Props { items: { n: string | number; unit?: string; label: string }[]; vertical?: boolean; class?: string }
+const { items, vertical = false, class: cls = '' } = Astro.props;
+---
+<dl class:list={['stats', cls, { vertical }]}>
+  {items.map((it) => (
+    <div class="stat"><dd class="n">{it.n}{it.unit && <small>{it.unit}</small>}</dd><dt class="t">{it.label}</dt></div>
+  ))}
+</dl>

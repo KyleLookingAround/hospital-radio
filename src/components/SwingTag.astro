@@ -1,0 +1,12 @@
+---
+/** A merch item as a cardboard swing tag. */
+interface Props { name: string; price: string; url: string; index?: number }
+const { name, price, url, index = 0 } = Astro.props;
+const rot = [-1.2, 0.8, -0.6, 1.1][index % 4];
+---
+<a class="swing" href={url} target="_blank" rel="noopener" style={`--rot:${rot}`}>
+  <span class="tag-k">merch</span>
+  <h3>{name}</h3>
+  <span class="price">{price}</span>
+  <span class="shop">shop ↗</span>
+</a>

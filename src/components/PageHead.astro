@@ -1,0 +1,12 @@
+---
+/** Booth page header: mono kicker, the big italic title, a mono meta line. */
+interface Props { kicker: string; title: string; meta?: string; back?: { href: string; label: string } }
+const { kicker, title, meta, back } = Astro.props;
+---
+<header class="page-head wrap">
+  {back && <a class="btn text back" href={back.href}>← {back.label}</a>}
+  <div class="kicker">{kicker}</div>
+  <h1 class="title" set:html={title} />
+  {meta && <p class="page-meta" set:html={meta} />}
+  <slot />
+</header>

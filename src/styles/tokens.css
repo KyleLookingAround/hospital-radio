@@ -1,0 +1,57 @@
+/* ============================================================
+   HOSPITAL RADIO. — design tokens  ("the booth and the ledger")
+   Two materials: the navy BOOTH (body, chrome, photos) and cream
+   PAPER sheets pinned onto it (anything you read).
+   Text pairings that pass WCAG AA — use only these:
+     on booth / booth-2 / booth-3 : --booth-ink, --booth-dim, --pink
+     on paper / paper-2 / card    : --ink, --muted, --rose-text
+     --rose and --soft only at ≥24px (or ≥18.5px bold) and for borders
+     --pink on paper is decorative only (never text)
+   ============================================================ */
+:root{
+  /* booth */
+  --booth:#16224A;
+  --booth-2:#1D2E63;
+  --booth-3:#0F1733;
+  --booth-ink:#F5E9D7;
+  --booth-dim:rgba(245,233,215,.68);
+  --booth-faint:rgba(245,233,215,.46);
+  --booth-line:rgba(245,233,215,.14);
+  --booth-line-2:rgba(245,233,215,.28);
+  --pink:#DF8090;
+  --pink-soft:#F2A7B3;
+  --pink-glow:0 0 18px rgba(223,128,144,.55);
+
+  /* paper */
+  --paper:#F5E9D7; --paper-2:#EFE2CB; --card:#FBF3E3; --card-2:#F3E7CF;
+  --ink:#2D458F; --ink-deep:#1D2E63;
+  --muted:#4A5C97;
+  --soft:#6F7CAC;
+  --rose:#C5586C;
+  --rose-text:#9E3A4F;
+  --rose-deep:#8C3142;
+  --marker:color-mix(in srgb, var(--pink) 42%, transparent);
+  --line:rgba(45,69,143,.22); --line-2:rgba(45,69,143,.42);
+  --sheet-shadow:0 30px 60px -30px rgba(0,0,0,.65), 0 1px 0 rgba(255,255,255,.35) inset;
+
+  /* type */
+  --serif:"Fraunces",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --scrawl:"Caveat",cursive;
+  --t-xs:11px; --t-s:13px; --t-m:17px;
+  --t-body:clamp(17px,1.2vw,19px);
+  --t-l:clamp(22px,2.6vw,28px);
+  --t-xl:clamp(30px,5vw,52px);
+  --t-2xl:clamp(42px,8.5vw,96px);
+  --t-wordmark:clamp(56px,13vw,168px);
+  --t-ledger:clamp(84px,20vw,200px);
+
+  /* space / shape / motion */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:40px; --s7:64px; --s8:104px;
+  --gutter:clamp(16px,4vw,48px);
+  --wrap:1120px; --w-read:680px; --w-ledger:960px; --w-file:800px;
+  --r1:3px; --r2:6px; --r3:12px;
+  --ease:cubic-bezier(.2,.75,.2,1); --fast:180ms; --mid:320ms; --slow:560ms;
+  --tuner-h:60px;
+  --focus:var(--pink);
+}

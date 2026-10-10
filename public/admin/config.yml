@@ -29,7 +29,9 @@ collections:
           - { name: scrawl, label: "Handwritten line under the logo", widget: string }
           - { name: foundedRoman, label: "Founded (roman numerals)", widget: string }
           - { name: spotifyListeners, label: "Spotify monthly listeners (press page)", widget: string }
-          - { name: logoImage, label: "Hero logo image (blank = typed wordmark)", widget: image, required: false }
+          - { name: logoImage, label: "Mascot logo image (blank = typed wordmark)", widget: image, required: false }
+          - { name: heroPhoto, label: "Home hero photo (blank = first landscape gallery photo)", widget: image, required: false }
+          - { name: status, label: "Status line when nothing is booked (optional)", widget: string, required: false, hint: "e.g. in the booth recording the EP" }
           - name: ticker
             label: "Home-page ticker headlines"
             widget: list
@@ -62,7 +64,7 @@ collections:
               - { name: action, label: "Form provider URL", widget: string, required: false, default: "" }
               - { name: fieldName, label: "Email field name", widget: string, default: "email" }
           - name: intro
-            label: "CRT intro on first visit"
+            label: "Static between stations (the page-change effect)"
             widget: object
             fields:
               - { name: enabled, label: "Enabled", widget: boolean, default: true }
@@ -116,6 +118,7 @@ collections:
           - { name: pitch, label: "The pitch", widget: text }
           - { name: forFansOf, label: "For fans of (blank = hidden)", widget: string, required: false }
           - { name: stageNotes, label: "Stage notes (blank = hidden)", widget: string, required: false }
+          - { name: setLength, label: "Set length for the press sheet (optional, e.g. 30 min)", widget: string, required: false }
 
   - name: shows
     label: Shows

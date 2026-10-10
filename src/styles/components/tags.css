@@ -1,0 +1,35 @@
+/* ---- merch swing tags ---- */
+.tags-grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:14px; }
+@media (min-width:760px){ .tags-grid{ grid-template-columns:repeat(4, 1fr); } }
+.swing{ --paper-bg:var(--card); position:relative; display:grid; gap:6px; align-content:start; padding:26px 16px 16px; background:var(--paper-bg); border:1px solid var(--line); border-radius:var(--r1) var(--r1) var(--r2) var(--r2); color:var(--ink); box-shadow:0 14px 30px -22px rgba(0,0,0,.6); transition:transform var(--fast), box-shadow var(--fast); transform:rotate(calc(var(--rot, 0) * 1deg)); }
+.swing::before{ content:""; position:absolute; left:50%; top:8px; width:9px; height:9px; margin-left:-4.5px; border-radius:50%; border:1px solid var(--line-2); background:var(--booth); }
+.swing:hover{ transform:translateY(-3px) rotate(0deg); box-shadow:0 22px 40px -22px rgba(0,0,0,.7); }
+.swing .tag-k{ font-family:var(--mono); font-size:9px; letter-spacing:.24em; text-transform:uppercase; color:var(--rose-text); }
+.swing h3{ font-family:var(--serif); font-size:clamp(18px, 2vw, 22px); font-weight:400; letter-spacing:-.01em; color:var(--ink); }
+.swing .price{ font-family:var(--mono); font-size:13px; color:var(--muted); font-variant-numeric:tabular-nums; }
+.swing .shop{ margin-top:8px; font-family:var(--mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--rose-text); }
+
+/* ---- mailing list slip ---- */
+.tune-form{ display:flex; gap:10px; margin-top:18px; flex-wrap:wrap; }
+.tune-form input[type=email]{ flex:1; min-width:220px; min-height:44px; background:#FFFDF6; border:1px solid var(--line-2); border-radius:var(--r1); color:var(--ink); font-family:var(--mono); font-size:14px; letter-spacing:.02em; padding:10px 14px; outline:none; transition:border-color var(--fast), box-shadow var(--fast); }
+.tune-form input[type=email]::placeholder{ color:var(--soft); }
+.tune-form input[type=email]:focus{ border-color:var(--rose); box-shadow:0 0 0 3px rgba(223,128,144,.25); }
+.tune-form input[type=email]:disabled{ opacity:.5; cursor:not-allowed; }
+.tune-msg{ font-family:var(--mono); font-size:12px; letter-spacing:.04em; margin-top:12px; min-height:1.2em; color:var(--muted); }
+.tune-msg.ok,.tune-msg.err{ color:var(--rose-text); }
+
+/* ---- platform presets (listen page) ---- */
+.presets{ display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; }
+.preset{ display:grid; gap:8px; padding:16px 16px 14px; background:var(--booth-2); border:1px solid var(--booth-line-2); border-radius:var(--r2); min-height:84px; transition:border-color var(--fast), transform var(--fast); }
+.preset:hover{ border-color:var(--pink); transform:translateY(-2px); }
+.preset .p{ font-family:var(--mono); font-size:10px; letter-spacing:.24em; color:var(--pink); font-weight:600; }
+.preset .nm{ font-family:var(--serif); font-size:clamp(19px, 2vw, 23px); font-weight:380; letter-spacing:-.01em; color:var(--booth-ink); }
+.preset .go{ font-family:var(--mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--booth-dim); }
+.preset:hover .go{ color:var(--pink); }
+
+/* ---- EKG divider ---- */
+.ekg{ width:100%; height:44px; display:block; overflow:visible; }
+.ekg path{ fill:none; stroke:var(--booth-line-2); stroke-width:1.2; vector-effect:non-scaling-stroke; }
+.ekg .pulse{ stroke:var(--pink); stroke-width:1.8; filter:drop-shadow(0 0 4px rgba(223,128,144,.6)); }
+.sheet .ekg path{ stroke:var(--line-2); } .sheet .ekg .pulse{ stroke:var(--rose); filter:none; }
+.ekg.flat .pulse{ display:none; }
