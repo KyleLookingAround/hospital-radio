@@ -3,13 +3,16 @@
 *A grain-soaked midwest-emo broadcast from Manchester.*
 
 Hospital Radio. is a four-piece (Mike, Curtis, Russo, Tom), formed **MMXXIII**
-(2023). The brand is built on one idea: the band as a **derelict in-hospital
-radio station** — a lo-fi 87.7 FM transmission, heart-on-sleeve and a little
-broken. Everything (palette, type, motion, copy) serves that conceit.
+(2023). The brand is built on one idea: the band as a **small in-hospital
+radio station** — an 87.7 FM transmission, heart-on-sleeve and a little
+broken. On the website that idea is literal: every page is a station on the
+dial, the home page is a radio you tune, and the station is always on air.
+Everything (palette, type, motion, copy) serves that conceit.
 
-> The whole system is defined once as design tokens at the top of
-> `src/styles.css` (`:root`). This document explains those tokens; change them
-> there and the site re-themes.
+> The whole system is defined once as design tokens in
+> `src/styles/tokens.css` (`:root`). This document explains those tokens;
+> change them there and the site re-themes. The web design itself is
+> described in `docs/REDESIGN.md`.
 
 ---
 
@@ -41,6 +44,15 @@ broken. Everything (palette, type, motion, copy) serves that conceit.
 The band's three colours — **cream, navy, pink** — carry the whole identity.
 Everything else is a tint or surface derived from them.
 
+### Two materials
+The site is built from two materials. The **booth** is deep navy
+(`--booth #16224A`, raised chrome `--booth-2 #1D2E63`, the darkroom
+`--booth-3 #0F1733`): photos, the tuner, the player, the footer live there,
+and text on it is cream (`--booth-ink`) or pink. **Paper** is cream sheets
+pinned onto the booth: anything you read (the schedule, the log, lyric sheets,
+the promoter's file) sits on paper in navy ink. The rule: navy ink only on
+paper; cream and pink only on the booth; handwriting (Caveat) only on paper.
+
 ### Core three
 | Role | Hex | Token | Use |
 |------|-----|-------|-----|
@@ -62,10 +74,11 @@ Everything else is a tint or surface derived from them.
 | `#C5586C` | `--rose` | Pink that stays legible at small sizes — links, kickers, small accent text, the "radio" wordmark on light. |
 | `#A8455A` | `--rose-deep` | Hover for rose elements, hairline dashes. |
 
-> **Pink vs. rose:** `--pink` (#DF8090) is *decorative* — big marks, glows,
-> dark backgrounds. `--rose` (#C5586C) is the *functional* accent — anything
-> small that has to be read (links, labels, borders). Don't set body-size text
-> in `--pink`.
+> **Pink vs. rose:** `--pink` (#DF8090) is the signal colour *on the booth*
+> (it passes AA there) and purely decorative on paper. On paper, small accent
+> text uses `--rose-text` (#9E3A4F); `--rose` (#C5586C) is for display sizes
+> and borders only. `--soft` and `--faint` are never used for small text. The
+> build is checked with axe and these are the only pairings that pass.
 
 ### Surfaces & hairlines
 | Token | Value | Use |
@@ -138,51 +151,58 @@ Hospital nods are welcome but dry (the press kit is a "patient file", ref
 
 These recurring details *are* the brand as much as the logo:
 
-- **CRT / VHS texture** — animated film **grain**, faint **scanlines**, a soft
-  **vignette**, and corner light **leaks** over everything (low opacity,
-  multiply).
-- **EKG heartbeat** — a flatlining-then-pulsing ECG line used as a section
-  divider, with a tracing animation. The literal "hospital radio" heartbeat.
-- **ON AIR lamp** — a blinking rose dot + "On Air" tag in the header.
-- **The broadcast dock** — a persistent, full-width transport bar (frequency,
-  tuner dial with a glowing needle, an EQ "now broadcasting" meter, Tune In)
-  that expands to the player.
-- **Tuner-dial nav** — section links sit over a frequency-dial baseline; the
-  active section gets a glowing needle.
-- **Ticker crawl** — an uppercase mono headline marquee.
-- **Registration corner ticks** — small L-shaped rose marks framing the hero,
-  like a print/broadcast alignment target.
-- **The CRT intro** — a one-time "scanning the dial… signal acquired" tune-in
-  sequence that switches off like an old TV.
+- **The dial** — the tuner is the navigation: a frequency band with the
+  stations on it, a needle, a knob and a readout. Pages are frequencies
+  (87.7 · 88.1 · 88.5 · 88.9 · 89.3 · 89.7 · 90.1 · 90.5). Changing page is
+  changing station: the needle slides and the page arrives through static.
+- **Riso print** — photographs are two-ink prints (navy and pink), halftoned
+  and slightly misregistered. Colour returns only under your finger.
+- **The ON AIR lamp** — a real status light: standby, on air, live tonight.
+- **The vitals monitor** — the band's history as a bedside ECG, one beat per
+  show, with the real numbers as readouts.
+- **Paper on the booth** — cream sheets with registration-tick pins, tape on
+  the corners, rubber stamps (OPENER, CLOSER, DEBUT, FIRST TRANSMISSION),
+  pencil tally marks, marker highlights, and pink stickers.
+- **Wayfinding signs** — the station list is set like hospital signage: a
+  pink bar, the ward name, an arrow.
+- **The programme** — the station has a schedule (the night shift, ward
+  rounds, visiting hours…) read from the visitor's clock.
 
-Motion is purposeful and a little analog (blink, trace, marquee, scanline).
-All of it respects `prefers-reduced-motion`.
+Dropped: the animated grain, scanline and vignette overlays, the light leaks,
+the glitch hover and the one-time CRT intro. Motion now only ever reads
+state — the needle moving, paper settling, a trace drawing — and all of it
+respects `prefers-reduced-motion`.
 
 ---
 
 ## 6. Photography
 
-- **Treatment:** desaturated and pushed — roughly `grayscale(.35)
-  contrast(1.04)` with a slight brightness drop, so shots read as one cohesive,
-  slightly-sickly broadcast. Colour returns on hover/lightbox.
+- **Treatment:** a two-ink riso print (`.riso`): desaturated, screened over
+  navy, pink multiplied over the top, a 4px halftone, a few pixels of
+  misregistration. Colour returns on hover and in the lightbox.
 - Live shots, grain, and low light suit the brand; over-polished, bright,
   saturated stock imagery does not.
-- **Self-host** everything in `assets/` (logo, gallery, share image) so it
-  deploys with the site. The link-preview/share image is
-  `assets/gallery-promo-1.jpg`.
+- **Self-host** everything in `public/assets/` (logo, gallery, share image)
+  so it deploys with the site; the build resizes photos to WebP. The
+  link-preview/share image is `public/assets/og-image.jpg` (1200×630, the
+  riso treatment with the wordmark).
 
 ---
 
 ## 7. Quick reference
 
 ```css
-/* Colour */
---paper:#F5E9D7;  --paper-2:#EFE2CB;            /* page / deeper cream  */
---card:#FBF3E3;   --card-2:#F3E7CF;             /* raised paper panels  */
+/* The booth (body, chrome, photos) */
+--booth:#16224A;  --booth-2:#1D2E63;  --booth-3:#0F1733;
+--booth-ink:#F5E9D7;  --booth-dim:rgba(245,233,215,.68);
+--pink:#DF8090;   --pink-soft:#F2A7B3;            /* the signal colour    */
+/* Paper (sheets) */
+--paper:#F5E9D7;  --paper-2:#EFE2CB;            /* sheet / deeper cream */
+--card:#FBF3E3;   --card-2:#F3E7CF;             /* slips                */
 --ink:#2D458F;    --ink-deep:#1D2E63;           /* navy text            */
---muted:#52649F;  --soft:#6F7CAC;  --faint:#A2AACB;  /* text tints       */
---pink:#DF8090;                                  /* decorative accent    */
---rose:#C5586C;   --rose-deep:#A8455A;          /* legible accent       */
+--muted:#4A5C97;  --soft:#6F7CAC;               /* secondary / display  */
+--rose:#C5586C;   --rose-text:#9E3A4F;  --rose-deep:#8C3142;  /* accents */
+--marker:color-mix(in srgb, var(--pink) 42%, transparent);  /* highlighter */
 --line:rgba(45,69,143,.22);  --line-2:rgba(45,69,143,.42);  /* hairlines */
 
 /* Type */
@@ -195,5 +215,5 @@ All of it respects `prefers-reduced-motion`.
 From *Manchester* · Genre *midwest emo* · Tagline *"Manchester · midwest emo"* ·
 Scrawl *"dead air never sounded so good"*.
 
-*Source of truth: the `:root` tokens in `src/styles.css`. Keep this document and
-those tokens in sync.*
+*Source of truth: the `:root` tokens in `src/styles/tokens.css`. Keep this
+document and those tokens in sync.*

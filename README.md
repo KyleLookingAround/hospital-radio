@@ -1,9 +1,13 @@
 # Hospital Radio. — website
 
 The site for **Hospital Radio.**, a midwest-emo four-piece from Manchester.
-Shows, the archive (with setlists), releases, lyrics, photos and a press kit —
-all driven from a handful of plain-text content files so anyone in the band
-can update it.
+It is built as a radio station you tune: every page is a frequency on the
+dial, the home page is a working radio (static between stations, the band at
+87.7), a 24-hour programme reorders the front page by the clock, the show log
+is turned into a chart of every song ever played, and there is a request line
+for dedications. All of it is driven from a handful of plain-text content
+files so anyone in the band can update it. The design is explained in
+[docs/REDESIGN.md](docs/REDESIGN.md).
 
 **Live site: https://hospitalradiofullstop.co.uk/**
 
@@ -32,10 +36,26 @@ scope). Paste it into the editor's sign-in box once; it's remembered.
 |---|---|
 | `content/shows.yml` | Tour dates — the file you'll edit most. The site sorts upcoming vs archive by date automatically. |
 | `content/lyrics/` | One markdown file per song (`_TEMPLATE.md` shows the format). Repeated verses style as the chorus automatically. |
-| `content/band.yml` | Name, members, ticker headlines, links, the radio dock, mailing list |
-| `content/music.yml` | Releases, extra videos, the merch teaser |
+| `content/band.yml` | Name, members, ticker headlines, links, the player, mailing list, the hero photo, the dead-air status line |
+| `content/music.yml` | Releases (optionally with an mp3 for the radio), extra videos, the merch teaser |
 | `content/gallery.yml` | Photos (files live in `public/assets/`) |
-| `content/booking.yml` | The press kit / booking page |
+| `content/booking.yml` | The press kit / booking page (the promoter's file), incl. set length |
+
+**The radio and the band's music.** Flick `pwr` in the tuner and the site makes
+sound: static between stations, and the latest release as you tune towards
+87.7. By default that is the release video's audio on the booth monitor. For
+the full effect — the song heard through a real tuning filter, like a distant
+station locking in — add an mp3 under `public/assets/audio/` and set
+`audio: "/assets/audio/your-song.mp3"` on the release in `content/music.yml`
+(or upload it in `/admin/`). Nothing plays until a visitor taps the switch.
+
+**The programme.** The front page is ordered by what's "on air" in the
+visitor's local time (the night shift, ward rounds, visiting hours…). The
+schedule lives in `src/lib/programme.ts`; the copy is easy to change.
+
+**The request line** (`/request.html`) needs nothing set up: fans build a
+dedication card, save it, copy the text, and send it to the band by Instagram
+DM or e-mail. Keep an eye on the DMs — the most-requested song is yours to play.
 
 **A safety net either way:** every edit is checked when the site rebuilds. If
 something's off, the build stops with a clear message and **the live site
@@ -71,16 +91,18 @@ client-side between builds.
 ```
 hospital-radio/
 ├── content/                  ← edit these: all the site's words
+├── docs/REDESIGN.md          ← what the design is and how the radio works
 ├── src/
 │   ├── content.config.ts       schemas that guard every content file at build time
-│   ├── layouts/Base.astro      shared shell (head, nav, footer, radio dock, lightbox)
-│   ├── components/             show rows, video facades, the EKG divider…
-│   ├── pages/                  one .astro file per page (+ lyrics/[slug])
-│   ├── scripts/app.ts          the behaviour layer (intro, dock, lightbox, reveals)
-│   └── lib/site.ts             build-time helpers (show split, lyrics, JSON-LD)
+│   ├── layouts/Base.astro      shared shell (head, the tuner, the monitor, footer)
+│   ├── components/             the radio face, the vitals monitor, sheets, ledgers, stamps…
+│   ├── pages/                  one .astro file per page (+ lyrics/[slug] for every song)
+│   ├── scripts/                the behaviour layer: radio.ts (the dial + audio), clock.ts
+│   │                           (the programme), tuner.ts, lightbox.ts, shows.ts…
+│   ├── styles/                 all styling in cascade layers (tokens.css holds the palette)
+│   └── lib/                    site.ts (stations, helpers), stats.ts (the ledger), images.ts
 ├── public/                   ← served as-is
-│   ├── styles.css              all styling (design tokens at the top)
-│   ├── assets/                 photos, fonts (self-hosted), icons
+│   ├── assets/                 photos, fonts (self-hosted), icons, the share card
 │   ├── admin/                  the content editor (Sveltia CMS)
 │   └── CNAME · robots.txt · 404.html · site.webmanifest
 ├── astro.config.mjs
@@ -89,5 +111,8 @@ hospital-radio/
 
 Good to know: old share links using hash routes (`/#/shows`, `/#/lyrics/l-a`)
 still work — a tiny shim on every page bounces them to the real pages. Fonts
-are self-hosted in `public/assets/fonts/` (no Google Fonts CDN call). The
-gallery JPGs are served as-is; resizing the largest ones is a nice future win.
+are self-hosted in `public/assets/fonts/` (no Google Fonts CDN call). Photos
+are resized to WebP at build time (`src/lib/images.ts`), so drop full-size
+JPGs into `public/assets/` and the site does the rest. Every page works with
+JavaScript switched off; the radio, the clock and the lightbox extras are
+enhancements on top.
