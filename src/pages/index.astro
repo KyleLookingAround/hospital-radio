@@ -1,5 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
+import RadioFace from '../components/RadioFace.astro';
+import Monitor from '../components/Monitor.astro';
 import Sheet from '../components/Sheet.astro';
 import Picture from '../components/Picture.astro';
 import VideoPlayer from '../components/VideoPlayer.astro';
@@ -10,7 +12,8 @@ import StatStrip from '../components/StatStrip.astro';
 import SwingTag from '../components/SwingTag.astro';
 import MailingForm from '../components/MailingForm.astro';
 import Ekg from '../components/Ekg.astro';
-import { getBand, getMusic, getShows, getSongs, getGallery, MON } from '../lib/site';
+import { getBand, getMusic, getShows, getSongs, getGallery, MON, slug } from '../lib/site';
+import { DEFAULT_PROGRAMME } from '../lib/programme';
 import { songStats, headline, cityStats, daysSince, shortDate, monthYear, lastN, displayTitle } from '../lib/stats';
 import { findImage } from '../lib/images';
 
@@ -25,57 +28,50 @@ const last = past[0];
 const h = headline(past, upcoming);
 const stats = songStats(past, songs.map((s) => s.title));
 const top = stats.slice(0, 5);
-const maxPlays = top[0]?.plays ?? 1;
 const cities = cityStats(past);
-const lyricSlugs = new Set(songs.map((s) => s.slug));
-const statFor = (title: string) => stats.find((s) => s.slug === title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''));
-
-// hero photo: the configured one, else the first landscape gallery shot
+const statFor = (title: string) => stats.find((s) => s.slug === slug(title));
 const landscape = photos.find((p) => { const m = findImage(p.src); return m && m.width > m.height; });
 const hero = band.heroPhoto || landscape?.src || photos[0]?.src || '';
 const strip = photos.filter((p) => p.src !== hero).slice(0, 6);
-const release = music.releases[0];
 const merch = music.merchItems.slice(0, 4);
 const days = last ? daysSince(last.date) : 0;
 const dateLine = (d: Date) => `${String(d.getDate()).padStart(2, '0')} ${MON[d.getMonth()]}`;
+// a lyric excerpt for the night shift's "words" slot
+const wordsSong = songs.find((s) => s.lyrics);
+const excerpt = wordsSong ? wordsSong.lyrics.split(/\n[ \t]*\n/)[1]?.split('\n').slice(0, 4) || wordsSong.lyrics.split('\n').slice(0, 4) : [];
+const order = (slot: string) => { const i = DEFAULT_PROGRAMME.lead.indexOf(slot); return i >= 0 ? i + 1 : 20; };
 ---
 
 <Base station="index" page="">
 
-<section class="hero" aria-label="Hospital Radio.">
-  {hero && <Picture class="hero-img" src={hero} alt="" widths={[800, 1200, 1600]} sizes="100vw" loading="eager" fetchpriority="high" quality={66} />}
-  <div class="hero-wash" aria-hidden="true"></div>
-  {band.logoImage && <Picture class="hero-mascot" src={band.logoImage} alt="" widths={[160, 320]} sizes="110px" width={110} height={134} loading="eager" />}
-  <div class="wrap hero-inner">
-    <p class="hero-ident label"><span class="lampdot" aria-hidden="true"></span> {band.radio.frequency} fm · manchester · est. {band.foundedRoman}</p>
-    <h1 class="wordmark hero-word">hospital <span>radio</span><i>.</i></h1>
-    <p class="hero-tag label">{band.tagline}</p>
-  </div>
-</section>
+<RadioFace hero={hero} tagline={band.tagline} frequency={band.radio.frequency} founded={band.foundedRoman} programmeName={DEFAULT_PROGRAMME.name} programmeStrap={DEFAULT_PROGRAMME.strap} />
 
 <section class="programme" aria-label="Programme">
   <div class="wrap">
+    <Monitor past={past} upcoming={upcoming} class="home-monitor" />
     <dl class="prog">
-      {release && <div class="prog-line"><dt>now</dt><dd><a href="/listen.html">‘{release.title}’ <span class="dim">· {[release.type, release.year].filter(Boolean).join(' ')}</span></a></dd></div>}
+      {music.releases[0] && <div class="prog-line"><dt>now</dt><dd><a href="/listen.html">‘{music.releases[0].title}’ <span class="dim">· {[music.releases[0].type, music.releases[0].year].filter(Boolean).join(' ')}</span></a></dd></div>}
       {next ? (
         <div class="prog-line is-next" data-date={next.date}><dt>next</dt><dd><a href="/shows.html">{dateLine(next._d)} · {next.venue}{next.city ? `, ${next.city}` : ''}</a></dd></div>
       ) : (
         <div class="prog-line"><dt>next</dt><dd class="dim">dead air — <span data-since={last?.date}>{days}</span> days since the last transmission</dd></div>
       )}
       {last && <div class="prog-line"><dt>last</dt><dd><a href={`/archive.html#show-${last.date}`}>{dateLine(last._d)} · {last.venue}{last.city ? `, ${last.city}` : ''}{last.setlist?.length ? <span class="dim"> · {last.setlist.length} songs</span> : null}</a></dd></div>}
-      {band.ticker.slice(0, 2).map((t) => <div class="prog-line also"><dt>also</dt><dd class="dim">{t}</dd></div>)}
+      <div class="prog-line"><dt>then</dt><dd class="dim"><span data-programme-next>18:00 visiting hours</span> on 87.7</dd></div>
     </dl>
     <div class="actions hero-actions">
       {band.links.spotify && <a class="btn solid" href={band.links.spotify} target="_blank" rel="noopener">▶ listen now</a>}
+      <a class="btn" href="/request.html">request a song</a>
       <a class="btn" href="/shows.html">the schedule</a>
-      <a class="btn" href="/archive.html">the log</a>
       {band.links.merch && <a class="btn text" href={band.links.merch} target="_blank" rel="noopener">↗ merch</a>}
     </div>
   </div>
 </section>
 
+<div class="slots">
+
 {music.releases.length > 0 && (
-  <section class="wrap section" id="transmissions">
+  <section class="wrap section slot" data-slot="transmissions" style={`order:${order('transmissions')}`}>
     <div class="sec-head">
       <h2 class="h2">Latest <em>transmissions</em></h2>
       <a class="btn text" href="/listen.html">all releases →</a>
@@ -88,17 +84,14 @@ const dateLine = (d: Date) => `${String(d.getDate()).padStart(2, '0')} ${MON[d.g
   </section>
 )}
 
-<section class="wrap section two-up">
+<section class="wrap section slot" data-slot="schedule" style={`order:${order('schedule')}`}>
   <Sheet width="ledger" tilt={-0.5} class="schedule-slip" id="schedule">
+    <span class="tape tl" aria-hidden="true"></span>
     <div class="sheet-head">
       <div><div class="kicker">the schedule</div>
-        {next
-          ? <h2 class="h2">Up <em>next</em></h2>
-          : <h2 class="h2">Between <em>transmissions</em>.</h2>}
+        {next ? <h2 class="h2">Up <em>next</em></h2> : <h2 class="h2">Between <em>transmissions</em>.</h2>}
       </div>
-      {next
-        ? <span class="mono dim" data-show-count>{upcoming.length} scheduled</span>
-        : <span class="mono dim"><span data-since={last?.date}>{days}</span> days of dead air</span>}
+      {next ? <span class="mono dim" data-show-count>{upcoming.length} scheduled</span> : <span class="sticker paper" style="--rot:4">dead air · <span data-since={last?.date}>{days}</span> days</span>}
     </div>
     {next ? (
       <div data-upcoming>
@@ -119,8 +112,11 @@ const dateLine = (d: Date) => `${String(d.getDate()).padStart(2, '0')} ${MON[d.g
       </div>
     </div>
   </Sheet>
+</section>
 
+<section class="wrap section slot" data-slot="chart" style={`order:${order('chart')}`}>
   <Sheet width="ledger" tilt={0.4} class="chart-slip" id="chart">
+    <span class="tape tr" aria-hidden="true"></span>
     <div class="sheet-head">
       <div><div class="kicker">most played live</div><h2 class="h2">The <em>chart</em></h2></div>
       <span class="mono dim">{h.showsWithSetlists} sets logged</span>
@@ -141,7 +137,19 @@ const dateLine = (d: Date) => `${String(d.getDate()).padStart(2, '0')} ${MON[d.g
   </Sheet>
 </section>
 
-<section class="wrap section" id="reach">
+<section class="wrap section slot" data-slot="request" style={`order:${order('request')}`}>
+  <div class="panel request-teaser">
+    <span class="sticker" style="--rot:-5">requests open</span>
+    <div>
+      <div class="kicker">90.5 fm · the request line</div>
+      <h2 class="h2" style="margin-top:10px">Dedicate a <em>song</em> to someone on the ward.</h2>
+      <p class="dim" style="margin-top:10px;max-width:52ch">Pick one of the {stats.length} songs in the set, name the ward, write the dedication. The most-requested song gets played at the next show.</p>
+    </div>
+    <a class="btn solid" href="/request.html">make a request</a>
+  </div>
+</section>
+
+<section class="wrap section slot" data-slot="reach" id="reach" style={`order:${order('reach')}`}>
   <div class="sec-head">
     <h2 class="h2">The signal has <em>reached</em></h2>
     <span class="page-meta">{h.firstShow ? `on air since ${monthYear(h.firstShow.date)}` : ''}</span>
@@ -155,15 +163,15 @@ const dateLine = (d: Date) => `${String(d.getDate()).padStart(2, '0')} ${MON[d.g
 </section>
 
 {strip.length > 0 && (
-  <section class="wrap section" id="booth">
+  <section class="wrap section slot" data-slot="booth" id="booth" style={`order:${order('booth')}`}>
     <div class="sec-head">
       <h2 class="h2">From the <em>booth</em></h2>
       <a class="btn text" href="/photos.html">the darkroom →</a>
     </div>
     <div class="strip">
-      {strip.map((p, i) => (
-        <a href={`/photos.html#p${photos.indexOf(p)}`} aria-label={`Photo: ${p.caption || 'Hospital Radio.'}`}>
-          <Picture src={p.src} alt="" widths={[480, 800]} sizes="(min-width:760px) 300px, 72vw" />
+      {strip.map((p) => (
+        <a class="riso" href={`/photos.html#p${photos.indexOf(p)}`} aria-label={`Photo: ${p.caption || 'Hospital Radio.'}`}>
+          <Picture class="riso-img" src={p.src} alt="" widths={[480, 800]} sizes="(min-width:760px) 300px, 72vw" />
           {p.caption && <span class="cap">{p.caption}</span>}
         </a>
       ))}
@@ -171,8 +179,18 @@ const dateLine = (d: Date) => `${String(d.getDate()).padStart(2, '0')} ${MON[d.g
   </section>
 )}
 
+{excerpt.length > 0 && wordsSong && (
+  <section class="wrap section slot" data-slot="songs" style={`order:${order('songs')}`}>
+    <Sheet width="read" tilt={-0.3} class="words-slip">
+      <div class="kicker">words · {wordsSong.title}</div>
+      <blockquote class="excerpt">{excerpt.map((l) => <span>{l}</span>)}</blockquote>
+      <p style="margin-top:14px"><a class="btn text" href={`/lyrics/${wordsSong.slug}.html`}>the whole song →</a></p>
+    </Sheet>
+  </section>
+)}
+
 {merch.length > 0 && (
-  <section class="wrap section">
+  <section class="wrap section slot" data-slot="merch" style={`order:${order('merch')}`}>
     <Sheet width="full" class="merch-sheet">
       <div class="sheet-head">
         <div><div class="kicker">the station shop</div><h2 class="h2">Wear the <em>signal</em></h2></div>
@@ -184,6 +202,8 @@ const dateLine = (d: Date) => `${String(d.getDate()).padStart(2, '0')} ${MON[d.g
     </Sheet>
   </section>
 )}
+
+</div>
 
 {band.mailingList.action && <MailingForm />}
 

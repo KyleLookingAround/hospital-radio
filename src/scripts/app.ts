@@ -5,6 +5,8 @@
    the lightbox is :target-driven, Tune In has a <noscript> link.
    ============================================================ */
 import './tuner';
+import './clock';
+import './radio';
 import './video';
 import './lightbox';
 import './shows';

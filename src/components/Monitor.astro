@@ -1,0 +1,47 @@
+---
+/**
+ * The vitals monitor: the band's history as a bedside ECG. One QRS complex
+ * per show, placed by date, so the trace flatlines in dead air and races on
+ * tour. Readouts are the real numbers from the log.
+ */
+import type { Show } from '../lib/site';
+import { headline, songStats, daysSince, shortDate } from '../lib/stats';
+interface Props { past: Show[]; upcoming: Show[]; class?: string }
+const { past, upcoming, class: cls = '' } = Astro.props;
+const h = headline(past, upcoming);
+const songs = songStats(past).length;
+const W = 720, H = 150, BASE = 96;
+const chrono = [...past].sort((a, b) => +a._d - +b._d);
+const t0 = chrono[0] ? +chrono[0]._d : Date.now();
+const t1 = Math.max(Date.now(), chrono.length ? +chrono[chrono.length - 1]._d : Date.now()) + 14 * 86400000;
+const x = (t: number) => 24 + ((t - t0) / (t1 - t0)) * (W - 48);
+let d = `M0 ${BASE} H${x(t0) - 10}`;
+let lastX = x(t0) - 10;
+for (const s of chrono) {
+  const px = x(+s._d);
+  const gap = px - lastX;
+  const w = Math.min(14, Math.max(6, gap * 0.9)); // squeeze complexes on busy weeks
+  d += ` H${(px - w / 2).toFixed(1)} l${(w * 0.15).toFixed(1)} -5 l${(w * 0.15).toFixed(1)} 5 l${(w * 0.15).toFixed(1)} -46 l${(w * 0.2).toFixed(1)} 62 l${(w * 0.15).toFixed(1)} -20 l${(w * 0.2).toFixed(1)} 4`;
+  lastX = px + w / 2;
+}
+d += ` H${W}`;
+const last = past[0];
+---
+<figure class:list={['monitor', cls]} aria-label="Vitals monitor: one heartbeat per show played">
+  <div class="mon-screen">
+    <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true">
+      <defs><pattern id="mongrid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="rgba(223,128,144,.14)" stroke-width="1"/></pattern></defs>
+      <rect width={W} height={H} fill="url(#mongrid)"/>
+      <path class="mon-trace" d={d} fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    </svg>
+    <span class="mon-sweep" aria-hidden="true"></span>
+    <span class="mon-tag">ecg · one beat per show · {chrono[0] ? shortDate(chrono[0].date) : ''} → now</span>
+  </div>
+  <dl class="mon-readouts">
+    <div><dt>tx</dt><dd>{h.showsPlayed}</dd></div>
+    <div><dt>sets</dt><dd>{h.showsWithSetlists}</dd></div>
+    <div><dt>songs</dt><dd>{songs}</dd></div>
+    <div><dt>cities</dt><dd>{h.cities}</dd></div>
+    <div><dt>last</dt><dd>{last ? <><span data-since={last.date}>{daysSince(last.date)}</span><small>d</small></> : '—'}</dd></div>
+  </dl>
+</figure>

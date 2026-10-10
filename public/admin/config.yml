@@ -82,6 +82,7 @@ collections:
               - { name: year, label: "Year", widget: string }
               - { name: url, label: "YouTube link", widget: string }
               - { name: label, label: "Label text", widget: string, required: false }
+              - { name: audio, label: "Audio file for the radio (optional, upload an mp3)", widget: file, required: false }
           - name: videos
             label: "Extra videos (interviews, sessions…)"
             widget: list

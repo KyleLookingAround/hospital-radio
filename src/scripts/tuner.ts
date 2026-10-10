@@ -9,12 +9,13 @@ const lamp = $('#lamp');
 let lampWas = lamp?.dataset.state || 'standby';
 let wordWas = lampWord?.textContent || '';
 
+const spot = document.querySelector<HTMLDetailsElement>('.tray-spotify');
+spot?.addEventListener('toggle', () => { if (spot.open && frame && !frame.src) frame.src = tray?.dataset.embed || ''; }); // load the embed only when asked for
 const setOpen = (open: boolean) => {
   if (!tunein || !tray) return;
-  if (open && frame && !frame.src) frame.src = tray.dataset.embed || ''; // load (and start) only on first open
   tray.hidden = !open;
   tunein.setAttribute('aria-expanded', open ? 'true' : 'false');
-  const t = tunein.querySelector('.t'); if (t) t.textContent = open ? 'close' : 'tune in';
+  const t = tunein.querySelector('.t'); if (t) t.textContent = open ? 'close' : 'monitor';
   if (lamp && lampWord) {
     if (open) { lampWas = lamp.dataset.state || lampWas; wordWas = lampWord.textContent || wordWas; lamp.dataset.state = 'onair'; lampWord.textContent = 'on air'; }
     else { lamp.dataset.state = lampWas; lampWord.textContent = wordWas; }

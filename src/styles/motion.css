@@ -46,3 +46,15 @@
   }
   .btn,.preset,.swing,.photos .ph img,.strip img{ transition-duration:var(--fast); }
 }
+
+/* radio face + monitor motion */
+@media (prefers-reduced-motion: no-preference){
+  .mon-sweep{ animation:sweep 6s linear infinite; }
+  @keyframes sweep{ from{ left:-20%; } to{ left:102%; } }
+  .mon-trace{ stroke-dasharray:4000; stroke-dashoffset:4000; animation:trace-in 3s ease-out .4s both; }
+  @keyframes trace-in{ to{ stroke-dashoffset:0; } }
+  .face .riso-ghost{ animation:misreg 7s ease-in-out infinite alternate; }
+  @keyframes misreg{ from{ transform:translate(3px, -2px); } to{ transform:translate(-4px, 3px); } }
+  html[data-radio="on"] .face-bg{ animation:flicker 4s steps(12) infinite; }
+  @keyframes flicker{ 0%,100%{ opacity:1; } 45%{ opacity:.96; } 50%{ opacity:1; } 70%{ opacity:.93; } 72%{ opacity:1; } }
+}

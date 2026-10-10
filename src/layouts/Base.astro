@@ -5,8 +5,9 @@
  * inside this. The old hash-route shim is kept so shared links still work.
  */
 import '../styles/index.css';
-import { getBand, getShows, getSongs, getGallery, getMusic, jsonLd, station as getStation } from '../lib/site';
-import { lampState, songStats, daysSince } from '../lib/stats';
+import { getBand, getShows, getSongs, getGallery, getMusic, jsonLd, station as getStation, STATIONS, BAND, ytId } from '../lib/site';
+import { PROGRAMMES, DEFAULT_PROGRAMME } from '../lib/programme';
+import { lampState, songStats, daysSince, shortDate } from '../lib/stats';
 import Tuner from '../components/Tuner.astro';
 import Footer from '../components/Footer.astro';
 
@@ -50,11 +51,29 @@ const meta: Record<string, string> = {
   booking: 'patient file · hr-877',
 };
 const radioOn = band.radio.enabled && band.radio.embedUrl;
-const nowPlaying = music.releases[0] ? `${music.releases[0].title} · ${[music.releases[0].type, music.releases[0].year].filter(Boolean).join(' ')}` : '';
+const release = music.releases[0];
+const nowPlaying = release ? `${release.title} · ${[release.type, release.year].filter(Boolean).join(' ')}` : '';
+const next = upcoming[0];
+const lyricLine = (songs.find((s) => s.lyrics)?.lyrics || '').split('\n').map((l) => l.trim()).filter((l) => l && !/^\(/.test(l))[0] || '';
+const fragments: Record<string, string> = {
+  index: `${band.radio.frequency} fm · hospital radio · manchester`,
+  shows: next ? `up next · ${shortDate(next.date)} · ${next.venue}` : (last ? `nothing booked · ${daysSince(last.date)} days of dead air` : 'nothing booked yet'),
+  archive: last ? `last transmission · ${shortDate(last.date)} · ${last.venue}${last.city ? ', ' + last.city : ''}` : 'the log is empty',
+  lyrics: lyricLine ? `“${lyricLine.toLowerCase()}”` : `${songCount} songs in the set`,
+  listen: release ? `‘${release.title.toLowerCase()}’ · out now on every platform` : 'on the air',
+  photos: `${photos.length} photos from the booth`,
+  booking: 'patient file hr-877 · bookings open',
+  request: 'the request line is open · dedicate a song to someone on the ward',
+};
+const radioConfig = {
+  min: BAND.min, max: BAND.max, current: st.id,
+  stations: STATIONS.map((s) => ({ id: s.id, freq: +s.freq, href: s.href, label: s.id === 'index' ? 'the booth' : s.id === 'shows' ? 'the schedule' : s.id === 'photos' ? 'the darkroom' : s.id === 'booking' ? 'for promoters' : s.id === 'request' ? 'the request line' : s.label, fragment: fragments[s.id] || '' })),
+  music: { freq: +STATIONS[0].freq, audio: release?.audio || '', yt: release ? (ytId(release.url) || '') : '', title: release?.title || '' },
+};
 ---
 
 <!doctype html>
-<html lang="en" style={`--freq:${st.freq}`} data-station={st.id} data-static={band.intro.enabled ? 'on' : 'off'}>
+<html lang="en" style={`--freq:${st.freq}`} data-station={st.id} data-static={band.intro.enabled ? 'on' : 'off'} data-programme={DEFAULT_PROGRAMME.id} data-shift={DEFAULT_PROGRAMME.shift}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -104,7 +123,9 @@ const nowPlaying = music.releases[0] ? `${music.releases[0].title} · ${[music.r
   <span class="lamp" data-state={lamp}><span>{lamp === 'standby' ? 'standby' : lamp === 'live' ? 'live tonight' : 'on air'}</span></span>
 </header>
 
-<Tuner stationId={st.id} lamp={lamp} meta={meta} spotify={band.links.spotify} embedUrl={radioOn ? band.radio.embedUrl : ''} embedHeight={band.radio.height} frequency={band.radio.frequency} nowPlaying={nowPlaying} />
+<Tuner stationId={st.id} lamp={lamp} meta={meta} spotify={band.links.spotify} embedUrl={radioOn ? band.radio.embedUrl : ''} embedHeight={band.radio.height} frequency={band.radio.frequency} nowPlaying={nowPlaying} programmeName={DEFAULT_PROGRAMME.name} hasVideo={!!radioConfig.music.yt || !!radioConfig.music.audio} />
+<script type="application/json" id="radio-config" set:html={JSON.stringify(radioConfig).replace(/</g, '\\u003c')} />
+<script type="application/json" id="programmes" set:html={JSON.stringify(PROGRAMMES).replace(/</g, '\\u003c')} />
 
 <main id="main">
 <slot />

@@ -8,13 +8,16 @@ import { getCollection, getEntry } from 'astro:content';
 export type Station = { id: string; freq: string; href: string; label: string };
 export const STATIONS: Station[] = [
   { id: 'index',   freq: '87.7', href: '/',             label: 'index' },
-  { id: 'shows',   freq: '88.1', href: '/shows.html',   label: 'schedule' },
-  { id: 'archive', freq: '88.5', href: '/archive.html', label: 'the log' },
+  { id: 'shows',   freq: '88.1', href: '/shows.html',   label: 'shows' },
+  { id: 'archive', freq: '88.5', href: '/archive.html', label: 'log' },
   { id: 'lyrics',  freq: '88.9', href: '/lyrics.html',  label: 'songs' },
   { id: 'listen',  freq: '89.3', href: '/listen.html',  label: 'listen' },
-  { id: 'photos',  freq: '89.7', href: '/photos.html',  label: 'darkroom' },
-  { id: 'booking', freq: '90.1', href: '/booking.html', label: 'promoters' },
+  { id: 'photos',  freq: '89.7', href: '/photos.html',  label: 'photos' },
+  { id: 'booking', freq: '90.1', href: '/booking.html', label: 'press' },
+  { id: 'request', freq: '90.5', href: '/request.html', label: 'requests' },
 ];
+/** the dial's visible band and where the stations sit on it */
+export const BAND = { min: 87.0, max: 91.4, first: 87.7, last: 90.5 };
 export const station = (id: string) => STATIONS.find((s) => s.id === id) ?? STATIONS[0];
 
 export const DOW = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];

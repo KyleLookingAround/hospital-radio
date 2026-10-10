@@ -9,6 +9,8 @@
 @import './components/rows.css' layer(components);
 @import './components/media.css' layer(components);
 @import './components/tags.css' layer(components);
+@import './components/riso.css' layer(components);
+@import './components/radio.css' layer(components);
 @import './pages/home.css' layer(pages);
 @import './pages/shows.css' layer(pages);
 @import './pages/log.css' layer(pages);
