@@ -1,54 +1,153 @@
 ---
+/**
+ * For promoters. The band's press kit as one file: the header, the pitch,
+ * the numbers as ledger lines, the dossier, the last eight rooms, and how
+ * to book. The sheet (#file) IS the printable A4 — src/styles/print.css
+ * strips everything else away. Every number is derived from the show log.
+ */
 import Base from '../layouts/Base.astro';
-import { getBand, getBooking } from '../lib/site';
+import PageHead from '../components/PageHead.astro';
+import Sheet from '../components/Sheet.astro';
+import Picture from '../components/Picture.astro';
+import LedgerLine from '../components/LedgerLine.astro';
+import Stamp from '../components/Stamp.astro';
+import { getBand, getBooking, getMusic, getShows, getSongs } from '../lib/site';
+import { headline, cityStats, venueStats, sharedStages, medianSetLength, lastN, shortDate, monthYear, songStats, loggedShows } from '../lib/stats';
 
 const band = await getBand();
 const b = await getBooking();
-const members = band.members.join(' · ');
-const contact = b.email
-  ? `mailto:${b.email}?subject=Booking%20enquiry%20—%20Hospital%20Radio.`
-  : (b.contactUrl || band.links.instagram || '#');
-const contactLabel = b.email ? b.email : 'Get in touch';
-const wordmarkHtml = band.name.endsWith('.')
-  ? `${band.name.slice(0, -1)}<span class="dot">.</span>`
-  : band.name;
+const music = await getMusic();
+const { upcoming, past } = await getShows();
+const songs = await getSongs();
+
+const h = headline(past, upcoming);
+const cities = cityStats(past);
+const venues = venueStats(past);
+const stages = sharedStages(past);
+const median = medianSetLength(past);
+const stats = songStats(past, songs.map((s) => s.title));
+const rooms = lastN(past, 8);
+const first = h.firstShow;
+const latest = h.latestShow;
+const members = band.members;
+const origin = band.tagline.split('·')[0]?.trim() || 'Manchester';
+const genre = band.tagline.split('·').slice(1).join('·').trim() || band.tagline;
+const releases = music.releases;
+const releaseLine = releases.length
+  ? releases.map((r) => `‘${r.title}’`).join(', ') + ` (${[...new Set(releases.map((r) => r.type.toLowerCase() + 's'))].join(', ')}${[...new Set(releases.map((r) => r.year))].filter(Boolean).length ? ', ' + [...new Set(releases.map((r) => r.year))].filter(Boolean).join('/') : ''})`
+  : 'none yet';
+const setLength = [median ? `${median} songs` : '', b.setLength].filter(Boolean).join(' · ');
+const contact = b.email ? `mailto:${b.email}?subject=${encodeURIComponent('Booking enquiry — Hospital Radio.')}` : (b.contactUrl || band.links.instagram || '#');
+const contactLabel = b.email || 'get in touch';
+const ig = band.links.instagram ? band.links.instagram.replace(/\/+$/, '').split('/').pop() : '';
+const today = new Date();
+const filed = shortDate(today.toISOString().slice(0, 10));
+const ref = 'HR-877';
+
+const title = `For promoters · ${band.name}`;
+const description = `${band.name} press kit — the numbers, the dossier, recent rooms and one-tap booking. ${h.showsPlayed} shows in ${h.cities} cities.`;
 ---
 
-<Base title="For promoters · Hospital Radio." description="Hospital Radio. press kit — booking, line-up, links and photos for promoters." nav="/booking" page="booking.html">
+<Base title={title} description={description} station="booking" page="booking.html" bodyClass="file-page">
 
-<section class="wrap section">
-  <div class="kicker" data-reveal>Press kit · for promoters</div>
-  <div class="sec-head" data-reveal style="margin-top:14px"><h2 class="wordmark" set:html={wordmarkHtml} /></div>
-  <p class="promo-sub" data-reveal>{band.tagline} · est. {band.foundedRoman}</p>
-  <div class="bio" data-reveal style="margin:18px 0 30px"><p style="font-size:20px;line-height:1.65;color:var(--muted)">{b.pitch || band.bio}</p></div>
+<PageHead kicker="for promoters" title="Patient <em>file</em>" meta={`ref · ${ref.toLowerCase()} · ${band.foundedRoman.toLowerCase()} · <b>bookings open</b>`} />
 
-  <div class="dossier" data-reveal>
-    <div class="d-top"><span class="tag">● Patient file — press</span><span class="ref">REF · HR-877 · {band.foundedRoman}</span></div>
-    <dl style="margin:0">
-      <div class="d-row"><dt>Origin</dt><dd>Manchester, UK</dd></div>
-      <div class="d-row"><dt>Genre</dt><dd>{band.tagline}</dd></div>
-      {members && <div class="d-row"><dt>Line-up</dt><dd><span class="mono">{members}</span></dd></div>}
-      {band.foundedRoman && <div class="d-row"><dt>Formed</dt><dd>{band.foundedRoman}</dd></div>}
-      {b.forFansOf && <div class="d-row"><dt>For fans of</dt><dd><span class="mono">{b.forFansOf}</span></dd></div>}
-      {band.spotifyListeners && <div class="d-row"><dt>Spotify</dt><dd><span class="mono">{band.spotifyListeners} monthly listeners</span></dd></div>}
-      {b.stageNotes && <div class="d-row"><dt>Stage notes</dt><dd><span class="mono">{b.stageNotes}</span></dd></div>}
-      {(b.email || b.contactUrl) && (
-        <div class="d-row"><dt>Booking</dt><dd>{b.email
-          ? <a class="mono" href={`mailto:${b.email}`}>{b.email}</a>
-          : <a class="mono" href={b.contactUrl} target="_blank" rel="noopener">{b.contactUrl}</a>}</dd></div>
-      )}
-    </dl>
-  </div>
+<section class="wrap section file-section">
+  <Sheet width="file" tilt={-0.6} class="file" id="file" settle={false}>
+    {/* chart header */}
+    <header class="chart-head">
+      {band.logoImage && <Picture class="mascot" src={band.logoImage} alt="" widths={[128, 256]} sizes="64px" width={64} height={78} />}
+      <div class="chart-id">
+        <p class="wordmark">hospital <span>radio</span><i>.</i></p>
+        <p class="mono tagline">{band.tagline.toLowerCase()} · est. {band.foundedRoman.toLowerCase()}</p>
+      </div>
+      <dl class="chart-ref mono">
+        <div><dt>ref</dt><dd>{ref}</dd></div>
+        <div><dt>filed</dt><dd>{filed}</dd></div>
+        <div><dt>status</dt><dd class="hot">bookings open</dd></div>
+      </dl>
+    </header>
 
-  <div class="d-assets" data-reveal>
+    {/* the pitch */}
+    <div class="pitch">
+      <p class="lead">{b.pitch || band.bio}</p>
+      {band.scrawl && <p class="scrawl pitch-scrawl">{band.scrawl}</p>}
+    </div>
+
+    {/* the numbers */}
+    <section class="block numbers" aria-labelledby="numbers-h">
+      <div class="block-head"><h2 class="h2" id="numbers-h">The <em>numbers</em></h2><span class="mono dim">derived from the log · nothing typed in</span></div>
+      <div class="ledger big">
+        <LedgerLine label="shows played" href="/archive.html"><b class="marker">{h.showsPlayed}</b>{first && <small>since {monthYear(first.date)}</small>}</LedgerLine>
+        <LedgerLine label="cities" href="/archive.html#reach"><b>{h.cities}</b></LedgerLine>
+        {cities.length > 0 && <p class="ledger-note mono">{cities.map((c) => `${c.city.toLowerCase()} ×${c.count}`).join(' · ')}</p>}
+        <LedgerLine label="venues"><b>{h.venues}</b>{venues[0] && venues[0].count > 1 && <small>most played · {venues[0].venue.toLowerCase()} ×{venues[0].count}</small>}</LedgerLine>
+        <LedgerLine label="typical set"><b>{setLength || '—'}</b>{loggedShows(past).length > 0 && <small>from {loggedShows(past).length} logged running orders</small>}</LedgerLine>
+        <LedgerLine label="songs in the set" href="/lyrics.html"><b>{stats.length}</b>{h.mostPlayed && <small>most played · {h.mostPlayed.title.toLowerCase()} ×{h.mostPlayed.plays}</small>}</LedgerLine>
+        <LedgerLine label="shared stages"><b>{stages.length}</b></LedgerLine>
+        {stages.length > 0 && <p class="ledger-note mono">{stages.join(' · ')}</p>}
+        <LedgerLine label="releases" href="/listen.html"><b>{releases.length}</b><small>{releaseLine}</small></LedgerLine>
+      </div>
+    </section>
+
+    {/* the dossier */}
+    <section class="block dossier-block" aria-labelledby="dossier-h">
+      <div class="block-head"><h2 class="h3" id="dossier-h">Dossier</h2><Stamp text={`updated ${filed}`} class="soft" /></div>
+      <dl class="dossier">
+        <div><dt>origin</dt><dd>{origin}, UK</dd></div>
+        <div><dt>genre</dt><dd>{genre}</dd></div>
+        {members.length > 0 && <div><dt>line-up</dt><dd>{members.join(' · ')}</dd></div>}
+        {band.foundedRoman && <div><dt>formed</dt><dd>{band.foundedRoman}</dd></div>}
+        {b.forFansOf && <div><dt>for fans of</dt><dd>{b.forFansOf}</dd></div>}
+        {band.spotifyListeners && <div><dt>spotify</dt><dd>{band.spotifyListeners} monthly listeners</dd></div>}
+        {b.stageNotes && <div><dt>stage notes</dt><dd>{b.stageNotes}</dd></div>}
+        {(b.email || b.contactUrl) && (
+          <div><dt>booking</dt><dd>{b.email
+            ? <a class="link" href={`mailto:${b.email}`}>{b.email}</a>
+            : <a class="link" href={b.contactUrl} target="_blank" rel="noopener">{b.contactUrl}</a>}</dd></div>
+        )}
+        {ig && <div><dt>instagram</dt><dd><a class="link" href={band.links.instagram} target="_blank" rel="noopener">@{ig}</a></dd></div>}
+      </dl>
+    </section>
+
+    {/* recent rooms */}
+    {rooms.length > 0 && (
+      <section class="block rooms-block" aria-labelledby="rooms-h">
+        <div class="block-head"><h2 class="h3" id="rooms-h">Recent <em>rooms</em></h2><span class="mono dim">the last {rooms.length} of {h.showsPlayed} · <a class="link" href="/archive.html">the full log →</a></span></div>
+        <ol class="rooms">
+          {rooms.map((s, i) => (
+            <li>
+              <span class="no mono">№ {String(h.showsPlayed - i).padStart(2, '0')}</span>
+              <span class="date mono">{shortDate(s.date)}</span>
+              <span class="room"><a href={`/archive.html#show-${s.date}`}>{s.venue}</a><span class="city mono">{s.city}</span></span>
+              <span class="with mono">{s.with ? s.with : (s.setlist?.length ? `${s.setlist.length} songs` : '')}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
+    )}
+
+    {/* contact */}
+    <section class="block contact" aria-labelledby="book-h">
+      <div class="block-head"><h2 class="h2" id="book-h">Book <em>us</em></h2></div>
+      <p class="contact-line">
+        {b.email
+          ? <a class="mail" href={contact}>{b.email}</a>
+          : <a class="mail" href={contact} target="_blank" rel="noopener">{contactLabel}</a>}
+      </p>
+      <p class="mono dim contact-note">headline shows, supports and festivals · logo and press photos below · this file prints on two sides of a4 {ig && <>· or dm <a class="link" href={band.links.instagram} target="_blank" rel="noopener">@{ig}</a></>}</p>
+    </section>
+  </Sheet>
+
+  <div class="actions file-actions no-print">
     {b.email
-      ? <a class="btn solid" href={contact}>✉ Book us · {contactLabel}</a>
-      : <a class="btn solid" href={contact} target="_blank" rel="noopener">✉ Book us · {contactLabel}</a>}
-    {band.logoImage && <a class="btn" href={band.logoImage} target="_blank" rel="noopener" download>↓ Logo</a>}
-    <a class="btn" href="/photos.html">Press photos</a>
-    {band.links.spotify && <a class="btn" href={band.links.spotify} target="_blank" rel="noopener">Spotify ↗</a>}
-    {band.links.youtube && <a class="btn" href={band.links.youtube} target="_blank" rel="noopener">YouTube ↗</a>}
-    <button class="btn" type="button" data-print>⎙ Print / Save as PDF</button>
+      ? <a class="btn solid" href={contact}>✉ book us</a>
+      : <a class="btn solid" href={contact} target="_blank" rel="noopener">✉ book us</a>}
+    {band.logoImage && <a class="btn" href={band.logoImage} download>↓ logo</a>}
+    <a class="btn" href="/photos.html">press photos</a>
+    {band.links.spotify && <a class="btn" href={band.links.spotify} target="_blank" rel="noopener">spotify ↗</a>}
+    {band.links.youtube && <a class="btn" href={band.links.youtube} target="_blank" rel="noopener">youtube ↗</a>}
+    <button class="btn" type="button" data-print>⎙ print / save as pdf</button>
   </div>
 </section>
 

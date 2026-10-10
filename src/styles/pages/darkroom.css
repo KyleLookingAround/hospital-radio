@@ -1,1 +1,13 @@
-/* page: darkroom — owned by the darkroom page */
+/* page: photos */
+.photos-page .darkroom-group .group-label{ font-family:var(--serif); font-size:var(--t-l); font-weight:400; letter-spacing:-.02em; text-transform:none; color:var(--ink); border-bottom:1px solid var(--line); padding-bottom:10px; }
+.photos-page .darkroom-group .group-label small{ font-family:var(--mono); font-size:var(--t-xs); letter-spacing:.1em; color:var(--muted); }
+.photos-page .photos .ph{ border-color:var(--line); background:var(--paper-2); }
+.photos-page .photos .ph img{ filter:grayscale(.35) contrast(1.04) brightness(.97); }
+.photos-page .photos .ph:hover img,.photos-page .photos .ph:focus-visible img{ filter:none; }
+.photos-page .photos .ph::after{ display:none; }
+/* masonry columns: mixed portrait/landscape without holes */
+.photos-page .photos{ display:block; columns:2; column-gap:10px; }
+.photos-page .photos .ph{ display:block; break-inside:avoid; margin:0 0 10px; }
+.photos-page .photos .ph img{ aspect-ratio:auto; height:auto; }
+@media (min-width:720px){ .photos-page .photos{ columns:3; column-gap:12px; } .photos-page .photos .ph{ margin-bottom:12px; } }
+@media (min-width:1100px){ .photos-page .photos{ columns:4; } }

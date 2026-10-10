@@ -1,1 +1,15 @@
-/* page: listen — owned by the listen page */
+/* page: listen */
+.listen-intro{ display:grid; gap:clamp(18px, 3vw, 28px); }
+.listen-page .pull{ margin:0; max-width:30ch; font-family:var(--serif); font-weight:330; font-size:clamp(26px, 3.6vw, 40px); line-height:1.2; letter-spacing:-.025em; color:var(--ink); text-wrap:balance; }
+.listen-page .members{ font-size:var(--t-s); letter-spacing:.18em; text-transform:uppercase; }
+.listen-page .presets{ margin-top:8px; }
+.listen-page .preset{ border-color:var(--line); background:var(--card); }
+.listen-page .preset:hover{ border-color:var(--rose); }
+.listen-page .preset .p{ color:var(--rose-text); }
+.listen-page .preset .nm{ color:var(--ink); }
+.listen-page .preset .go{ color:var(--muted); }
+.listen-page .preset:hover .go{ color:var(--rose-text); }
+.listen-page .home-links{ display:flex; flex-wrap:wrap; gap:4px 18px; }
+.listen-page .h3 em{ color:var(--rose-text); }
+.listen-page .vid-grid:has(> :only-child){ grid-template-columns:minmax(0, 640px); }
+.listen-page .ledger-line .l{ text-transform:none; }
