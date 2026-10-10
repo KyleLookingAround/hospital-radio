@@ -48,7 +48,6 @@ Old links keep working: every URL is unchanged and the hash-route shim is still 
 |---|---|---|---|
 | `band.yml` | `heroPhoto` | `""` → first landscape gallery photo | the photo behind the home-page hero |
 | `band.yml` | `status` | `""` | a handwritten line under "last heard" when nothing is booked |
-| `music.yml` | `releases[].audio` | `""` | reserved for a hosted audio file; not used by the site yet |
 | `booking.yml` | `setLength` | `""` | the "typical set" line on the promoter's file |
 
 Nothing was renamed or removed; a bad edit still fails the build and leaves the live site as it was.

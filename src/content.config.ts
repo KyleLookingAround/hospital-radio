@@ -77,9 +77,6 @@ const music = defineCollection({
       year: z.string().default(''),
       url: z.string().url(),
       label: z.string().optional(),
-      // optional hosted audio file ("/assets/audio/x.mp3") — the radio plays it
-      // through a real tuning filter; without it the radio uses the video's audio
-      audio: z.union([z.literal(''), z.string().regex(/^\/assets\//)]).default(''),
     })).default([]),
     videos: z.array(z.object({
       title: z.string(),
