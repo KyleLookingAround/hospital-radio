@@ -20,6 +20,7 @@ const total = photos.length;
 const credits = Array.from(new Set(photos.map((p) => (p.credit || '').replace(/^📷\s*/, '').trim()).filter(Boolean)));
 const meta = [`${total} photos`, groups.length > 1 ? `${groups.length} rooms` : '', credits.length ? `📷 ${credits.join(', ')}` : ''].filter(Boolean).join(' · ');
 const orient = (src: string) => { const m = findImage(src); return m ? (m.width > m.height ? 'landscape' : m.width < m.height ? 'portrait' : 'square') : 'square'; };
+const ratio = (src: string) => { const m = findImage(src); return m ? `${m.width}/${m.height}` : '1'; };
 const playedAt = (title: string) => venues.find((v) => v.venue.toLowerCase() === title.toLowerCase() || v.venue.toLowerCase().startsWith(title.toLowerCase()));
 const capOf = (p: { caption?: string; credit?: string }) => [p.caption, p.credit].filter(Boolean).join(' · ');
 ---
@@ -35,7 +36,7 @@ const capOf = (p: { caption?: string; credit?: string }) => [p.caption, p.credit
       <h2 class="group-label"><span>{g.promo ? 'promo' : g.title}</span><small>{g.photos.length} {g.photos.length === 1 ? 'photo' : 'photos'}{v ? ` · played here ${v.count}×` : ''}</small></h2>
       <div class="photos">
         {g.photos.map((p) => (
-          <a class:list={['ph', orient(p.src)]} href={`#p${p.index}`} aria-label={`Open photo ${p.index + 1}: ${p.caption || band.name}`}>
+          <a class:list={['ph', orient(p.src)]} href={`#p${p.index}`} style={`--ar:${ratio(p.src)}`} aria-label={`Open photo ${p.index + 1}: ${p.caption || band.name}`}>
             <Picture src={p.src} alt="" widths={[480, 800]} sizes="(min-width:1100px) 25vw, (min-width:720px) 33vw, 50vw" />
             {capOf(p) && <span class="cap">{capOf(p)}</span>}
           </a>

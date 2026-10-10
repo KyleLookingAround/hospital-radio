@@ -26,9 +26,9 @@ summary{ list-style:none; }
 .skip:focus{ top:12px; }
 
 /* ---------- layout ---------- */
-.wrap{ position:relative; z-index:1; width:min(var(--wrap), 100% - 2*var(--gutter)); margin-inline:auto; }
+.wrap{ position:relative; width:min(var(--wrap), 100% - 2*var(--gutter)); margin-inline:auto; }
 .wrap-read{ width:min(var(--w-read), 100% - 2*var(--gutter)); margin-inline:auto; }
-main{ position:relative; z-index:1; }
+main{ position:relative; }
 .section{ padding-block:clamp(48px, 9vw, 104px); }
 .section + .section{ padding-top:0; }
 .full{ width:100%; }

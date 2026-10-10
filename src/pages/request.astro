@@ -1,9 +1,158 @@
 ---
+/**
+ * The request line. Hospital radio takes dedications from the wards; this
+ * page is that desk. A dedication slip (song · ward · from · a line) fills a
+ * request card as you type — the card is the thing: save it as a 1080×1350
+ * PNG for a story, copy the request as text, or send it to the band by
+ * Instagram DM / email. Everything is client-side; nothing is stored. The
+ * form, the sample card and the DM/mail links all work with JavaScript off.
+ */
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
-import Sheet from '../components/Sheet.astro';
+import { getBand, getBooking, getShows, getSongs } from '../lib/site';
+import { songStats, cityStats, displayTitle, shortDate } from '../lib/stats';
+
+const band = await getBand();
+const booking = await getBooking();
+const { past } = await getShows();
+const songs = await getSongs();
+
+const stats = songStats(past, songs.map((s) => s.title));
+const cities = cityStats(past);
+
+// the instagram DM link is derived from the profile url in band.yml
+const igHandle = (band.links.instagram.match(/instagram\.com\/([^/?#]+)/) || [])[1] || '';
+const dmUrl = igHandle ? `https://ig.me/m/${igHandle}` : band.links.instagram;
+const SITE_HOST = 'hospitalradiofullstop.co.uk';
+const PAGE_URL = `${SITE_HOST}/request.html`;
+
+// the sample on the card at rest: the most-played song, a ward we've reached
+const sample = {
+  song: displayTitle(stats[0]?.title ?? 'Dreaming'),
+  slug: stats[0]?.slug ?? 'dreaming',
+  ward: cities.find((c) => c.city === 'Leeds')?.city ?? cities[0]?.city ?? 'Manchester',
+  name: 'Sam',
+  note: 'for the night shift on ward 4 — you kept us going. this one’s yours.',
+};
+const now = new Date();
+const todayIso = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+const today = shortDate(todayIso);
+
+const requestText = `REQUEST for the ${sample.ward} ward: ‘${sample.song}’ — ${sample.note} — from ${sample.name} · ${PAGE_URL}`;
+const mailto = booking.email
+  ? `mailto:${booking.email}?subject=${encodeURIComponent('Request line')}&body=${encodeURIComponent(requestText)}`
+  : '';
+const songLen = sample.song.length;
 ---
-<Base title="Request line · Hospital Radio." description="Dedicate a Hospital Radio. song to someone on the ward." station="request" page="request.html">
-<PageHead kicker="90.5 fm · the request line" title="Request <em>line</em>" meta="opening shortly" />
-<section class="wrap section"><Sheet width="read"><p class="lead">the request line is being wired up.</p></Sheet></section>
+
+<Base title="Request line · Hospital Radio." description="Dedicate a Hospital Radio. song to someone on the ward — make the card, send it to the band." station="request" page="request.html" bodyClass="request-page">
+
+
+<PageHead kicker="the request line" title="Request <em>line</em>" meta="dedications open · the most-requested song gets played at the next show" />
+
+<div class="wrap section req-layout">
+
+  <form class="sheet ledger slip" id="slip" action="#card" method="get" novalidate data-page-url={PAGE_URL} data-dm={dmUrl} data-email={booking.email}>
+    <div class="slip-head">
+      <div class="kicker">dedication slip</div>
+      <p class="quiet">pick a song, name the ward, sign it. the request card fills in as you go.</p>
+    </div>
+
+    <fieldset class="field">
+      <legend class="label"><span class="no">01</span> the song <span class="req">· required</span></legend>
+      <div class="chips" id="songChips">
+        {stats.map((s) => (
+          <label class="chip">
+            <input type="radio" name="song" value={s.slug} data-title={displayTitle(s.title)} required>
+            <span class="face"><b>{displayTitle(s.title)}</b><small>{s.plays}×</small></span>
+          </label>
+        ))}
+      </div>
+      <p class="hint quiet">× = times we’ve played it live, from the log.</p>
+    </fieldset>
+
+    <fieldset class="field">
+      <legend class="label"><span class="no">02</span> the ward</legend>
+      <div class="chips">
+        {cities.map((c) => (
+          <label class="chip">
+            <input type="radio" name="ward" value={c.city}>
+            <span class="face"><b>{c.city}</b><small>{c.count}×</small></span>
+          </label>
+        ))}
+        <label class="chip">
+          <input type="radio" name="ward" value="" id="wardNew">
+          <span class="face"><b>somewhere new</b></span>
+        </label>
+      </div>
+      <div class="ward-new">
+        <label class="label" for="wardText">where?</label>
+        <input class="in" type="text" id="wardText" name="wardText" maxlength="40" autocomplete="off" placeholder="the town, the room, the ward">
+      </div>
+      <p class="hint quiet">the ward is wherever you heard us. somewhere new counts.</p>
+    </fieldset>
+
+    <div class="field two">
+      <div>
+        <label class="label" for="fromName"><span class="no">03</span> from</label>
+        <input class="in" type="text" id="fromName" name="from" maxlength="30" autocomplete="nickname" placeholder="your name">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label" for="note"><span class="no">04</span> the dedication</label>
+      <textarea class="in" id="note" name="note" maxlength="140" rows="3" placeholder="who it’s for and why — one line, like a card"></textarea>
+      <div class="count-row">
+        <output class="count mono" id="count" for="note" aria-live="polite">140 left</output>
+      </div>
+    </div>
+
+    <noscript><p class="quiet">javascript is off — the card shows a sample. fill the slip, then DM or email the band below, or screenshot the card.</p></noscript>
+  </form>
+
+  <aside class="req-side" aria-label="The request card">
+    <div class="card-wrap">
+      <div class="card" id="card" style={`--len:${songLen}`} data-sample>
+        <div class="c-head">
+          <span class="wordmark">hospital <span>radio</span><i>.</i></span>
+          <span class="c-ident mono"><b>request</b><span data-f="date">{today}</span></span>
+        </div>
+        <div class="c-body">
+          <p class="c-ward mono">for the <span data-f="ward">{sample.ward}</span> ward</p>
+          <p class="c-song" data-f="song">{sample.song}</p>
+          <p class="c-note scrawl-flat" data-f="note">{sample.note}</p>
+          <p class="c-from mono">from <span data-f="name">{sample.name}</span></p>
+        </div>
+        <div class="c-foot mono">
+          <span class="c-played"><i aria-hidden="true"></i>played on air</span>
+          <span class="c-url">{SITE_HOST}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="req-actions">
+      <div class="actions">
+        <button class="btn solid" type="button" id="saveCard" hidden>↓ save the card</button>
+        <button class="btn" type="button" id="shareCard" hidden>share the card</button>
+        <button class="btn" type="button" id="copyReq" hidden>copy the request</button>
+      </div>
+      <p class="quiet req-msg" id="reqMsg" role="status"></p>
+      <label class="visually-hidden" for="reqText">The request as text</label>
+      <textarea class="req-text mono" id="reqText" readonly rows="3" hidden>{requestText}</textarea>
+    </div>
+
+    <div class="send">
+      <div class="kicker">send it to the band</div>
+      <div class="actions">
+        {dmUrl && <a class="btn solid" id="dmLink" href={dmUrl} target="_blank" rel="noopener">DM it on instagram ↗</a>}
+        {mailto && <a class="btn" id="mailLink" href={mailto}>or email it</a>}
+      </div>
+      <p class="quiet">the band reads the DMs. the most-requested song gets played at the next show. nothing here is stored — the card lives in your camera roll.</p>
+    </div>
+  </aside>
+
+</div>
+
+<script src="../scripts/request.ts"></script>
+
 </Base>

@@ -41,11 +41,11 @@
 .setlist > summary:hover{ color:var(--rose-deep); }
 .setlist > summary .n{ font-size:9px; letter-spacing:.1em; color:var(--muted); border:1px solid var(--line-2); border-radius:2px; padding:1px 5px; }
 .setlist ol{ margin:10px 0 2px; counter-reset:set; display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:2px 22px; }
-.setlist li{ counter-increment:set; font-family:var(--mono); font-size:12px; letter-spacing:.02em; color:var(--ink); padding:5px 4px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:10px; min-height:30px; border-radius:2px; transition:background var(--fast); }
+.setlist li{ counter-increment:set; font-family:var(--mono); font-size:12px; letter-spacing:.02em; color:var(--ink); padding:5px 4px; border-bottom:1px solid var(--line); display:flex; flex-wrap:wrap; align-items:center; gap:4px 10px; min-height:30px; border-radius:2px; transition:background var(--fast); }
 .setlist li::before{ content:counter(set, decimal-leading-zero); color:var(--rose-text); min-width:18px; font-variant-numeric:tabular-nums; }
-.setlist li a{ color:var(--ink); border-bottom:1px solid color-mix(in srgb, var(--rose) 40%, transparent); }
+.setlist li a{ color:var(--ink); border-bottom:1px solid color-mix(in srgb, var(--rose) 40%, transparent); flex:1 1 110px; min-width:0; padding-block:5px; }
 .setlist li a:hover{ color:var(--rose-text); border-color:var(--rose-text); }
-.setlist li .stamp{ margin-left:auto; font-size:8px; padding:2px 5px; }
+.setlist li .stamp{ margin-left:auto; font-size:8px; padding:2px 5px; flex:none; }
 .setlist li .stamp + .stamp{ margin-left:4px; }
 
 /* year groups in the log */

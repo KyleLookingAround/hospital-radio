@@ -62,7 +62,7 @@
 .schedule-page .recent .show:first-child .body h3::after{ content:"latest"; font-family:var(--mono); font-size:9px; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:var(--paper); background:var(--rose-text); padding:3px 7px; border-radius:2px; transform:rotate(-2deg); }
 .schedule-page .prev-on{ margin-top:clamp(26px, 4vw, 40px); padding-top:clamp(18px, 3vw, 26px); border-top:1px dashed var(--line-2); }
 .schedule-page .prev-on .sec-head{ margin-bottom:14px; }
-.schedule-page .prev-on .h3 em{ font-style:italic; color:var(--rose); }
+.schedule-page .prev-on .h3 em{ font-style:italic; color:var(--rose-text); }
 .schedule-page .prev-on .tags li{ display:contents; }
 .schedule-page .prev-on a.tag{ display:inline-flex; align-items:center; gap:6px; min-height:36px; transition:border-color var(--fast), color var(--fast); }
 .schedule-page .prev-on a.tag:hover{ border-color:var(--rose); color:var(--rose-text); }

@@ -1,0 +1,103 @@
+/* page: request — the request line (request.html). Root: body.request-page
+   One idea: a dedication slip on the left fills a request card on the right. */
+
+.request-page .page-head .title{ max-width:none; }
+.request-page .req-layout{ display:grid; gap:clamp(40px, 6vw, 72px); align-items:start; padding-top:clamp(20px, 4vw, 44px); }
+@media (min-width:920px){
+  .request-page .req-layout{ grid-template-columns:minmax(0, 1.15fr) minmax(320px, .85fr); gap:clamp(40px, 6vw, 88px); }
+  .request-page .req-side{ position:sticky; top:calc(var(--header-h) + 20px); }
+}
+
+/* ---- the slip ---- */
+.request-page .slip{ background:transparent; border:0; border-radius:0; padding:0; display:grid; gap:clamp(26px, 4vw, 38px); }
+.request-page .slip-head{ display:grid; gap:10px; }
+.request-page .slip-head .quiet{ max-width:48ch; }
+.request-page .field{ margin:0; padding:clamp(18px, 3vw, 24px) 0 0; border:0; border-top:1px solid var(--line); min-width:0; display:grid; gap:14px; }
+.request-page fieldset.field{ display:grid; }
+.request-page .field legend{ padding:0; float:left; width:100%; margin-bottom:14px; }
+.request-page .field .label{ display:flex; align-items:baseline; gap:10px; color:var(--ink); }
+.request-page .field .label .no{ color:var(--rose-text); font-weight:600; }
+.request-page .field .label .req{ color:var(--muted); letter-spacing:.12em; font-weight:400; }
+.request-page .field .hint{ font-size:var(--t-xs); line-height:1.6; }
+.request-page .field.two{ grid-template-columns:1fr; }
+@media (min-width:560px){ .request-page .field.two{ grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); } }
+.request-page .field.two > div{ display:grid; gap:12px; }
+
+/* chips: radios dressed as pills */
+.request-page .chips{ display:flex; flex-wrap:wrap; gap:8px; clear:both; }
+.request-page .chip{ position:relative; display:inline-flex; cursor:pointer; }
+.request-page .chip input{ position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:pointer; }
+.request-page .chip .face{
+  display:inline-flex; align-items:baseline; gap:8px; min-height:44px; padding:10px 14px;
+  border:1px solid var(--line-2); border-radius:999px; background:var(--card); color:var(--ink);
+  font-family:var(--serif); font-size:17px; font-weight:400; letter-spacing:-.01em; line-height:1.2;
+  transition:background var(--fast), border-color var(--fast), color var(--fast), transform var(--fast);
+}
+.request-page .chip .face small{ font-family:var(--mono); font-size:11px; letter-spacing:.06em; color:var(--muted); font-variant-numeric:tabular-nums; }
+.request-page .chip:hover .face{ border-color:var(--rose); }
+.request-page .chip input:checked + .face{ background:var(--ink); border-color:var(--ink); color:var(--paper); }
+.request-page .chip input:checked + .face small{ color:#F2A7B3; }
+.request-page .chip input:focus-visible + .face{ outline:2px solid var(--focus); outline-offset:3px; }
+.request-page .chip input:active + .face{ transform:scale(.98); }
+
+/* the free-text ward — shown once "somewhere new" is picked (always with no :has support) */
+.request-page .ward-new{ display:grid; gap:10px; }
+@supports selector(:has(a)){
+  .request-page .ward-new{ display:none; }
+  .request-page fieldset:has(#wardNew:checked) .ward-new{ display:grid; }
+}
+
+/* inputs */
+.request-page .in{
+  width:100%; min-height:48px; padding:12px 14px; background:#FFFDF6; border:1px solid var(--line-2); border-radius:var(--r1);
+  color:var(--ink); font-family:var(--serif); font-size:18px; letter-spacing:-.005em; line-height:1.45; outline:none;
+  transition:border-color var(--fast), box-shadow var(--fast);
+}
+.request-page textarea.in{ resize:vertical; min-height:96px; }
+.request-page .in::placeholder{ color:var(--soft); }
+.request-page .in:focus{ border-color:var(--rose); box-shadow:0 0 0 3px rgba(223,128,144,.25); }
+.request-page .count-row{ display:flex; justify-content:flex-end; }
+.request-page .count{ font-size:var(--t-xs); letter-spacing:.08em; color:var(--muted); font-variant-numeric:tabular-nums; }
+.request-page .count.low{ color:var(--rose-text); }
+
+/* ---- the card ---- */
+.request-page .card-wrap{ container-type:inline-size; container-name:card; }
+.request-page .card{
+  --pad:clamp(18px, 7cqw, 34px);
+  position:relative; aspect-ratio:4 / 5; display:grid; grid-template-rows:auto 1fr auto; gap:0;
+  padding:var(--pad); background:#FBF3E3; color:var(--ink); border:1px solid var(--line-2); border-radius:var(--r2);
+  box-shadow:0 30px 60px -40px rgba(29,46,99,.45);
+  overflow:hidden; overflow-wrap:anywhere;
+}
+.request-page .c-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; padding-bottom:4.5cqw; border-bottom:1px solid var(--ink); }
+.request-page .c-head .wordmark{ font-size:clamp(20px, 7.4cqw, 36px); line-height:.9; }
+.request-page .c-ident{ display:grid; justify-items:end; gap:2px; font-size:clamp(9px, 2.6cqw, 12px); letter-spacing:.2em; text-transform:uppercase; color:var(--muted); line-height:1.4; white-space:nowrap; }
+.request-page .c-ident b{ color:var(--rose-text); font-weight:600; }
+.request-page .c-body{ display:grid; align-content:center; gap:clamp(8px, 2.6cqw, 14px); padding-block:clamp(14px, 5cqw, 28px); min-width:0; }
+.request-page .c-ward{ font-size:clamp(10px, 3cqw, 14px); letter-spacing:.18em; text-transform:uppercase; color:var(--muted); }
+.request-page .c-song{
+  font-family:var(--serif); font-style:italic; font-weight:300; color:var(--rose);
+  font-size:clamp(30px, calc(260cqw / var(--len, 10)), 22cqw); line-height:.95; letter-spacing:-.03em; text-wrap:balance;
+}
+.request-page .c-note{ font-family:var(--scrawl); font-weight:500; font-size:clamp(17px, 6.2cqw, 29px); line-height:1.2; color:var(--ink); max-width:26ch; }
+.request-page .c-note:empty{ display:none; }
+.request-page .c-from{ font-size:clamp(10px, 3cqw, 14px); letter-spacing:.14em; text-transform:uppercase; color:var(--ink); }
+.request-page .c-from span{ color:var(--rose-text); }
+.request-page .c-foot{ display:flex; justify-content:space-between; align-items:center; gap:12px; padding-top:4cqw; border-top:1px dotted var(--line-2); font-size:clamp(8px, 2.4cqw, 11px); letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.request-page .c-played{ display:inline-flex; align-items:center; gap:8px; padding:6px 9px; border:1px dashed var(--rose); color:var(--rose-text); border-radius:3px; white-space:nowrap; }
+.request-page .c-played i{ width:10px; height:10px; border:1px solid currentColor; border-radius:2px; }
+.request-page .c-url{ text-align:right; text-transform:none; letter-spacing:.04em; min-width:0; overflow-wrap:anywhere; }
+/* a field that is still the sample reads as pencilled-in once the slip is live: muted, dotted underline */
+.request-page .card.live [data-f].ph{ color:var(--muted); text-decoration:underline dotted; text-decoration-color:var(--line-2); text-underline-offset:.14em; text-decoration-thickness:1px; }
+.request-page .card.live .c-song.ph{ text-decoration:none; }
+
+/* ---- actions ---- */
+.request-page .req-side{ display:grid; gap:clamp(22px, 3vw, 30px); }
+.request-page .req-actions{ display:grid; gap:12px; }
+.request-page .req-actions [hidden],.request-page .req-text[hidden]{ display:none; }
+.request-page .req-msg{ min-height:1.3em; margin:0; }
+.request-page .req-msg:empty{ display:none; }
+.request-page .req-text{ width:100%; padding:12px 14px; background:#FFFDF6; border:1px solid var(--line-2); border-radius:var(--r1); color:var(--ink); font-size:13px; line-height:1.6; resize:none; }
+.request-page .send{ display:grid; gap:14px; padding-top:clamp(18px, 3vw, 24px); border-top:1px solid var(--line); }
+.request-page .send .quiet{ max-width:44ch; }
+.request-page .btn.solid{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
