@@ -1,0 +1,134 @@
+/* ============================================================
+   HOSPITAL RADIO. — one stylesheet.
+   Cream page, navy text, one accent. Two typefaces at four sizes,
+   plus the handwriting once. Space does the work; thin rules only
+   between list rows. Contrast on cream: --ink 7.4:1, --muted 4.8:1,
+   --accent 5.5:1. The pink (#DF8090) is never used for text.
+   ============================================================ */
+@import './fonts.css';
+
+:root{
+  --paper:#F5E9D7;
+  --ink:#2D458F;
+  --ink-deep:#1D2E63;
+  --muted:#4A5C97;
+  --accent:#9E3A4F;
+  --line:rgba(45,69,143,.2);
+
+  --serif:"Fraunces",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --hand:"Caveat",cursive;
+
+  --t-small:13px;                     /* mono: dates, prices, labels */
+  --t-body:18px;                      /* everything you read */
+  --t-head:28px;                      /* section headings */
+  --t-display:clamp(40px,8vw,56px);   /* page titles */
+
+  --gutter:clamp(16px,4vw,40px);
+  --wide:960px;
+  --read:640px;
+  --gap:clamp(56px,9vw,96px);
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; color-scheme:light; }
+body{ margin:0; background:var(--paper); color:var(--ink); font:400 var(--t-body)/1.55 var(--serif); font-optical-sizing:auto; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+img{ display:block; max-width:100%; height:auto; }
+h1,h2,h3,p,ul,ol,figure,dl,dd{ margin:0; }
+ul,ol{ padding:0; list-style:none; }
+h1,h2,h3{ font-weight:400; line-height:1.1; letter-spacing:-.02em; text-wrap:balance; }
+a{ color:inherit; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px; text-decoration-color:var(--line); transition:color .15s, text-decoration-color .15s; }
+a:hover{ color:var(--accent); text-decoration-color:currentColor; }
+:focus-visible{ outline:2px solid var(--ink); outline-offset:3px; border-radius:2px; }
+::selection{ background:var(--ink); color:var(--paper); }
+
+.skip{ position:absolute; left:16px; top:-60px; padding:10px 14px; background:var(--ink); color:var(--paper); border-radius:4px; z-index:10; }
+.skip:focus{ top:12px; }
+.wrap{ width:min(var(--wide), 100% - 2*var(--gutter)); margin-inline:auto; }
+.read{ max-width:var(--read); }
+.small{ font-family:var(--mono); font-size:var(--t-small); line-height:1.6; color:var(--muted); }
+.wordmark{ font-weight:600; letter-spacing:-.035em; text-transform:lowercase; text-decoration:none; }
+.wordmark span{ color:var(--accent); }
+
+/* ---- header ---- */
+.site-head{ border-bottom:1px solid var(--line); }
+.site-head .wrap{ display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:0 24px; padding-block:12px; }
+.site-head .wordmark{ font-size:22px; padding-block:8px; }
+.nav{ display:flex; flex-wrap:wrap; gap:0 20px; }
+.nav a{ font-size:17px; text-decoration:none; padding-block:10px; }
+.nav a[aria-current="page"]{ text-decoration:underline; text-decoration-color:currentColor; }
+
+/* ---- sections ---- */
+.section{ padding-top:var(--gap); }
+.section > h2{ font-size:var(--t-head); margin-bottom:20px; }
+.more{ margin-top:18px; }
+
+/* ---- buttons ---- */
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:48px; padding:0 24px; border-radius:999px; background:var(--ink); color:var(--paper); font-size:17px; font-weight:500; text-decoration:none; transition:background .15s; }
+.btn:hover{ background:var(--ink-deep); color:var(--paper); }
+.btn.line{ background:transparent; color:var(--ink); box-shadow:inset 0 0 0 1px var(--ink); }
+.btn.line:hover{ background:var(--ink); color:var(--paper); }
+
+/* ---- home: the mascot ---- */
+.hero{ padding-block:clamp(28px,6vw,64px) 0; display:grid; justify-items:center; text-align:center; gap:16px; }
+.hero h1 img{ width:min(62vw,300px); height:auto; }
+.hero .scrawl{ font-family:var(--hand); font-size:27px; line-height:1.2; color:var(--accent); }
+.hero .lede{ max-width:34ch; }
+.hero .btn{ margin-top:6px; }
+.hero .small a{ color:var(--muted); }
+.hero .small a:hover{ color:var(--accent); }
+
+/* ---- videos ---- */
+.videos{ display:grid; gap:36px 24px; }
+@media (min-width:720px){ .videos{ grid-template-columns:1fr 1fr; } }
+.video-frame{ position:relative; aspect-ratio:16/9; border-radius:6px; overflow:hidden; background:var(--ink-deep); }
+.video-frame iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+.video-fac{ position:absolute; inset:0; display:block; width:100%; height:100%; padding:0; border:0; background:var(--ink-deep); cursor:pointer; }
+.video-fac .thumb{ width:100%; height:100%; object-fit:cover; }
+.video-fac .play{ position:absolute; left:50%; top:50%; width:64px; height:64px; margin:-32px 0 0 -32px; border-radius:50%; background:rgba(245,233,215,.92); transition:transform .15s; }
+.video-fac .play::after{ content:""; position:absolute; left:26px; top:21px; border-left:18px solid var(--ink); border-top:11px solid transparent; border-bottom:11px solid transparent; }
+.video-fac:hover .play{ transform:scale(1.06); }
+.vid figcaption{ display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 14px; margin-top:12px; }
+.vid-title{ font-size:22px; letter-spacing:-.01em; margin-right:auto; }
+.vid-meta{ font-family:var(--mono); font-size:var(--t-small); color:var(--muted); }
+.vid figcaption a{ font-family:var(--mono); font-size:var(--t-small); }
+
+/* ---- shows ---- */
+.gigs li{ display:grid; grid-template-columns:6.5rem 1fr auto; gap:2px 16px; align-items:baseline; padding-block:14px; border-top:1px solid var(--line); }
+.gigs li:last-child{ border-bottom:1px solid var(--line); }
+.gig-date{ font-family:var(--mono); font-size:var(--t-small); color:var(--muted); }
+.gig-venue{ font-size:20px; }
+.gig-city{ display:block; font-family:var(--mono); font-size:var(--t-small); color:var(--muted); }
+.gig-act{ font-family:var(--mono); font-size:var(--t-small); white-space:nowrap; }
+@media (max-width:480px){ .gigs li{ grid-template-columns:1fr auto; } .gig-date{ grid-column:1 / -1; } }
+.quiet-note{ max-width:var(--read); }
+.quiet-note p + p{ margin-top:6px; }
+[hidden]{ display:none !important; }
+
+/* ---- merch ---- */
+.merch li a{ display:flex; justify-content:space-between; align-items:baseline; gap:16px; padding-block:14px; border-top:1px solid var(--line); text-decoration:none; }
+.merch li:last-child a{ border-bottom:1px solid var(--line); }
+.merch .price{ font-family:var(--mono); font-size:var(--t-small); color:var(--muted); }
+
+/* ---- mailing list (only rendered when connected) ---- */
+.tune-form{ display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; }
+.tune-form input{ flex:1; min-width:220px; min-height:48px; padding:0 16px; border:1px solid var(--muted); border-radius:999px; background:#FFFDF6; color:var(--ink); font:inherit; }
+.tune-msg{ margin-top:10px; }
+
+/* ---- footer ---- */
+.site-foot{ margin-top:var(--gap); border-top:1px solid var(--line); padding-block:28px 48px; }
+.site-foot .wrap{ display:grid; gap:14px; }
+.foot-links{ display:flex; flex-wrap:wrap; gap:0 20px; }
+.foot-links a{ text-decoration:none; padding-block:6px; }
+.socials{ display:flex; flex-wrap:wrap; gap:0 18px; font-family:var(--mono); font-size:var(--t-small); }
+.socials a{ color:var(--muted); display:inline-block; padding-block:6px; }
+.copy{ font-family:var(--mono); font-size:var(--t-small); color:var(--muted); }
+.visually-hidden{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; }
+
+/* phones: the five links fit on one row under the wordmark */
+@media (max-width:540px){
+  .site-head .wrap{ gap:0; padding-block:8px 4px; }
+  .nav{ gap:0 14px; width:100%; }
+  .nav a{ font-size:16px; padding-block:12px; }
+}
+@media (max-width:380px){ .nav{ gap:0 11px; } .nav a{ font-size:15px; } }

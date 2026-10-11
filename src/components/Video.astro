@@ -1,0 +1,24 @@
+---
+/** A YouTube poster that loads the player only when tapped (scripts/video.ts). */
+import { ytId } from '../lib/site';
+interface Props { title: string; url: string; meta?: string; eager?: boolean }
+const { title, url, meta = '', eager = false } = Astro.props;
+const id = ytId(url);
+---
+<figure class="vid">
+  <div class="video-frame">
+    {id ? (
+      <button class="video-fac" data-yt={id} type="button" aria-label={`Play ${title}`}>
+        <img class="thumb" src={`https://i.ytimg.com/vi/${id}/maxresdefault.jpg`} data-fallback={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt="" width="1280" height="720" loading={eager ? 'eager' : 'lazy'} decoding="async">
+        <span class="play" aria-hidden="true"></span>
+      </button>
+    ) : (
+      <a class="video-fac" href={url} target="_blank" rel="noopener" aria-label={`Watch ${title}`}><span class="play" aria-hidden="true"></span></a>
+    )}
+  </div>
+  <figcaption>
+    <span class="vid-title">{title}</span>
+    {meta && <span class="vid-meta">{meta}</span>}
+    <slot />
+  </figcaption>
+</figure>

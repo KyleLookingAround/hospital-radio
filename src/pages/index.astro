@@ -1,150 +1,103 @@
 ---
-import Base from '../layouts/Base.astro';
+/**
+ * Home: the mascot, one line in the band's hand, who they are, a way to
+ * listen, the videos, the next show (or an honest note), the merch.
+ */
+import Site from '../layouts/Site.astro';
 import Picture from '../components/Picture.astro';
-import Pulse from '../components/Pulse.astro';
-import VideoPlayer from '../components/VideoPlayer.astro';
-import ShowRow from '../components/ShowRow.astro';
-import Tally from '../components/Tally.astro';
-import Stamp from '../components/Stamp.astro';
-import MailingForm from '../components/MailingForm.astro';
-import { getBand, getMusic, getShows, getSongs, getGallery, MON, slug } from '../lib/site';
-import { songStats, headline, daysSince, shortDate, monthYear, lastN, displayTitle } from '../lib/stats';
-import { findImage } from '../lib/images';
+import Video from '../components/Video.astro';
+import { getBand, getMusic, getShows, getSongs, socialList, slug, DOW, MON } from '../lib/site';
 
 const band = await getBand();
 const music = await getMusic();
 const { upcoming, past } = await getShows();
 const songs = await getSongs();
-const photos = await getGallery();
 
-const next = upcoming[0];
+const lyricSlugs = new Set(songs.map((s) => s.slug));
+const next = upcoming.slice(0, 3);
 const last = past[0];
-const h = headline(past, upcoming);
-const stats = songStats(past, songs.map((s) => s.title));
-const top = stats.slice(0, 5);
-const statFor = (title: string) => stats.find((s) => s.slug === slug(title));
-const landscape = photos.find((p) => { const m = findImage(p.src); return m && m.width > m.height; });
-const hero = band.heroPhoto || landscape?.src || photos[0]?.src || '';
-const strip = photos.filter((p) => p.src !== hero).slice(0, 6);
-const merch = music.merchItems.slice(0, 4);
-const days = last ? daysSince(last.date) : 0;
-const dateLine = (d: Date) => `${String(d.getDate()).padStart(2, '0')} ${MON[d.getMonth()].toLowerCase()}`;
+const platforms = socialList(band.links).filter(([n]) => ['Apple Music', 'YouTube', 'SoundCloud'].includes(n));
+const thisYear = new Date().getFullYear();
+const day = (d: Date) => `${DOW[d.getDay()][0]}${DOW[d.getDay()].slice(1).toLowerCase()} ${d.getDate()} ${MON[d.getMonth()][0]}${MON[d.getMonth()].slice(1).toLowerCase()}${d.getFullYear() === thisYear ? '' : ` ${d.getFullYear()}`}`;
 ---
 
-<Base station="index" page="">
+<Site page="">
 
-<section class="hero booth" aria-label="Hospital Radio.">
-  {hero && <Picture class="hero-img" src={hero} alt="" widths={[800, 1200, 1600]} sizes="100vw" loading="eager" fetchpriority="high" quality={66} />}
-  <div class="hero-wash" aria-hidden="true"></div>
-  <div class="wrap hero-inner">
-    <h1 class="wordmark hero-word">hospital <span>radio</span><i>.</i></h1>
-    <p class="hero-tag label">{band.tagline} · est. {band.foundedRoman}</p>
-    <p class="hero-status mono">
-      {next
-        ? <><b>up next</b> · <a href="/shows.html" data-date={next.date}>{dateLine(next._d)} · {next.venue}{next.city ? `, ${next.city}` : ''}</a></>
-        : last
-          ? <><b>between transmissions</b> · last heard {dateLine(last._d)} at <a href={`/archive.html#show-${last.date}`}>{last.venue}{last.city ? `, ${last.city}` : ''}</a></>
-          : <b>on air</b>}
-    </p>
-    <div class="actions">
-      {band.links.spotify && <a class="btn solid" href={band.links.spotify} target="_blank" rel="noopener">▶ listen now</a>}
-      <a class="btn" href="/shows.html">shows</a>
-    </div>
-  </div>
-</section>
-
-<section class="wrap ledger-strip" aria-label="The ledger">
-  <Pulse past={past} class="home-pulse" />
-  <p class="mono ledger-line-text">
-    <b>{h.showsPlayed}</b> shows · <b>{h.cities}</b> cities · <b>{h.venues}</b> rooms · <b>{stats.length}</b> songs in the set{h.firstShow && <> · on air since {monthYear(h.firstShow.date)}</>}
-    {!next && last && <> · <span data-since={last.date}>{days}</span> days of dead air</>}
-  </p>
+<section class="hero wrap">
+  <h1>
+    {band.logoImage
+      ? <Picture src={band.logoImage} alt={band.name} widths={[300, 600]} sizes="(min-width: 760px) 300px, 62vw" loading="eager" fetchpriority="high" />
+      : <span class="wordmark">hospital <span>radio.</span></span>}
+  </h1>
+  {band.scrawl && <p class="scrawl">{band.scrawl}</p>}
+  {band.bio && <p class="lede">{band.bio}</p>}
+  {band.links.spotify && <a class="btn" href={band.links.spotify} target="_blank" rel="noopener">Listen on Spotify</a>}
+  {platforms.length > 0 && (
+    <p class="small">Also on {platforms.map(([n, u], i) => <>{i > 0 && ' · '}<a href={u} target="_blank" rel="noopener">{n}</a></>)}</p>
+  )}
 </section>
 
 {music.releases.length > 0 && (
-  <section class="wrap section" id="transmissions">
-    <div class="sec-head">
-      <h2 class="h2">Latest <em>transmissions</em></h2>
-      <a class="btn text" href="/listen.html">all releases →</a>
-    </div>
-    <div class="vid-grid">
-      {music.releases.map((r) => { const s = statFor(r.title); return (
-        <VideoPlayer title={r.title} url={r.url} type={r.type} year={r.year} sub={s && s.firstPlayed ? `in the set since ${shortDate(s.firstPlayed)} · played live ${s.plays}×` : ''} />
-      ); })}
-    </div>
-  </section>
-)}
-
-<section class="wrap section two-up">
-  <div class="sheet ledger home-chart" id="chart">
-    <div class="sheet-head">
-      <div><div class="kicker">most played live</div><h2 class="h2" style="margin-top:10px">The <em>chart</em></h2></div>
-      <span class="mono dim">{h.showsWithSetlists} sets logged</span>
-    </div>
-    {top.length ? (
-      <ol class="chart mini">
-        {top.map((s, i) => (
-          <li class="chart-row">
-            <span class="rank">{String(i + 1).padStart(2, '0')}</span>
-            <span class="title"><a href={`/lyrics/${s.slug}.html`}>{displayTitle(s.title)}</a>{s.cover && <Stamp kind="cover" />}</span>
-            <Tally n={s.plays} />
-            <span class="count">{s.plays}<small>plays</small></span>
-          </li>
-        ))}
-      </ol>
-    ) : <p class="quiet">no setlists logged yet.</p>}
-    <p class="home-links"><a class="btn text" href="/lyrics.html">every song we’ve played →</a><a class="btn text" href="/request.html">request a song →</a></p>
-  </div>
-
-  <div class="sheet ledger home-log" id="log">
-    <div class="sheet-head">
-      <div><div class="kicker">from the log</div><h2 class="h2" style="margin-top:10px">{next ? <>Up <em>next</em></> : <>Last <em>heard</em></>}</h2></div>
-      {next ? <span class="mono dim" data-show-count>{upcoming.length} scheduled</span> : <span class="mono dim">{past.length} played</span>}
-    </div>
-    {next && (
-      <div class="shows" data-upcoming>
-        {upcoming.slice(0, 3).map((s, i) => <ShowRow show={s} variant="compact" upNext={i === 0} />)}
-      </div>
-    )}
-    <div class="shows" hidden={!!next} data-empty-fallback>
-      {lastN(past, 3).map((s) => <ShowRow show={s} variant="compact" archived />)}
-    </div>
-    {!next && band.status && <p class="scrawl" style="margin-top:16px">{band.status}</p>}
-    <p class="home-links"><a class="btn text" href={next ? '/shows.html' : '/archive.html'}>{next ? 'all shows →' : 'the whole log →'}</a>{!next && <a class="btn text" href="/booking.html">book us →</a>}</p>
-  </div>
-</section>
-
-{strip.length > 0 && (
-  <section class="wrap section" id="booth">
-    <div class="sec-head">
-      <h2 class="h2">From the <em>booth</em></h2>
-      <a class="btn text" href="/photos.html">all photos →</a>
-    </div>
-    <div class="strip">
-      {strip.map((p) => (
-        <a class="riso" href={`/photos.html#p${photos.indexOf(p)}`} aria-label={`Photo: ${p.caption || 'Hospital Radio.'}`}>
-          <Picture src={p.src} alt="" widths={[480, 800]} sizes="(min-width:760px) 300px, 72vw" />
-          {p.caption && <span class="cap">{p.caption}</span>}
-        </a>
+  <section class="section wrap" id="music">
+    <h2>Music</h2>
+    <div class="videos">
+      {music.releases.map((r) => (
+        <Video title={r.title} url={r.url} meta={[r.type, r.year].filter(Boolean).join(' · ')}>
+          {lyricSlugs.has(slug(r.title)) && <a href={`/lyrics/${slug(r.title)}.html`}>Lyrics</a>}
+        </Video>
       ))}
     </div>
+    {music.videos.length > 0 && (
+      <p class="small more">Also: {music.videos.map((v, i) => <>{i > 0 && ' · '}<a href={v.url} target="_blank" rel="noopener">{v.title}</a></>)}</p>
+    )}
   </section>
 )}
 
-{merch.length > 0 && (
-  <section class="wrap section" id="merch">
-    <div class="sec-head">
-      <h2 class="h2">Wear the <em>signal</em></h2>
-      {band.links.merch && <a class="btn text" href={band.links.merch} target="_blank" rel="noopener">full store ↗</a>}
-    </div>
-    <ul class="merch-list">
-      {merch.map((m) => (
-        <li><a href={m.url} target="_blank" rel="noopener"><span class="nm">{m.name}</span><span class="pr mono">{m.price}</span><span class="go label">shop ↗</span></a></li>
+<section class="section wrap" id="shows">
+  <h2>Shows</h2>
+  {next.length > 0 && (
+    <ul class="gigs" data-upcoming>
+      {next.map((s) => (
+        <li class="show" data-date={s.date}>
+          <span class="gig-date">{day(s._d)}</span>
+          <span><span class="gig-venue">{s.venue}</span><span class="gig-city">{[s.city, s.with].filter(Boolean).join(' · ')}</span></span>
+          <span class="gig-act">{s.soldOut ? 'Sold out' : s.tickets ? <a href={s.tickets} target="_blank" rel="noopener">Tickets ↗</a> : 'Info soon'}</span>
+        </li>
       ))}
     </ul>
+  )}
+  <div class="quiet-note" data-empty-fallback hidden={next.length > 0}>
+    <p>No shows booked right now.</p>
+    {band.status && <p>{band.status}</p>}
+    {last && <p class="small">Last played {day(last._d)} at {last.venue}{last.city ? `, ${last.city}` : ''}.</p>}
+  </div>
+  <p class="small more"><a href="/shows.html">{next.length > 0 ? 'All shows' : 'Past shows'}</a></p>
+</section>
+
+{music.merchItems.length > 0 && (
+  <section class="section wrap" id="merch">
+    <h2>Merch</h2>
+    <ul class="merch read">
+      {music.merchItems.slice(0, 4).map((m) => (
+        <li><a href={m.url} target="_blank" rel="noopener"><span>{m.name}</span><span class="price">{m.price}</span></a></li>
+      ))}
+    </ul>
+    {band.links.merch && <p class="small more"><a href={band.links.merch} target="_blank" rel="noopener">Full store ↗</a></p>}
   </section>
 )}
 
-{band.mailingList.action && <MailingForm />}
+{band.mailingList.action && (
+  <section class="section wrap" id="list">
+    <h2>Mailing list</h2>
+    <p class="read">New songs and show dates, straight to your inbox.</p>
+    <form class="tune-form read" id="tuneForm" action={band.mailingList.action} method="post" target="tuneSink" data-connected="1" novalidate>
+      <label class="visually-hidden" for="tuneEmail">Email address</label>
+      <input type="email" name={band.mailingList.fieldName || 'email'} id="tuneEmail" placeholder="you@example.com" autocomplete="email" required>
+      <button class="btn" type="submit">Subscribe</button>
+    </form>
+    <p class="tune-msg small" id="tuneMsg" role="status"></p>
+    <iframe name="tuneSink" title="subscribe" hidden></iframe>
+  </section>
+)}
 
-</Base>
+</Site>
